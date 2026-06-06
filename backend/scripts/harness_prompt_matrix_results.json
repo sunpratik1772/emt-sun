@@ -1,0 +1,24 @@
+[
+  {
+    "scenario": "comms_github",
+    "title": "Urgent comms \u2192 GitHub",
+    "complexity": 1,
+    "style": "physical",
+    "episode": 1,
+    "prompt_mode": "physical (structured NL)",
+    "passed": true,
+    "success": true,
+    "types": [
+      "manual_trigger",
+      "db_query",
+      "filter",
+      "github"
+    ],
+    "check_ok": true,
+    "failure_reason": "ok",
+    "check_detail": "retrieval+triage+issue capability satisfied",
+    "workflow_name": "Comms Urgent Tracker Issues",
+    "node_count": 4,
+    "runtime_ms": 15386
+  }
+]

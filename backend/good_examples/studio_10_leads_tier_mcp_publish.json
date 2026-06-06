@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "studio-leads-tier-mcp-publish",
+  "name": "Studio: Lead tiers (Starlark) \u2192 Confluence report",
+  "version": "1.0",
+  "description": "Score leads.csv with Starlark tiers, keep A/B accounts, AI writes a Confluence-ready report, MCP publishes. Uses leads.csv.",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "leads",
+      "type": "csv_extract",
+      "label": "Leads",
+      "config": {
+        "source": "leads.csv"
+      },
+      "position": {
+        "x": 376,
+        "y": 280
+      }
+    },
+    {
+      "id": "tier_code",
+      "type": "code",
+      "label": "Starlark: priority tiers",
+      "config": {
+        "code_summary": "Assigns each sales lead a letter tier from its numeric score: A for 85+, B for 70\u201384, C below 70. Also marks whether the lead is qualified for outreach so marketing can filter the list without reading raw scores.",
+        "code": "def tier_rows(rows):\n    out = []\n    for r in rows:\n        score = r.get(\"score\", 0)\n        if score >= 85:\n            tier = \"A\"\n        elif score >= 70:\n            tier = \"B\"\n        else:\n            tier = \"C\"\n        out.append({\n            \"lead_id\": r.get(\"lead_id\", \"\"),\n            \"company\": r.get(\"company\", \"\"),\n            \"region\": r.get(\"region\", \"\"),\n            \"score\": score,\n            \"stage\": r.get(\"stage\", \"\"),\n            \"tier\": tier,\n            \"qualified\": tier == \"A\" or tier == \"B\",\n        })\n    return out\n\noutput = tier_rows(input_data[\"rows\"])"
+      },
+      "position": {
+        "x": 672,
+        "y": 280
+      }
+    },
+    {
+      "id": "filter_ab",
+      "type": "filter",
+      "label": "Keep A and B tiers",
+      "config": {
+        "expression": "row.qualified == true"
+      },
+      "position": {
+        "x": 968,
+        "y": 280
+      }
+    },
+    {
+      "id": "rank",
+      "type": "sort",
+      "label": "By score",
+      "config": {
+        "sortBy": "score",
+        "order": "desc"
+      },
+      "position": {
+        "x": 1264,
+        "y": 280
+      }
+    },
+    {
+      "id": "ai_report",
+      "type": "agent",
+      "label": "AI: Confluence report body",
+      "config": {
+        "prompt": "You are a sales operations analyst writing for Confluence.",
+        "task": "Summarize the qualified lead list: count by tier and region, highlight top 2 companies, and list 3 recommended next actions. Use markdown headings.",
+        "perRow": false,
+        "emitPublishRow": true,
+        "pageTitle": "Studio qualified leads report",
+        "model": "gemini-2.5-flash"
+      },
+      "position": {
+        "x": 1560,
+        "y": 280
+      }
+    },
+    {
+      "id": "publish",
+      "type": "confluence_mcp",
+      "label": "MCP: publish to Confluence",
+      "config": {
+        "tool": "confluence_publish_report",
+        "params": {}
+      },
+      "position": {
+        "x": 1856,
+        "y": 280
+      }
+    },
+    {
+      "id": "mcp_jira",
+      "type": "jira_mcp",
+      "label": "MCP: Jira follow-ups",
+      "config": {
+        "tool": "jira_create_issue",
+        "params": {
+          "project": "DEMO",
+          "issue_type": "Task"
+        }
+      },
+      "position": {
+        "x": 2152,
+        "y": 280
+      }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Qualified leads CSV",
+      "config": {
+        "filename": "studio_qualified_leads.csv"
+      },
+      "position": {
+        "x": 2448,
+        "y": 280
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "leads"
+    },
+    {
+      "from": "leads",
+      "to": "tier_code"
+    },
+    {
+      "from": "tier_code",
+      "to": "filter_ab"
+    },
+    {
+      "from": "filter_ab",
+      "to": "rank"
+    },
+    {
+      "from": "rank",
+      "to": "ai_report"
+    },
+    {
+      "from": "ai_report",
+      "to": "publish"
+    },
+    {
+      "from": "publish",
+      "to": "mcp_jira"
+    },
+    {
+      "from": "mcp_jira",
+      "to": "export"
+    }
+  ]
+}

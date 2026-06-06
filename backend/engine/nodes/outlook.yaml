@@ -1,0 +1,15 @@
+type_id: outlook
+description: Prepare or send an Outlook email via Microsoft Graph. Stubbed until Graph credentials are configured.
+ui:
+  display_name: Outlook
+  icon: Inbox
+  color: "#0078D4"
+  studio_active: false
+  palette: { section: { id: integrations, label: Integrations, color: "#14B8A6", order: 25 }, node_order: 40 }
+input_ports: [{ name: rows, type: dataframe, optional: true }]
+output_ports: [{ name: result, type: object }]
+params:
+  - { name: to, type: string, required: true }
+  - { name: subject, type: string, required: true }
+  - { name: body, type: string, widget: textarea, required: false }
+  - { name: tenantId, type: string, required: false, placeholder: "Azure tenant id or set OUTLOOK_TENANT_ID" }

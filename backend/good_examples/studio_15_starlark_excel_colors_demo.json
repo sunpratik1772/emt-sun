@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "studio-starlark-excel-colors",
+  "name": "Studio: Starlark & Excel Highlights",
+  "version": "1.0",
+  "description": "Extracts trades & alerts, joins them, calculates max notional in Starlark with a distinct filter, and writes to highlighted multi-tab Excel.",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "trades_data",
+      "type": "csv_extract",
+      "label": "Trades Data",
+      "config": {
+        "source": "hs_trades"
+      },
+      "position": {
+        "x": 376,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "alerts_data",
+      "type": "csv_extract",
+      "label": "Alerts Data",
+      "config": {
+        "source": "hs_alerts"
+      },
+      "position": {
+        "x": 376,
+        "y": 346.0
+      }
+    },
+    {
+      "id": "join_data",
+      "type": "join",
+      "label": "SQL-style Join",
+      "config": {
+        "leftKey": "alert_id",
+        "rightKey": "alert_id",
+        "joinType": "inner"
+      },
+      "position": {
+        "x": 672,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "starlark_transform",
+      "type": "code",
+      "label": "Starlark Transform",
+      "config": {
+        "code_summary": "Calculates notional and categories, applies distinct filter on trader_id",
+        "code": "def transform(rows):\n    seen = {}\n    filtered = []\n    max_n = 0.0\n    for r in rows:\n        trader = r.get(\"trader_id\")\n        p = float(r.get(\"price\") or 0.0)\n        q = float(r.get(\"qty\") or 0.0)\n        notional = p * q\n        r[\"notional\"] = notional\n        if notional > max_n:\n            max_n = notional\n        if trader not in seen:\n            seen[trader] = True\n            filtered.append(r)\n    for r in filtered:\n        val = r.get(\"notional\") or 0.0\n        if val >= max_n * 0.7:\n            r[\"status\"] = \"order\"\n        elif val >= max_n * 0.35:\n            r[\"status\"] = \"during\"\n        else:\n            r[\"status\"] = \"post\"\n    return filtered\n\noutput = transform(rows)"
+      },
+      "position": {
+        "x": 968,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "excel_export",
+      "type": "excel_output",
+      "label": "Excel Highlight Export",
+      "config": {
+        "filename": "starlark_color_highlight_report.xlsx",
+        "tabNames": "Risk Analysis,Raw Alerts",
+        "highlightColumn": "status",
+        "highlightMapping": "order:red, during:yellow, post:blue"
+      },
+      "position": {
+        "x": 1264,
+        "y": 280
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "trades_data"
+    },
+    {
+      "from": "start",
+      "to": "alerts_data"
+    },
+    {
+      "from": "trades_data",
+      "to": "join_data"
+    },
+    {
+      "from": "alerts_data",
+      "to": "join_data"
+    },
+    {
+      "from": "join_data",
+      "to": "starlark_transform"
+    },
+    {
+      "from": "starlark_transform",
+      "to": "excel_export"
+    },
+    {
+      "from": "alerts_data",
+      "to": "excel_export"
+    }
+  ]
+}

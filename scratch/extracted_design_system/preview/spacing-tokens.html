@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500;0,6..72,500;0,6..72,600&display=swap">
+<style>
+/* =============================================================================
+   dbSherpa Studio — Colors & Type
+   The low-level visual foundation. Import this first; everything else builds on
+   these custom properties.
+
+   Lifted verbatim from the product codebase
+   (frontend/src/styles/linear-tokens.css + globals.css + dashboard.css).
+
+   THREE THEMES, one token contract:
+     [data-theme="dark"]    — product default. Linear/Railway near-black canvas.
+     [data-theme="light"]   — white canvas, neutral greys.
+     [data-theme="aurora"]  — NEW. Painterly warm→cool gradient + frosted glass.
+                              Designed to be seamless: every component that reads
+                              the tokens below renders correctly under all three.
+
+   Fonts: Inter is the product's only family (sans = heading = mono).
+   Newsreader (serif italic) is added ONLY as the aurora display accent — it is a
+   substitution for the unbranded serif seen in the concept screenshots. See README.
+   ============================================================================= */
+
+
+/* -----------------------------------------------------------------------------
+   1. Theme-agnostic tokens — fonts, type scale, radii, easing, spacing
+   -------------------------------------------------------------------------- */
+:root {
+  /* Families */
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: var(--font-sans);           /* product uses Inter even for mono */
+  --font-display-serif: 'Newsreader', Georgia, 'Times New Roman', serif; /* aurora accent only */
+
+  /* Product type ramp (UI is dense — these are intentionally small) */
+  --fs-micro: 10.5px;
+  --fs-caption: 11.5px;
+  --fs-body: 12.5px;
+  --fs-h: 13.5px;
+
+  /* Display ramp (dashboards / marketing — clamps for fluid scaling) */
+  --fs-stat: clamp(32px, 3.2vw, 44px);     /* big tabular metric numbers */
+  --fs-title: clamp(24px, 2.6vw, 32px);    /* page / welcome titles */
+  --fs-section: 15px;
+  --fs-label: 11px;                        /* uppercase eyebrow / stat label */
+
+  /* Weights (Inter is loaded at 450 / 550 too — the product's in-between weights) */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semi: 600;
+  --fw-bold: 700;
+
+  /* Tracking — Inter is set tight across the board */
+  --tracking-tight: -0.01em;
+  --tracking-tighter: -0.03em;
+  --tracking-label: 0.06em;                /* uppercase labels */
+  --tracking-eyebrow: 0.12em;              /* brand sub-label */
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-input: 14px;                    /* sherpa prompt bar */
+  --radius-card: 20px;                     /* dashboard cards */
+  --radius-pill: 999px;
+
+  /* Easing */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in-out: cubic-bezier(0.83, 0, 0.17, 1);
+
+  /* Spacing — fluid dashboard rhythm */
+  --gap: clamp(14px, 1.5vw, 20px);
+  --card-pad: clamp(20px, 2vw, 28px);
+
+  /* Font feature settings the product ships */
+  --font-features: 'cv01', 'ss03';
+
+  /* Port type colors — shared across themes (semantics, not chrome) */
+  --port-dataframe: #f59e0b;   /* amber  — tabular data */
+  --port-object: #38bdf8;      /* sky    — JSON / dict */
+  --port-scalar: #3ecf8e;      /* green  — single value */
+  --port-string-list: #818cf8; /* indigo — list of strings */
+  --port-workflow: #f472b6;    /* pink   — sub-workflow */
+}
+
+/* -----------------------------------------------------------------------------
+   2. DARK — product default. Auth-page black (#08090a), crisp white text.
+   -------------------------------------------------------------------------- */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg-base: #08090a;
+  --bg-deep: #000000;
+  --bg-0: #08090a;
+  --bg-1: #0f1011;
+  --bg-2: #141516;
+  --bg-3: #1a1b1d;
+
+  --text-0: #ffffff;
+  --text-1: #e4e4e7;
+  --text-2: #a1a1aa;
+  --text-3: #71717a;
+
+  --border: rgba(255, 255, 255, 0.14);
+  --border-strong: rgba(255, 255, 255, 0.20);
+  --border-soft: rgba(255, 255, 255, 0.08);
+
+  --accent: #3eb5db;
+  --accent-on: #ffffff;
+  --accent-hi: #5ec8e8;
+  --accent-lo: #2d9fc4;
+  --accent-soft: color-mix(in srgb, #3eb5db 22%, transparent);
+  --accent-warm: #f0934a;          /* warm secondary (aurora-friendly) */
+
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --info: #3eb5db;
+  --heat: #4db8a8;                 /* run-activity heatmap / sherpa icon */
+
+  /* Surfaces / chrome */
+  --surface: #0f1011;
+  --elevated: #141516;
+  --canvas-bg: #111214;
+  --segment-track: #1a1b1d;
+  --segment-active-bg: #ffffff;
+  --segment-active-fg: #0a0a0a;
+
+  /* Backdrop: faint dot grid over a top→bottom black wash, no glow */
+  --backdrop-wash: linear-gradient(180deg, #08090a 0%, #000000 100%);
+  --dots-color: rgba(255, 255, 255, 0.12);
+
+  --elev-raised:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-card:
+    0 1px 0 rgba(255, 255, 255, 0.03) inset,
+    0 4px 20px rgba(0, 0, 0, 0.20);
+  --focus-ring:
+    0 0 0 2px color-mix(in oklab, var(--accent), transparent 25%),
+    0 4px 12px rgba(0, 0, 0, 0.35);
+
+  /* Glass = near-opaque dark (real product keeps blur off in dark) */
+  --glass-bg: color-mix(in srgb, var(--bg-1) 72%, transparent);
+  --glass-blur: 14px;
+}
+
+/* -----------------------------------------------------------------------------
+   3. LIGHT — pure white canvas, neutral greys.
+   -------------------------------------------------------------------------- */
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-base: #fafafa;
+  --bg-deep: #ffffff;
+  --bg-0: #ffffff;
+  --bg-1: #fafafa;
+  --bg-2: #f4f4f5;
+  --bg-3: #ebebec;
+
+  --text-0: #0a0a0a;
+  --text-1: #262626;
+  --text-2: #525252;
+  --text-3: #737373;
+
+  --border: rgba(0, 0, 0, 0.14);
+  --border-strong: rgba(0, 0, 0, 0.18);
+  --border-soft: rgba(0, 0, 0, 0.09);
+
+  --accent: #2489ab;
+  --accent-on: #ffffff;
+  --accent-hi: #2d9fc4;
+  --accent-lo: #1d728f;
+  --accent-soft: color-mix(in srgb, #2489ab 14%, transparent);
+  --accent-warm: #d9663a;
+
+  --success: #15803d;
+  --warning: #b45309;
+  --danger: #dc2626;
+  --info: #2563eb;
+  --heat: #3d9a8b;
+
+  --surface: #ffffff;
+  --elevated: #ffffff;
+  --canvas-bg: #e8e8ec;
+  --segment-track: #f0f0f2;
+  --segment-active-bg: #0a0a0a;
+  --segment-active-fg: #ffffff;
+
+  --backdrop-wash: #ffffff;
+  --dots-color: rgba(0, 0, 0, 0.05);
+
+  --elev-raised:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(0, 0, 0, 0.12);
+  --shadow-card:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.06);
+  --focus-ring:
+    0 0 0 2px color-mix(in oklab, var(--accent), transparent 30%),
+    0 4px 12px rgba(0, 0, 0, 0.08);
+
+  --glass-bg: color-mix(in srgb, #fff 78%, transparent);
+  --glass-blur: 14px;
+}
+
+/* -----------------------------------------------------------------------------
+   4. AURORA — the third theme. A fixed painterly gradient (deep navy → warm
+   amber → cream) read through frosted glass chrome. Tonally light: text is ink,
+   surfaces are translucent white. The gradient lives on --backdrop-wash so a
+   single fixed backdrop carries every screen — nothing per-screen to maintain.
+   -------------------------------------------------------------------------- */
+[data-theme='aurora'] {
+  color-scheme: light;
+
+  --bg-base: #eadfd2;            /* warm sand fallback under the gradient */
+  --bg-deep: #1a2b44;
+
+  /* Frosted glass surfaces — translucency is the point; let the aurora show */
+  --bg-0: rgba(255, 255, 255, 0.86);
+  --bg-1: rgba(255, 255, 255, 0.62);
+  --bg-2: rgba(255, 255, 255, 0.42);
+  --bg-3: rgba(255, 255, 255, 0.28);
+
+  --text-0: #1b1f2a;            /* deep ink — reads on glass */
+  --text-1: #353b4a;
+  --text-2: rgba(27, 31, 42, 0.66);
+  --text-3: rgba(27, 31, 42, 0.50);
+
+  --border: rgba(255, 255, 255, 0.55);
+  --border-strong: rgba(255, 255, 255, 0.75);
+  --border-soft: rgba(255, 255, 255, 0.38);
+
+  --accent: #1f6f8b;            /* deep teal — pulled toward the navy side */
+  --accent-on: #ffffff;
+  --accent-hi: #2489ab;
+  --accent-lo: #17576e;
+  --accent-soft: color-mix(in srgb, #1f6f8b 16%, transparent);
+  --accent-warm: #d9663a;       /* ember — the warm pole of the gradient */
+
+  --success: #1f8a5b;
+  --warning: #c2730f;
+  --danger: #d1495b;
+  --info: #1f6f8b;
+  --heat: #c2693e;
+
+  --surface: rgba(255, 255, 255, 0.72);
+  --elevated: rgba(255, 255, 255, 0.86);
+  --canvas-bg: rgba(255, 255, 255, 0.30);
+  --segment-track: rgba(255, 255, 255, 0.40);
+  --segment-active-bg: #1b1f2a;
+  --segment-active-fg: #ffffff;
+
+  /* The signature: deep navy top-right, warm ember bottom-centre, cream pocket
+     mid-left. Layered radial gradients over a warm base. */
+  --backdrop-wash:
+    radial-gradient(120% 120% at 88% 4%, #16314f 0%, rgba(22, 49, 79, 0) 46%),
+    radial-gradient(120% 130% at 12% 22%, #2a567d 0%, rgba(42, 86, 125, 0) 40%),
+    radial-gradient(140% 120% at 50% 116%, #d9663a 0%, rgba(217, 102, 58, 0) 52%),
+    radial-gradient(90% 90% at 26% 70%, #f3e4d0 0%, rgba(243, 228, 208, 0) 48%),
+    linear-gradient(150deg, #20405f 0%, #b9764f 58%, #ead8c2 100%);
+  --dots-color: rgba(255, 255, 255, 0.16);
+
+  --elev-raised:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.28);
+  --shadow-card:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 14px 40px rgba(24, 38, 60, 0.18);
+  --focus-ring:
+    0 0 0 2px color-mix(in oklab, var(--accent), transparent 28%),
+    0 6px 18px rgba(24, 38, 60, 0.20);
+
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-blur: 22px;
+}
+
+/* In aurora, surfaces sitting directly on the gradient (page headers, the
+   activity hero) carry white text. Helper for that "on-gradient" context. */
+[data-theme='aurora'] .on-aurora,
+[data-theme='aurora'] .on-aurora * {
+  color: #fdf6ee;
+}
+
+/* -----------------------------------------------------------------------------
+   5. Semantic type classes — apply directly or copy the rules.
+   -------------------------------------------------------------------------- */
+.ds-display {
+  font-family: var(--font-display-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--fs-title);
+  line-height: 1.1;
+  letter-spacing: 0;
+  color: var(--text-1);
+}
+
+.ds-h1, h1.ds {
+  font-family: var(--font-heading);
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--tracking-tighter);
+  line-height: 1.15;
+  color: var(--text-0);
+}
+
+.ds-h2, h2.ds {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.25;
+  color: var(--text-0);
+}
+
+.ds-stat {
+  font-size: var(--fs-stat);
+  font-weight: var(--fw-semi);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-0);
+}
+
+.ds-label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.ds-eyebrow {
+  font-size: 9px;
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.ds-body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.5;
+  color: var(--text-1);
+}
+
+.ds-caption {
+  font-size: var(--fs-caption);
+  color: var(--text-3);
+  letter-spacing: var(--tracking-tight);
+}
+
+.ds-mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  color: var(--text-1);
+}
+
+/* Base wiring — opt in by setting font + features on body */
+.ds-root {
+  font-family: var(--font-sans);
+  font-feature-settings: var(--font-features);
+  letter-spacing: var(--tracking-tight);
+  background: var(--bg-base);
+  color: var(--text-0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---- card chrome ---- */
+/* Shared chrome for design-system preview cards. Each card links
+   ../colors_and_type.css first, then this. The card sets its own data-theme
+   on <html> so swatches/specimens render in their native context. */
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: var(--font-features);
+  letter-spacing: var(--tracking-tight);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-base);
+  color: var(--text-0);
+  padding: 22px 24px;
+  min-height: 100vh;
+}
+
+/* When a card wants the live aurora sky behind it */
+body.aurora-bg {
+  background:
+    radial-gradient(120% 120% at 88% 4%, #16314f 0%, rgba(22,49,79,0) 46%),
+    radial-gradient(120% 130% at 12% 22%, #2a567d 0%, rgba(42,86,125,0) 40%),
+    radial-gradient(140% 120% at 50% 116%, #d9663a 0%, rgba(217,102,58,0) 52%),
+    radial-gradient(90% 90% at 26% 70%, #f3e4d0 0%, rgba(243,228,208,0) 48%),
+    linear-gradient(150deg, #20405f 0%, #b9764f 58%, #ead8c2 100%);
+  background-attachment: fixed;
+}
+
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: stretch; }
+.col { display: flex; flex-direction: column; gap: 12px; }
+.spread { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.cap {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* Color swatch */
+.sw {
+  flex: 1 1 0;
+  min-width: 84px;
+  border-radius: 10px;
+  padding: 12px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 2px;
+  min-height: 76px;
+  border: 1px solid var(--border-soft);
+}
+.sw b { font-size: 11.5px; font-weight: 600; }
+.sw span { font-size: 10px; font-variant-numeric: tabular-nums; opacity: 0.72; }
+
+</style>
+</head>
+<body>
+  <div class="cap" style="margin-bottom:14px">Spacing rhythm — fluid clamps</div>
+  <div class="col" style="gap:10px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="height:18px;width:8px;background:var(--accent);border-radius:2px"></div>
+      <span style="font-size:12.5px;color:var(--text-1)"><b style="font-variant-numeric:tabular-nums">8</b> &nbsp;chip / icon gap</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="height:18px;width:12px;background:var(--accent);border-radius:2px"></div>
+      <span style="font-size:12.5px;color:var(--text-1)"><b style="font-variant-numeric:tabular-nums">12</b> &nbsp;intra-card</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="height:18px;width:20px;background:var(--accent);border-radius:2px"></div>
+      <span style="font-size:12.5px;color:var(--text-1)"><b style="font-variant-numeric:tabular-nums">14→20</b> &nbsp;--gap · grid gutter <span style="color:var(--text-3)">clamp(14px,1.5vw,20px)</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="height:18px;width:28px;background:var(--accent);border-radius:2px"></div>
+      <span style="font-size:12.5px;color:var(--text-1)"><b style="font-variant-numeric:tabular-nums">20→28</b> &nbsp;--card-pad <span style="color:var(--text-3)">clamp(20px,2vw,28px)</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="height:18px;width:40px;background:var(--accent);border-radius:2px"></div>
+      <span style="font-size:12.5px;color:var(--text-1)"><b style="font-variant-numeric:tabular-nums">20→40</b> &nbsp;body inset <span style="color:var(--text-3)">clamp(20px,3vw,40px)</span></span>
+    </div>
+  </div>
+</body>
+</html>

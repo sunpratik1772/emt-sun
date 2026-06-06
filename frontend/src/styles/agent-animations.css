@@ -1,0 +1,464 @@
+/* sherpa / Workflow Agent — timeline motion */
+
+@keyframes copilot-rail-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+}
+
+.copilot-rail-pulse {
+  animation: copilot-rail-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes agent-ring-breathe {
+  0%,
+  100% {
+    transform: scale(0.94);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.2;
+  }
+}
+
+@keyframes agent-icon-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+}
+
+@keyframes agent-step-enter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes agent-step-ring {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes agent-wave {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes agent-shimmer-slide {
+  0% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -40% 0;
+  }
+}
+
+.agent-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-0);
+}
+
+[data-theme='dark'] .agent-icon {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--accent) 14%, var(--bg-3)),
+    var(--bg-2)
+  );
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border-soft));
+  color: var(--accent);
+}
+
+.agent-icon--live {
+  animation: agent-icon-glow 2.4s var(--ease-out, ease) infinite;
+}
+
+.agent-icon__ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 10px;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  animation: agent-ring-breathe 2s var(--ease-out, ease) infinite;
+  pointer-events: none;
+}
+
+.agent-step-row {
+  animation: agent-step-enter 320ms var(--ease-out, cubic-bezier(0.32, 0.72, 0, 1)) both;
+}
+
+.agent-step-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.agent-idle-wave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 4px;
+}
+
+.agent-idle-wave__bar {
+  width: 3px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--accent-hi), var(--accent));
+  transform-origin: center bottom;
+  animation: agent-wave 1.1s var(--ease-out, ease) infinite;
+}
+
+.agent-idle-wave__bar:nth-child(1) {
+  animation-delay: 0ms;
+  height: 10px;
+}
+.agent-idle-wave__bar:nth-child(2) {
+  animation-delay: 120ms;
+}
+.agent-idle-wave__bar:nth-child(3) {
+  animation-delay: 240ms;
+}
+.agent-idle-wave__bar:nth-child(4) {
+  animation-delay: 360ms;
+  height: 10px;
+}
+
+.cursor-timeline-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.agent-timeline .agent-step-row {
+  min-height: 32px;
+}
+
+@keyframes agent-pulse-dots {
+  0% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.agent-dots-running {
+  animation: agent-pulse-dots 0.8s ease-in-out infinite alternate;
+}
+
+.agent-step-staggered {
+  opacity: 0;
+  transform: translateY(4px);
+  animation: agent-step-enter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes agent-activity-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.agent-activity-text {
+  display: inline-block;
+  animation: agent-activity-text-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.agent-activity-row--active {
+  animation: agent-step-enter 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.agent-step-collapsed {
+  animation: agent-step-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.agent-step-collapsed__trigger:disabled {
+  cursor: default;
+}
+
+.agent-steps-collapsed {
+  border-left: 2px solid color-mix(in srgb, var(--text-3) 35%, transparent);
+  padding-left: 8px;
+  margin-bottom: 2px;
+}
+
+.agent-steps-active {
+  padding-left: 2px;
+}
+
+.agent-activity-row--done {
+  opacity: 0.82;
+  animation: agent-step-enter 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.agent-activity-timeline {
+  max-width: 100%;
+}
+
+.agent-activity-detail {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.agent-activity-detail p {
+  margin: 0 0 4px 0;
+}
+
+.agent-activity-detail strong {
+  color: var(--text-2);
+  font-weight: 600;
+}
+
+.agent-activity-detail p:last-child {
+  margin-bottom: 0;
+}
+
+@keyframes agent-dot-hop {
+  0% {
+    transform: translateY(1.5px);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateY(-1.5px);
+    opacity: 1;
+  }
+}
+
+/* Canvas veil — Sherpa build/load streaming */
+@keyframes workflow-generating-veil-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(16px) saturate(1.15);
+    -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  }
+}
+
+@keyframes workflow-generating-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.workflow-canvas--generating .react-flow,
+.workflow-canvas--generating .react-flow__pane {
+  pointer-events: none;
+}
+
+/* Ease viewport back into frame when Sherpa generation completes */
+.workflow-canvas--fit-pop .react-flow__viewport {
+  transition: transform 560ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.workflow-canvas--generating .react-flow__viewport {
+  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.workflow-canvas__generating-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  background: color-mix(in srgb, var(--bg-base) 58%, transparent);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  animation: workflow-generating-veil-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[data-theme='light'] .workflow-canvas__generating-veil {
+  background: color-mix(in srgb, #fff 62%, transparent);
+}
+
+.workflow-canvas__generating-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px 14px 16px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--border-soft));
+  background: color-mix(in srgb, var(--bg-1) 68%, transparent);
+  backdrop-filter: blur(18px) saturate(1.25);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #fff 8%, transparent) inset,
+    0 12px 40px rgba(0, 0, 0, 0.22);
+  animation: workflow-generating-card-in 380ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both;
+}
+
+[data-theme='light'] .workflow-canvas__generating-card {
+  background: color-mix(in srgb, #fff 78%, transparent);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.workflow-canvas__generating-copy {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+}
+
+.workflow-canvas__generating-label {
+  font-size: 13.5px;
+  font-weight: 540;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text-0);
+  background: linear-gradient(
+    105deg,
+    var(--text-0) 0%,
+    color-mix(in srgb, var(--accent-hi) 85%, var(--text-0)) 45%,
+    var(--text-0) 90%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: agent-shimmer-slide 2.6s ease-in-out infinite;
+}
+
+.workflow-canvas__generating-dots {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 14px;
+  padding-bottom: 1px;
+  margin-left: 1px;
+}
+
+.workflow-canvas__generating-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: agent-dot-hop 0.9s ease-in-out infinite alternate;
+}
+
+.workflow-canvas__generating-dot:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.workflow-canvas__generating-dot:nth-child(2) {
+  animation-delay: 160ms;
+}
+
+.workflow-canvas__generating-dot:nth-child(3) {
+  animation-delay: 320ms;
+}
+
+/* Sherpa activity chip — Claude-like blinking status icon */
+.sherpa-activity-chip {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 9px;
+  max-width: 100%;
+  padding: 1px 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-0);
+}
+
+.sherpa-activity-chip__icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  color: var(--accent);
+}
+
+.sherpa-activity-chip--live .sherpa-activity-chip__icon {
+  animation: sherpa-activity-icon-blink 1.65s ease-in-out infinite;
+}
+
+@keyframes sherpa-activity-icon-blink {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  42% {
+    opacity: 0.22;
+    transform: scale(0.9) rotate(-8deg);
+  }
+  58% {
+    opacity: 0.22;
+    transform: scale(0.9) rotate(8deg);
+  }
+}
+
+.sherpa-activity-chip__text {
+  min-width: 0;
+}
+
+.sherpa-activity-chip__label {
+  font-weight: 560;
+  letter-spacing: -0.015em;
+  color: var(--text-0);
+}
+
+.sherpa-activity-chip__sub {
+  font-weight: 400;
+  color: var(--text-1);
+}
+
+[data-theme='claude'] .sherpa-activity-chip__icon {
+  color: #d97757;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sherpa-activity-chip--live .sherpa-activity-chip__icon {
+    animation: none;
+    opacity: 0.85;
+  }
+}

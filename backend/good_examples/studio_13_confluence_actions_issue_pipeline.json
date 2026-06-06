@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "studio-confluence-actions-issue-pipeline",
+  "name": "Studio: Confluence actions -> Jira backlog pipeline",
+  "version": "1.0",
+  "description": "Search Confluence pages, extract action items, convert them to Jira issues, merge with existing backlog, sort, and export for operations review.",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "confluence_search",
+      "type": "confluence_mcp",
+      "label": "MCP: search Confluence pages",
+      "config": {
+        "tool": "confluence_search_pages",
+        "params": {
+          "space": "ENG",
+          "limit": 8
+        }
+      },
+      "position": {
+        "x": 376,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "extract_actions",
+      "type": "confluence_mcp",
+      "label": "MCP: extract action items",
+      "config": {
+        "tool": "confluence_extract_action_items",
+        "params": {}
+      },
+      "position": {
+        "x": 672,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "shape_jira_rows",
+      "type": "map_transform",
+      "label": "Shape Jira payload rows",
+      "config": {
+        "mappings": [
+          {
+            "to": "project",
+            "expression": "\"DEMO\""
+          },
+          {
+            "to": "issue_type",
+            "expression": "\"Task\""
+          },
+          {
+            "to": "summary",
+            "expression": "row.title"
+          },
+          {
+            "to": "description",
+            "expression": "\"From Confluence: \" + str(row.source_title) + \" (\" + str(row.source_page_id) + \")\""
+          }
+        ]
+      },
+      "position": {
+        "x": 968,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "jira_create",
+      "type": "jira_mcp",
+      "label": "MCP: create Jira issues",
+      "config": {
+        "tool": "jira_create_issue",
+        "params": {
+          "project": "DEMO",
+          "issue_type": "Task"
+        }
+      },
+      "position": {
+        "x": 1264,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "jira_list",
+      "type": "jira_mcp",
+      "label": "MCP: list current Jira issues",
+      "config": {
+        "tool": "jira_list_issues",
+        "params": {
+          "project": "DEMO",
+          "status": "all",
+          "max": 20
+        }
+      },
+      "position": {
+        "x": 376,
+        "y": 346.0
+      }
+    },
+    {
+      "id": "merge_backlog",
+      "type": "data_merge",
+      "label": "Merge created + existing backlog",
+      "config": {
+        "strategy": "union"
+      },
+      "position": {
+        "x": 1560,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "sort_backlog",
+      "type": "sort",
+      "label": "Sort by issue key",
+      "config": {
+        "sortBy": "issue_key",
+        "order": "asc"
+      },
+      "position": {
+        "x": 1856,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Export Jira backlog CSV",
+      "config": {
+        "filename": "confluence_action_issue_backlog.csv"
+      },
+      "position": {
+        "x": 2152,
+        "y": 280.0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "confluence_search"
+    },
+    {
+      "from": "confluence_search",
+      "to": "extract_actions"
+    },
+    {
+      "from": "extract_actions",
+      "to": "shape_jira_rows"
+    },
+    {
+      "from": "shape_jira_rows",
+      "to": "jira_create"
+    },
+    {
+      "from": "start",
+      "to": "jira_list"
+    },
+    {
+      "from": "jira_create",
+      "to": "merge_backlog"
+    },
+    {
+      "from": "jira_list",
+      "to": "merge_backlog"
+    },
+    {
+      "from": "merge_backlog",
+      "to": "sort_backlog"
+    },
+    {
+      "from": "sort_backlog",
+      "to": "export"
+    }
+  ]
+}

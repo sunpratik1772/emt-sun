@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "studio-starlark-margin-analysis",
+  "name": "Studio: Starlark margin analysis",
+  "version": "1.0",
+  "description": "Orders + products join, Starlark computes line totals and margin %, regional rollup, AI summary, Excel export. Uses orders.csv and products.csv. orders.csv + products.csv. Code node runs sandboxed Starlark (no imports).",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "orders",
+      "type": "csv_extract",
+      "label": "Orders",
+      "config": {
+        "source": "orders.csv"
+      },
+      "position": {
+        "x": 376,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "products",
+      "type": "csv_extract",
+      "label": "Products",
+      "config": {
+        "source": "products.csv"
+      },
+      "position": {
+        "x": 376,
+        "y": 346.0
+      }
+    },
+    {
+      "id": "join",
+      "type": "join",
+      "label": "Join on SKU",
+      "config": {
+        "leftKey": "sku",
+        "rightKey": "sku",
+        "joinType": "inner"
+      },
+      "position": {
+        "x": 672,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "calc_margin",
+      "type": "code",
+      "label": "Starlark: margin per order",
+      "config": {
+        "code_summary": "For each joined order line, calculates catalog line total (quantity \u00d7 unit price), subtracts it from booked revenue to get margin dollars, and expresses margin as a percentage of revenue. Downstream steps receive one row per order with margin metrics.",
+        "code": "def margin_rows(rows):\n    out = []\n    for r in rows:\n        qty = r.get(\"quantity\", 0)\n        price = r.get(\"unit_price\", 0)\n        rev = r.get(\"revenue\", 0)\n        line_total = qty * price\n        margin = rev - line_total\n        pct = (margin * 100 / rev) if rev > 0 else 0\n        out.append({\n            \"order_id\": r.get(\"order_id\", \"\"),\n            \"region\": r.get(\"region\", \"\"),\n            \"sku\": r.get(\"sku\", \"\"),\n            \"product\": r.get(\"name\", \"\"),\n            \"revenue\": rev,\n            \"line_total\": line_total,\n            \"margin\": margin,\n            \"margin_pct\": pct,\n        })\n    return out\n\noutput = margin_rows(input_data[\"rows\"])"
+      },
+      "position": {
+        "x": 968,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "by_region",
+      "type": "group_by",
+      "label": "Margin by region",
+      "config": {
+        "groupBy": "region",
+        "aggregateCol": "margin",
+        "aggregateFn": "sum",
+        "alias": "total_margin"
+      },
+      "position": {
+        "x": 1264,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "rank",
+      "type": "sort",
+      "label": "Top regions",
+      "config": {
+        "sortBy": "total_margin",
+        "order": "desc"
+      },
+      "position": {
+        "x": 1560,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "ai_summary",
+      "type": "agent",
+      "label": "AI: margin narrative",
+      "config": {
+        "prompt": "You are a finance analyst reviewing order margin by region.",
+        "task": "In 3 bullets, name the strongest region by total margin, flag any region with thin margins, and suggest one pricing action.",
+        "perRow": false,
+        "model": "gemini-2.5-flash"
+      },
+      "position": {
+        "x": 1856,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "export",
+      "type": "excel_output",
+      "label": "Margin workbook",
+      "config": {
+        "filename": "studio_margin_by_region.xlsx",
+        "tabNames": "regions"
+      },
+      "position": {
+        "x": 2152,
+        "y": 280.0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "orders"
+    },
+    {
+      "from": "start",
+      "to": "products"
+    },
+    {
+      "from": "orders",
+      "to": "join"
+    },
+    {
+      "from": "products",
+      "to": "join"
+    },
+    {
+      "from": "join",
+      "to": "calc_margin"
+    },
+    {
+      "from": "calc_margin",
+      "to": "by_region"
+    },
+    {
+      "from": "by_region",
+      "to": "rank"
+    },
+    {
+      "from": "rank",
+      "to": "ai_summary"
+    },
+    {
+      "from": "ai_summary",
+      "to": "export"
+    }
+  ]
+}

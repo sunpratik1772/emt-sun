@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "mcp-confluence-to-jira",
+  "name": "Confluence action items → Jira issues",
+  "version": "1.0",
+  "description": "Pull Confluence pages, extract action items, create Jira issues via MCP.",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": { "x": 60, "y": 280 }
+    },
+    {
+      "id": "fetch_pages",
+      "type": "mcp",
+      "label": "Confluence: search pages",
+      "config": {
+        "tool": "confluence_search_pages",
+        "params": { "space": "ENG", "limit": 5 }
+      },
+      "position": { "x": 300, "y": 280 }
+    },
+    {
+      "id": "extract_items",
+      "type": "mcp",
+      "label": "Extract action items",
+      "config": {
+        "tool": "confluence_extract_action_items",
+        "params": {}
+      },
+      "position": { "x": 560, "y": 280 }
+    },
+    {
+      "id": "create_jira",
+      "type": "mcp",
+      "label": "Jira: create issues",
+      "config": {
+        "tool": "jira_create_issue",
+        "params": { "project": "DEMO", "issue_type": "Task" }
+      },
+      "position": { "x": 820, "y": 280 }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Export created issues",
+      "config": {
+        "filename": "jira_created_from_confluence.csv"
+      },
+      "position": { "x": 1080, "y": 280 }
+    }
+  ],
+  "edges": [
+    { "from": "start", "to": "fetch_pages" },
+    { "from": "fetch_pages", "to": "extract_items" },
+    { "from": "extract_items", "to": "create_jira" },
+    { "from": "create_jira", "to": "export" }
+  ]
+}

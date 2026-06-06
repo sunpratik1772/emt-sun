@@ -1,0 +1,212 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "studio-alerts-ticks-join-publish",
+  "name": "Studio: Alerts + ticks join -> Confluence + Jira pack",
+  "version": "1.0",
+  "description": "Join hs_alerts with market_ticks on alert_id, retain elevated spreads, publish a Confluence digest row, create Jira follow-ups, and export an Excel pack.",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "alerts",
+      "type": "db_query",
+      "label": "Query hs_alerts",
+      "config": {
+        "query": "SELECT alert_id, trader_name, scenario, alert_date FROM hs_alerts"
+      },
+      "position": {
+        "x": 376,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "ticks",
+      "type": "db_query",
+      "label": "Query market_ticks",
+      "config": {
+        "query": "SELECT alert_id, currency_pair, spread_pips, venue_name, timestamp FROM market_ticks"
+      },
+      "position": {
+        "x": 376,
+        "y": 346.0
+      }
+    },
+    {
+      "id": "join_alert_tick",
+      "type": "join",
+      "label": "Join by alert_id",
+      "config": {
+        "leftKey": "alert_id",
+        "rightKey": "alert_id",
+        "joinType": "inner"
+      },
+      "position": {
+        "x": 672,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "high_spread",
+      "type": "filter",
+      "label": "Keep spread >= 80",
+      "config": {
+        "expression": "row.spread_pips >= 80"
+      },
+      "position": {
+        "x": 968,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "shape_publish_payload",
+      "type": "map_transform",
+      "label": "Shape Confluence + Jira payload",
+      "config": {
+        "mappings": [
+          {
+            "to": "title",
+            "expression": "\"Risk digest: \" + str(row.trader_name) + \" / \" + str(row.currency_pair)"
+          },
+          {
+            "to": "body_markdown",
+            "expression": "\"- Alert: \" + str(row.alert_id) + \"\\n- Scenario: \" + str(row.scenario) + \"\\n- Trader: \" + str(row.trader_name) + \"\\n- Pair: \" + str(row.currency_pair) + \"\\n- Spread pips: \" + str(row.spread_pips) + \"\\n- Venue: \" + str(row.venue_name) + \"\\n- Tick time: \" + str(row.timestamp)"
+          },
+          {
+            "to": "space",
+            "expression": "\"MFS\""
+          },
+          {
+            "to": "summary",
+            "expression": "\"Investigate spread spike for \" + str(row.trader_name) + \" / \" + str(row.currency_pair)"
+          },
+          {
+            "to": "description",
+            "expression": "row.body_markdown"
+          },
+          {
+            "to": "project",
+            "expression": "\"DEMO\""
+          },
+          {
+            "to": "issue_type",
+            "expression": "\"Task\""
+          }
+        ]
+      },
+      "position": {
+        "x": 1264,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "publish_confluence",
+      "type": "confluence_mcp",
+      "label": "MCP: publish Confluence digest",
+      "config": {
+        "tool": "confluence_publish_report",
+        "params": {}
+      },
+      "position": {
+        "x": 1560,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "create_jira",
+      "type": "jira_mcp",
+      "label": "MCP: create Jira issue",
+      "config": {
+        "tool": "jira_create_issue",
+        "params": {
+          "project": "DEMO",
+          "issue_type": "Task"
+        }
+      },
+      "position": {
+        "x": 1560,
+        "y": 346.0
+      }
+    },
+    {
+      "id": "merge_outputs",
+      "type": "data_merge",
+      "label": "Merge Confluence + Jira outputs",
+      "config": {
+        "strategy": "concat"
+      },
+      "position": {
+        "x": 1856,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "export_pack",
+      "type": "excel_output",
+      "label": "Export combined output pack",
+      "config": {
+        "filename": "alerts_ticks_risk_pack.xlsx"
+      },
+      "position": {
+        "x": 2152,
+        "y": 280.0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "alerts"
+    },
+    {
+      "from": "start",
+      "to": "ticks"
+    },
+    {
+      "from": "alerts",
+      "to": "join_alert_tick"
+    },
+    {
+      "from": "ticks",
+      "to": "join_alert_tick"
+    },
+    {
+      "from": "join_alert_tick",
+      "to": "high_spread"
+    },
+    {
+      "from": "high_spread",
+      "to": "shape_publish_payload"
+    },
+    {
+      "from": "shape_publish_payload",
+      "to": "publish_confluence"
+    },
+    {
+      "from": "shape_publish_payload",
+      "to": "create_jira"
+    },
+    {
+      "from": "publish_confluence",
+      "to": "merge_outputs"
+    },
+    {
+      "from": "create_jira",
+      "to": "merge_outputs"
+    },
+    {
+      "from": "merge_outputs",
+      "to": "export_pack"
+    }
+  ]
+}

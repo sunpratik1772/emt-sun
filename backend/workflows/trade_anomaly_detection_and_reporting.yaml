@@ -1,0 +1,47 @@
+schema_version: '1.0'
+workflow_id: copilot-1779147625
+name: Trade Anomaly Detection and Reporting
+version: '1.0'
+description: Pulls trade data, scores transactions for anomalies, and generates an
+  Excel report.
+nodes:
+- id: n1
+  type: manual_trigger
+  label: Start Workflow
+  config: {}
+  position:
+    x: 60
+    y: 280
+- id: n2
+  type: csv_extract
+  label: Extract Trade Data
+  config:
+    source: transactions.csv
+  position:
+    x: 320
+    y: 280
+- id: n3
+  type: evaluator
+  label: Score Anomalies
+  config:
+    criteria: row.amount > 1000 || row.category === 'fraud'
+    label: is_anomaly
+  position:
+    x: 600
+    y: 280
+- id: n4
+  type: excel_output
+  label: Write Anomaly Report
+  config:
+    filename: trade_anomaly_report.xlsx
+    tabNames: Trade Data with Anomalies
+  position:
+    x: 900
+    y: 280
+edges:
+- from: n1
+  to: n2
+- from: n2
+  to: n3
+- from: n3
+  to: n4

@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "studio-trades-risk-digest",
+  "name": "Studio: Trade risk digest \u2192 CSV",
+  "version": "1.0",
+  "description": "Groups hs_trades by trader_name and exports a ranked notional exposure CSV.",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "trades",
+      "type": "csv_extract",
+      "label": "Trades",
+      "config": {
+        "source": "hs_trades"
+      },
+      "position": {
+        "x": 376,
+        "y": 280
+      }
+    },
+    {
+      "id": "by_trader",
+      "type": "group_by",
+      "label": "Notional by trader",
+      "config": {
+        "groupBy": "trader_name",
+        "aggregateCol": "notional_usd",
+        "aggregateFn": "sum",
+        "alias": "total_notional_usd"
+      },
+      "position": {
+        "x": 672,
+        "y": 280
+      }
+    },
+    {
+      "id": "rank",
+      "type": "sort",
+      "label": "Largest exposure first",
+      "config": {
+        "sortBy": "total_notional_usd",
+        "order": "desc"
+      },
+      "position": {
+        "x": 968,
+        "y": 280
+      }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Export digest rows",
+      "config": {
+        "filename": "trades_risk_digest.csv"
+      },
+      "position": {
+        "x": 1264,
+        "y": 280
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "trades"
+    },
+    {
+      "from": "trades",
+      "to": "by_trader"
+    },
+    {
+      "from": "by_trader",
+      "to": "rank"
+    },
+    {
+      "from": "rank",
+      "to": "export"
+    }
+  ]
+}

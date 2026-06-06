@@ -1,0 +1,64 @@
+type_id: confluence_mcp
+description: Call Confluence MCP bridge tools — search pages, extract action items, publish reports.
+ui:
+  display_name: Confluence MCP
+  icon: ScrollText
+  color: "#172B4D"
+  palette: { section: { id: integrations, label: Integrations, color: "#14B8A6", order: 25 }, node_order: 11 }
+input_ports: [{ name: rows, type: dataframe, optional: true }]
+output_ports: [{ name: rows, type: dataframe }]
+params:
+  - name: serverUrl
+    type: string
+    required: false
+    widget: text
+    description: Optional bridge URL override (default http://127.0.0.1:8765 or MCP_SERVER_URL).
+  - name: confluenceSiteUrl
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: ATLASSIAN_SITE_URL
+    widget: locked_env
+    description: Confluence site URL (from backend/.env — locked).
+  - name: confluenceEmail
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: ATLASSIAN_EMAIL
+    widget: locked_env
+    description: Confluence account email (from backend/.env — locked).
+  - name: confluenceApiToken
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: ATLASSIAN_API_TOKEN
+    widget: locked_env
+    description: Confluence API token (from backend/.env — locked).
+  - name: confluenceSpaceKey
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: CONFLUENCE_SPACE_KEY
+    widget: locked_env
+    description: Confluence space key (from backend/.env — locked).
+  - name: pageTitle
+    type: string
+    required: false
+    placeholder: "Studio workflow analysis"
+    description: Confluence page title override (defaults to generated name).
+  - name: tool
+    type: enum
+    required: true
+    default: confluence_publish_report
+    widget: select
+    description: Confluence MCP tool to invoke.
+    enum:
+      - confluence_search_pages
+      - confluence_extract_action_items
+      - confluence_publish_report
+      - studio_publish_architecture_doc
+  - name: params
+    type: json
+    required: false
+    widget: json_editor
+    description: Tool arguments (JSON). Upstream rows are passed as params.data automatically.

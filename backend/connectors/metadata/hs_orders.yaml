@@ -1,0 +1,39 @@
+id: hs_orders
+description: Oracle-backed order lifecycle rows for surveillance workflows.
+connector: oracle
+sources:
+  - oracle:SURVEILLANCE.HS_ORDERS
+columns:
+  - name: order_id
+    type: string
+  - name: alert_id
+    type: string
+  - name: participant_id
+    type: string
+    semantic: trader
+  - name: trader_id
+    type: string
+    semantic: trader
+  - name: trader_name
+    type: string
+  - name: book
+    type: string
+  - name: currency_pair
+    type: string
+  - name: order_time
+    type: datetime
+    semantic: time
+  - name: side
+    type: string
+  - name: quantity
+    type: number
+    semantic: size
+  - name: limit_price
+    type: number
+    semantic: price
+  - name: order_type
+    type: string
+  - name: status
+    type: string
+  - name: venue
+    type: string

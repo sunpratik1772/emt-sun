@@ -1,0 +1,10 @@
+id: products.csv
+description: Demo product catalog for join workflows
+connector: oracle
+sources:
+  - oracle:DEMO.PRODUCTS
+columns:
+  - { name: sku, type: string }
+  - { name: name, type: string }
+  - { name: category, type: string }
+  - { name: unit_price, type: number }

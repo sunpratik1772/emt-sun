@@ -1,0 +1,27 @@
+type_id: github
+description: Legacy GitHub REST node — use github_mcp for new workflows.
+ui:
+  display_name: GitHub
+  icon: Github
+  color: "#24292e"
+  studio_active: false
+  config_tags: [legacy]
+  palette: { section: { id: integrations } }
+input_ports: [{ name: rows, type: dataframe, optional: true }]
+output_ports: [{ name: rows, type: dataframe }]
+params:
+  - { name: action, type: enum, required: true, default: list-repos,
+      enum: [list-repos, list-issues, list-prs, list-commits, get-repo, create-issue, push-file] }
+  - { name: repo, type: string, placeholder: "owner/name (defaults to GITHUB_REPO in .env)",
+      visible_if: { action: [list-issues, list-prs, list-commits, get-repo, create-issue, push-file] } }
+  - { name: state, type: enum, default: open, enum: [open, closed, all],
+      visible_if: { action: [list-issues, list-prs] } }
+  - { name: title, type: string, visible_if: { action: create-issue } }
+  - { name: body, type: string, widget: textarea, visible_if: { action: create-issue } }
+  - { name: labels, type: string, visible_if: { action: create-issue } }
+  - { name: filePath, type: string, visible_if: { action: push-file } }
+  - { name: fileContent, type: string, widget: textarea, visible_if: { action: push-file } }
+  - { name: fileFormat, type: enum, default: json, enum: [json, csv], visible_if: { action: push-file } }
+  - { name: branch, type: string, default: main, visible_if: { action: push-file } }
+  - { name: commitMessage, type: string, visible_if: { action: push-file } }
+  

@@ -1,0 +1,15 @@
+type_id: gmail
+description: Send email via Gmail. Requires GMAIL_CLIENT_SECRET in backend/.env.
+ui:
+  display_name: Gmail
+  icon: Mail
+  color: "#ea4335"
+  palette: { section: { id: integrations } }
+  config_tags: [deprecated]
+input_ports: [{ name: rows, type: dataframe, optional: true }]
+output_ports: [{ name: result, type: object }]
+params:
+  - { name: to, type: string, required: true }
+  - { name: subject, type: string, required: true }
+  - { name: body, type: string, widget: textarea }
+  

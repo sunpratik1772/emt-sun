@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "studio-market-ticks-spread-monitor",
+  "name": "Studio: Market spread monitor -> Confluence alert",
+  "version": "1.0",
+  "description": "Monitor market_ticks via db_query, branch on spread_pips > 100, shape alert rows, publish to Confluence via MCP, and export alert outputs.",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start monitor run",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "ticks",
+      "type": "db_query",
+      "label": "Query market ticks",
+      "config": {
+        "query": "SELECT alert_id, currency_pair, timestamp, bid, ask, spread_pips, venue_name FROM market_ticks"
+      },
+      "position": {
+        "x": 376,
+        "y": 280
+      }
+    },
+    {
+      "id": "spread_gate",
+      "type": "condition",
+      "label": "Trigger if spread_pips > 100",
+      "config": {
+        "expression": "row.spread_pips > 100"
+      },
+      "position": {
+        "x": 672,
+        "y": 280
+      }
+    },
+    {
+      "id": "shape_alert",
+      "type": "map_transform",
+      "label": "Shape Confluence alert payload",
+      "config": {
+        "mappings": [
+          {
+            "to": "title",
+            "expression": "\"FX spread alert: \" + str(row.currency_pair) + \" @ \" + str(row.spread_pips) + \" pips\""
+          },
+          {
+            "to": "body_markdown",
+            "expression": "\"- Alert ID: \" + str(row.alert_id) + \"\\n- Pair: \" + str(row.currency_pair) + \"\\n- Spread (pips): \" + str(row.spread_pips) + \"\\n- Venue: \" + str(row.venue_name) + \"\\n- Timestamp: \" + str(row.timestamp)"
+          },
+          {
+            "to": "space",
+            "expression": "\"MFS\""
+          }
+        ]
+      },
+      "position": {
+        "x": 968,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "publish",
+      "type": "confluence_mcp",
+      "label": "MCP: publish Confluence alert",
+      "config": {
+        "tool": "confluence_publish_report",
+        "params": {}
+      },
+      "position": {
+        "x": 1264,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "alert_export",
+      "type": "csv_output",
+      "label": "Export published alerts",
+      "config": {
+        "filename": "market_ticks_spread_alert_pages.csv"
+      },
+      "position": {
+        "x": 1560,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "normal_export",
+      "type": "csv_output",
+      "label": "Export non-triggered ticks",
+      "config": {
+        "filename": "market_ticks_no_spread_alert.csv"
+      },
+      "position": {
+        "x": 968,
+        "y": 346.0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "ticks"
+    },
+    {
+      "from": "ticks",
+      "to": "spread_gate"
+    },
+    {
+      "from": "spread_gate",
+      "to": "shape_alert",
+      "sourceHandle": "true"
+    },
+    {
+      "from": "shape_alert",
+      "to": "publish"
+    },
+    {
+      "from": "publish",
+      "to": "alert_export"
+    },
+    {
+      "from": "spread_gate",
+      "to": "normal_export",
+      "sourceHandle": "false"
+    }
+  ]
+}

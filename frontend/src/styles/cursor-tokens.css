@@ -1,0 +1,60 @@
+/**
+ * Cursor design system — nexu-io/open-design
+ * https://github.com/nexu-io/open-design/tree/main/design-systems/cursor
+ */
+:root {
+  /* Light (default Cursor canvas) */
+  --cursor-bg: #f2f1ed;
+  --cursor-surface: #e6e5e0;
+  --cursor-surface-warm: #ebeae5;
+  --cursor-fg: #26251e;
+  --cursor-fg-2: rgba(38, 37, 30, 0.9);
+  --cursor-muted: rgba(38, 37, 30, 0.55);
+  --cursor-meta: rgba(38, 37, 30, 0.4);
+  --cursor-border: rgba(38, 37, 30, 0.1);
+  --cursor-border-soft: rgba(38, 37, 30, 0.06);
+  --cursor-accent: #f54e00;
+  --cursor-accent-on: #ffffff;
+  --cursor-success: #1f8a65;
+  --cursor-danger: #cf2d56;
+  --cursor-warn: #eab308;
+
+  /* AI timeline signature colors (decorative) */
+  --cursor-tl-thinking: #dfa88f;
+  --cursor-tl-grep: #9fc9a2;
+  --cursor-tl-read: #9fbbe0;
+  --cursor-tl-edit: #c0a8dd;
+
+  --cursor-font-display: 'Geist Variable', 'Geist', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --cursor-font-body: 'Geist Variable', 'Geist', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --cursor-font-mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, monospace;
+
+  --cursor-radius-sm: 8px;
+  --cursor-radius-md: 10px;
+  --cursor-radius-lg: 12px;
+  --cursor-ease: ease;
+  --cursor-motion-fast: 150ms;
+  --cursor-motion-base: 200ms;
+  --cursor-elev-raised:
+    0 28px 70px rgba(0, 0, 0, 0.14),
+    0 14px 32px rgba(0, 0, 0, 0.1),
+    0 0 0 1px var(--cursor-border);
+  --cursor-focus-ring: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+  --cursor-bg: #14120b;
+  --cursor-surface: #1c1b16;
+  --cursor-surface-warm: #222019;
+  --cursor-fg: #edecec;
+  --cursor-fg-2: rgba(237, 236, 236, 0.92);
+  --cursor-muted: rgba(237, 236, 236, 0.55);
+  --cursor-meta: rgba(237, 236, 236, 0.38);
+  --cursor-border: rgba(237, 236, 236, 0.12);
+  --cursor-border-soft: rgba(237, 236, 236, 0.06);
+  --cursor-accent: #f54e00;
+  --cursor-elev-raised:
+    0 20px 48px rgba(0, 0, 0, 0.45),
+    0 0 0 1px var(--cursor-border);
+  --cursor-focus-ring: 0 4px 16px rgba(0, 0, 0, 0.35);
+}

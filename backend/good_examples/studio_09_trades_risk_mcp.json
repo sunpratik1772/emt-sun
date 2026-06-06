@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "studio-trades-risk-mcp",
+  "name": "Studio: Trade risk scan \u2192 Confluence \u2192 Jira",
+  "version": "1.0",
+  "description": "Load hs_trades surveillance data, Starlark flags large notionals, search Confluence for related pages, create Jira tasks. MCP uses atlassian (demo/live). hs_trades from demo SQLite fixture. Start MCP bridge for Confluence/Jira: python3 -m mcp_bridge.server",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "trades",
+      "type": "csv_extract",
+      "label": "Trades (hs_trades)",
+      "config": {
+        "source": "hs_trades",
+        "limit": 50
+      },
+      "position": {
+        "x": 376,
+        "y": 280
+      }
+    },
+    {
+      "id": "risk_scan",
+      "type": "code",
+      "label": "Starlark: risk flags",
+      "config": {
+        "code_summary": "Reviews each trade row and builds a surveillance summary: keeps trades whose notional exceeds $750k or carry a PRE_CLIENT_ACTIVITY risk flag, and tags each row HIGH or LOW so compliance can prioritize follow-up.",
+        "code": "threshold = 750000\noutput = [\n    {\n        \"trade_id\": r.get(\"trade_id\", \"\"),\n        \"book\": r.get(\"book\", \"\"),\n        \"trader_name\": r.get(\"trader_name\", \"\"),\n        \"currency_pair\": r.get(\"currency_pair\", \"\"),\n        \"notional_usd\": r.get(\"notional_usd\", 0),\n        \"risk_flag\": r.get(\"risk_flag\", \"\"),\n        \"priority\": \"HIGH\" if r.get(\"risk_flag\", \"\") == \"PRE_CLIENT_ACTIVITY\" else \"MEDIUM\",\n    }\n    for r in input_data[\"rows\"]\n    if r.get(\"notional_usd\", 0) >= threshold or r.get(\"risk_flag\", \"\") == \"PRE_CLIENT_ACTIVITY\"\n]"
+      },
+      "position": {
+        "x": 672,
+        "y": 280
+      }
+    },
+    {
+      "id": "sort_risk",
+      "type": "sort",
+      "label": "Largest notionals first",
+      "config": {
+        "sortBy": "notional_usd",
+        "order": "desc"
+      },
+      "position": {
+        "x": 968,
+        "y": 280
+      }
+    },
+    {
+      "id": "mcp_search",
+      "type": "confluence_mcp",
+      "label": "MCP: Confluence search",
+      "config": {
+        "tool": "confluence_search_pages",
+        "params": {
+          "space": "ENG",
+          "limit": 5
+        }
+      },
+      "position": {
+        "x": 1264,
+        "y": 280
+      }
+    },
+    {
+      "id": "mcp_extract",
+      "type": "confluence_mcp",
+      "label": "MCP: extract action items",
+      "config": {
+        "tool": "confluence_extract_action_items",
+        "params": {}
+      },
+      "position": {
+        "x": 1560,
+        "y": 280
+      }
+    },
+    {
+      "id": "mcp_jira",
+      "type": "jira_mcp",
+      "label": "MCP: Jira issues",
+      "config": {
+        "tool": "jira_create_issue",
+        "params": {
+          "project": "DEMO",
+          "issue_type": "Task"
+        }
+      },
+      "position": {
+        "x": 1856,
+        "y": 280
+      }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Flagged trades CSV",
+      "config": {
+        "filename": "studio_flagged_trades.csv"
+      },
+      "position": {
+        "x": 2152,
+        "y": 280
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "trades"
+    },
+    {
+      "from": "trades",
+      "to": "risk_scan"
+    },
+    {
+      "from": "risk_scan",
+      "to": "sort_risk"
+    },
+    {
+      "from": "sort_risk",
+      "to": "mcp_search"
+    },
+    {
+      "from": "mcp_search",
+      "to": "mcp_extract"
+    },
+    {
+      "from": "mcp_extract",
+      "to": "mcp_jira"
+    },
+    {
+      "from": "mcp_jira",
+      "to": "export"
+    }
+  ]
+}

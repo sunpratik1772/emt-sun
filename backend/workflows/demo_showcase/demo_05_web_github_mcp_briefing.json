@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "demo-web-mcp-briefing",
+  "name": "Demo: Web + MCP executive briefing",
+  "version": "1.0",
+  "description": "HTTP sample data + MCP Confluence search \u2192 merge \u2192 real Gemini briefing \u2192 CSV. Studio Run only.",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "config": {},
+      "position": {
+        "x": 40,
+        "y": 300
+      }
+    },
+    {
+      "id": "fetch_users",
+      "type": "http",
+      "label": "HTTP: sample users",
+      "config": {
+        "method": "GET",
+        "url": "https://jsonplaceholder.typicode.com/users",
+        "headers": {}
+      },
+      "position": {
+        "x": 240,
+        "y": 200
+      }
+    },
+    {
+      "id": "parse_users",
+      "type": "code",
+      "label": "Top 5 companies",
+      "config": {
+        "code": "result = [{'company': r.get('company', {}).get('name', ''), 'city': r.get('address', {}).get('city', ''), 'source': 'http'} for r in rows[:5]]"
+      },
+      "position": {
+        "x": 460,
+        "y": 200
+      }
+    },
+    {
+      "id": "mcp_pages",
+      "type": "mcp",
+      "label": "MCP: Confluence pages",
+      "config": {
+        "integration": "atlassian",
+        "tool": "confluence_search_pages",
+        "params": {
+          "space": "ENG",
+          "limit": 3
+        }
+      },
+      "position": {
+        "x": 460,
+        "y": 420
+      }
+    },
+    {
+      "id": "merge_all",
+      "type": "data_merge",
+      "label": "Merge HTTP + MCP rows",
+      "config": {
+        "strategy": "concat"
+      },
+      "position": {
+        "x": 680,
+        "y": 300
+      }
+    },
+    {
+      "id": "briefing",
+      "type": "agent",
+      "label": "AI: integration briefing",
+      "config": {
+        "prompt": "You are a technical program manager.",
+        "task": "Write a 4-bullet executive briefing from the merged rows: external API companies, Confluence pages found, and one recommendation. Be concise.",
+        "perRow": false,
+        "model": "gemini-2.5-flash"
+      },
+      "position": {
+        "x": 900,
+        "y": 300
+      }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Save briefing",
+      "config": {
+        "filename": "integration_briefing.csv"
+      },
+      "position": {
+        "x": 1140,
+        "y": 300
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "fetch_users"
+    },
+    {
+      "from": "start",
+      "to": "mcp_pages"
+    },
+    {
+      "from": "fetch_users",
+      "to": "parse_users"
+    },
+    {
+      "from": "parse_users",
+      "to": "merge_all"
+    },
+    {
+      "from": "mcp_pages",
+      "to": "merge_all"
+    },
+    {
+      "from": "merge_all",
+      "to": "briefing"
+    },
+    {
+      "from": "briefing",
+      "to": "export"
+    }
+  ]
+}

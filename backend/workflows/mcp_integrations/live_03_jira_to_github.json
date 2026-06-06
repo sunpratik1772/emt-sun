@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "live-jira-to-github",
+  "name": "Live: Jira tasks → GitHub PRs + Jira update",
+  "version": "1.0",
+  "description": "Opens GitHub PRs with doc + test stubs for upstream Jira rows, comments on Jira, transitions to Done.",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": { "x": 60, "y": 280 }
+    },
+    {
+      "id": "load_jira",
+      "type": "mcp",
+      "label": "Pass Jira issues (set params.data or chain from WF2)",
+      "config": {
+        "integration": "atlassian",
+        "tool": "jira_list_issues",
+        "atlassianSiteUrl": "https://sunnysupratik.atlassian.net",
+        "atlassianEmail": "sunnyhot.supratik@gmail.com",
+        "jiraProjectKey": "DEMO",
+        "params": { "project": "DEMO", "status": "all", "max": 2 }
+      },
+      "position": { "x": 300, "y": 280 }
+    },
+    {
+      "id": "github_fix",
+      "type": "mcp",
+      "label": "GitHub PRs + Jira update",
+      "config": {
+        "integration": "github",
+        "tool": "github_fix_jira_and_update",
+        "githubRepo": "sunpratik1772/dbsherpa-studio",
+        "atlassianSiteUrl": "https://sunnysupratik.atlassian.net",
+        "atlassianEmail": "sunnyhot.supratik@gmail.com",
+        "jiraProjectKey": "DEMO",
+        "params": { "max": 2 }
+      },
+      "position": { "x": 560, "y": 280 }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Export PR URLs",
+      "config": { "filename": "github_prs_from_jira.csv" },
+      "position": { "x": 820, "y": 280 }
+    }
+  ],
+  "edges": [
+    { "from": "start", "to": "load_jira" },
+    { "from": "load_jira", "to": "github_fix" },
+    { "from": "github_fix", "to": "export" }
+  ]
+}

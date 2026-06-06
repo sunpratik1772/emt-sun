@@ -1,0 +1,45 @@
+id: hs_alerts
+description: Surveillance alerts used to seed dynamic workflow payloads.
+connector: oracle
+sources:
+  - oracle:SURVEILLANCE.HS_ALERTS
+columns:
+  - name: alert_id
+    type: string
+    description: Alert identifier.
+  - name: participant_id
+    type: string
+    semantic: trader
+    description: Participant identifier (comms / context — not used as a Solr connector filter).
+    include_in_tab: false
+  - name: trader_id
+    type: string
+    semantic: trader
+    description: Trader identifier.
+  - name: trader_name
+    type: string
+    description: Trader display name.
+  - name: keyword
+    type: string
+    description: Surveillance keyword.
+  - name: alert_date
+    type: string
+    semantic: time
+    description: Alert date (YYYY-MM-DD).
+  - name: start_time
+    type: datetime
+    semantic: time
+    description: Alert window start (ISO-8601).
+  - name: end_time
+    type: datetime
+    semantic: time
+    description: Alert window end (ISO-8601).
+  - name: currency_pair
+    type: string
+    description: FX pair under surveillance.
+  - name: scenario
+    type: string
+    description: Surveillance scenario label.
+  - name: description
+    type: string
+    description: Human-readable alert summary.

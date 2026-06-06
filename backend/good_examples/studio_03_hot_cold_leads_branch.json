@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "demo-hot-cold-leads",
+  "name": "Demo: Hot vs cold leads (branching)",
+  "version": "1.0",
+  "description": "Score leads, branch on threshold, AI personalizes hot leads, export cold list separately. Open in Studio \u2192 Run (GEMINI_API_KEY required for AI nodes).",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "leads",
+      "type": "csv_extract",
+      "label": "Load leads",
+      "config": {
+        "source": "leads.csv"
+      },
+      "position": {
+        "x": 376,
+        "y": 280
+      }
+    },
+    {
+      "id": "gate",
+      "type": "condition",
+      "label": "Hot lead? score >= 80",
+      "config": {
+        "expression": "row.score >= 80"
+      },
+      "position": {
+        "x": 672,
+        "y": 280
+      }
+    },
+    {
+      "id": "hot_ai",
+      "type": "agent",
+      "label": "AI: hot lead opener",
+      "config": {
+        "prompt": "Write one sentence sales opener.",
+        "task": "Personalize for this lead.",
+        "perRow": true,
+        "rowTemplate": "{{company}} in {{region}} scored {{score}} at stage {{stage}}",
+        "outputColumn": "opener",
+        "maxRows": 6,
+        "model": "gemini-2.5-flash"
+      },
+      "position": {
+        "x": 968,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "hot_csv",
+      "type": "csv_output",
+      "label": "Export hot leads",
+      "config": {
+        "filename": "hot_leads_with_openers.csv"
+      },
+      "position": {
+        "x": 1264,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "cold_csv",
+      "type": "csv_output",
+      "label": "Export nurture list",
+      "config": {
+        "filename": "cold_leads_nurture.csv"
+      },
+      "position": {
+        "x": 968,
+        "y": 346.0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "leads"
+    },
+    {
+      "from": "leads",
+      "to": "gate"
+    },
+    {
+      "from": "gate",
+      "to": "hot_ai",
+      "sourceHandle": "true"
+    },
+    {
+      "from": "hot_ai",
+      "to": "hot_csv"
+    },
+    {
+      "from": "gate",
+      "to": "cold_csv",
+      "sourceHandle": "false"
+    }
+  ],
+  "tags": [
+    "studio_demo"
+  ]
+}

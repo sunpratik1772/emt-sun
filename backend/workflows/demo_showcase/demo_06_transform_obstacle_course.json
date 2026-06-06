@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "demo-transform-obstacle",
+  "name": "Demo: Transform obstacle course",
+  "version": "1.0",
+  "description": "Exercises map, filter, sort, dedupe, select_columns, evaluator in one pipeline. Open in Studio \u2192 Run (GEMINI_API_KEY required for AI nodes).",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "config": {},
+      "position": {
+        "x": 40,
+        "y": 300
+      }
+    },
+    {
+      "id": "leads",
+      "type": "csv_extract",
+      "label": "Leads",
+      "config": {
+        "source": "leads.csv"
+      },
+      "position": {
+        "x": 220,
+        "y": 300
+      }
+    },
+    {
+      "id": "tag",
+      "type": "map_transform",
+      "label": "Priority band",
+      "config": {
+        "mappings": [
+          {
+            "to": "priority",
+            "expression": "'A' if row.score >= 85 else ('B' if row.score >= 70 else 'C')"
+          }
+        ]
+      },
+      "position": {
+        "x": 420,
+        "y": 300
+      }
+    },
+    {
+      "id": "filter_b_plus",
+      "type": "filter",
+      "label": "Keep A and B",
+      "config": {
+        "expression": "row.priority == 'A' || row.priority == 'B'"
+      },
+      "position": {
+        "x": 620,
+        "y": 300
+      }
+    },
+    {
+      "id": "dedupe",
+      "type": "deduplicate",
+      "label": "Dedupe by company",
+      "config": {
+        "key": "company"
+      },
+      "position": {
+        "x": 820,
+        "y": 300
+      }
+    },
+    {
+      "id": "trim",
+      "type": "select_columns",
+      "label": "Key columns",
+      "config": {
+        "columns": "lead_id,company,region,score,priority"
+      },
+      "position": {
+        "x": 1020,
+        "y": 300
+      }
+    },
+    {
+      "id": "rank",
+      "type": "sort",
+      "label": "By score",
+      "config": {
+        "sortBy": "score",
+        "order": "desc"
+      },
+      "position": {
+        "x": 1220,
+        "y": 300
+      }
+    },
+    {
+      "id": "qa",
+      "type": "evaluator",
+      "label": "QA pass",
+      "config": {
+        "criteria": "row.score >= 70",
+        "label": "qualified"
+      },
+      "position": {
+        "x": 1220,
+        "y": 480
+      }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Qualified leads CSV",
+      "config": {
+        "filename": "qualified_leads_obstacle.csv"
+      },
+      "position": {
+        "x": 1440,
+        "y": 380
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "leads"
+    },
+    {
+      "from": "leads",
+      "to": "tag"
+    },
+    {
+      "from": "tag",
+      "to": "filter_b_plus"
+    },
+    {
+      "from": "filter_b_plus",
+      "to": "dedupe"
+    },
+    {
+      "from": "dedupe",
+      "to": "trim"
+    },
+    {
+      "from": "trim",
+      "to": "rank"
+    },
+    {
+      "from": "rank",
+      "to": "qa"
+    },
+    {
+      "from": "qa",
+      "to": "export"
+    }
+  ],
+  "tags": [
+    "studio_demo"
+  ]
+}

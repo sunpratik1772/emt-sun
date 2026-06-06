@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "studio-hs-alerts-anomaly-report",
+  "name": "Studio: hs_alerts anomaly validate \u2192 Confluence",
+  "version": "1.0",
+  "description": "Load hs_alerts surveillance rows, keep front_running_positive scenarios, validate alert_id/trader_id with evaluator, summarize in Starlark, publish to Confluence only when anomalies exist, export validated CSV. Demo fixture scenarios: front_running_positive / front_running_negative.",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "alerts",
+      "type": "db_query",
+      "label": "Load hs_alerts",
+      "config": {
+        "query": "SELECT alert_id, trader_id, trader_name, scenario, keyword, alert_date, description FROM hs_alerts LIMIT 100"
+      },
+      "position": {
+        "x": 376,
+        "y": 280
+      }
+    },
+    {
+      "id": "positive_only",
+      "type": "filter",
+      "label": "Keep front_running_positive",
+      "config": {
+        "expression": "row.scenario == 'front_running_positive'"
+      },
+      "position": {
+        "x": 672,
+        "y": 280
+      }
+    },
+    {
+      "id": "validate",
+      "type": "evaluator",
+      "label": "Validate alert rows",
+      "config": {
+        "criteria": "row.alert_id != None and row.trader_id != None",
+        "label": "valid_anomaly"
+      },
+      "position": {
+        "x": 968,
+        "y": 280
+      }
+    },
+    {
+      "id": "summarize",
+      "type": "code",
+      "label": "Starlark: anomaly report row",
+      "config": {
+        "code_summary": "Counts validated anomaly rows and builds a single Confluence-ready summary row with title, markdown body, and anomalies_found_count for branching. Only passed evaluator rows arrive here.",
+        "code": "def summarize(rows):\n    count = len(rows)\n    body = \"# Trade Anomaly Detection Report\\n\\n\"\n    body += \"**Validated alerts:** \" + str(count) + \"\\n\\n\"\n    if count > 0:\n        body += \"## Validated anomalies\\n\"\n        for r in rows:\n            body += \"- Alert \" + str(r.get(\"alert_id\", \"\")) + \": \" + str(r.get(\"trader_name\", \"\")) + \" (\" + str(r.get(\"scenario\", \"\")) + \")\\n\"\n    else:\n        body += \"No significant trade anomalies passed validation.\\n\"\n    return [{\n        \"title\": \"Trade Anomaly Report\",\n        \"body_markdown\": body,\n        \"anomalies_found_count\": count,\n    }]\n\noutput = summarize(input_data[\"rows\"])"
+      },
+      "position": {
+        "x": 1264,
+        "y": 214
+      }
+    },
+    {
+      "id": "anomalies_gate",
+      "type": "condition",
+      "label": "Anomalies found?",
+      "config": {
+        "expression": "row.anomalies_found_count > 0"
+      },
+      "position": {
+        "x": 1560,
+        "y": 214
+      }
+    },
+    {
+      "id": "publish",
+      "type": "confluence_mcp",
+      "label": "MCP: publish Confluence report",
+      "config": {
+        "tool": "confluence_publish_report",
+        "params": {}
+      },
+      "position": {
+        "x": 1856,
+        "y": 148
+      }
+    },
+    {
+      "id": "no_anomalies",
+      "type": "response",
+      "label": "No anomalies response",
+      "config": {
+        "content": "No validated trade anomalies detected. Confluence report not published."
+      },
+      "position": {
+        "x": 1856,
+        "y": 280
+      }
+    },
+    {
+      "id": "export_validated",
+      "type": "csv_output",
+      "label": "Export validated anomalies",
+      "config": {
+        "filename": "validated_trade_anomalies.csv"
+      },
+      "position": {
+        "x": 1264,
+        "y": 346
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "alerts"
+    },
+    {
+      "from": "alerts",
+      "to": "positive_only"
+    },
+    {
+      "from": "positive_only",
+      "to": "validate"
+    },
+    {
+      "from": "validate",
+      "to": "summarize"
+    },
+    {
+      "from": "validate",
+      "to": "export_validated"
+    },
+    {
+      "from": "summarize",
+      "to": "anomalies_gate"
+    },
+    {
+      "from": "anomalies_gate",
+      "to": "publish",
+      "sourceHandle": "true"
+    },
+    {
+      "from": "anomalies_gate",
+      "to": "no_anomalies",
+      "sourceHandle": "false"
+    }
+  ]
+}

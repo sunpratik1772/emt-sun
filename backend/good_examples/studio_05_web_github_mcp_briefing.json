@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "demo-web-mcp-briefing",
+  "name": "Demo: Web + MCP executive briefing",
+  "version": "1.0",
+  "description": "HTTP sample data + MCP Confluence search \u2192 merge \u2192 real Gemini briefing \u2192 CSV. Studio Run only.",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "fetch_users",
+      "type": "http",
+      "label": "HTTP: sample users",
+      "config": {
+        "method": "GET",
+        "url": "https://jsonplaceholder.typicode.com/users",
+        "headers": {}
+      },
+      "position": {
+        "x": 376,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "parse_users",
+      "type": "code",
+      "label": "Top 5 companies",
+      "config": {
+        "code_summary": "Reads the user list from the web API and keeps the first five people, with each person's company name, city, and a marker that the row came from the HTTP feed.",
+        "code": "output = [{'company': r.get('company', {}).get('name', ''), 'city': r.get('address', {}).get('city', ''), 'source': 'http'} for r in input_data['rows'][:5]]"
+      },
+      "position": {
+        "x": 672,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "mcp_pages",
+      "type": "confluence_mcp",
+      "label": "MCP: Confluence pages",
+      "config": {
+        "tool": "confluence_search_pages",
+        "params": {
+          "space": "ENG",
+          "limit": 3
+        }
+      },
+      "position": {
+        "x": 376,
+        "y": 346.0
+      }
+    },
+    {
+      "id": "merge_all",
+      "type": "data_merge",
+      "label": "Merge HTTP + MCP rows",
+      "config": {
+        "strategy": "concat"
+      },
+      "position": {
+        "x": 968,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "briefing",
+      "type": "agent",
+      "label": "AI: integration briefing",
+      "config": {
+        "prompt": "You are a technical program manager.",
+        "task": "Write a 4-bullet executive briefing from the merged rows: external API companies, Confluence pages found, and one recommendation. Be concise.",
+        "perRow": false,
+        "model": "gemini-2.5-flash"
+      },
+      "position": {
+        "x": 1264,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Save briefing",
+      "config": {
+        "filename": "integration_briefing.csv"
+      },
+      "position": {
+        "x": 1560,
+        "y": 280.0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "fetch_users"
+    },
+    {
+      "from": "start",
+      "to": "mcp_pages"
+    },
+    {
+      "from": "fetch_users",
+      "to": "parse_users"
+    },
+    {
+      "from": "parse_users",
+      "to": "merge_all"
+    },
+    {
+      "from": "mcp_pages",
+      "to": "merge_all"
+    },
+    {
+      "from": "merge_all",
+      "to": "briefing"
+    },
+    {
+      "from": "briefing",
+      "to": "export"
+    }
+  ]
+}

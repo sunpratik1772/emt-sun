@@ -1,0 +1,65 @@
+/**
+ * Linear-app design system — high-contrast palette for dbSherpa Studio.
+ *
+ * Dark: auth-page black (#08090a) with crisp white/grey text.
+ * Light: pure white canvas with neutral grey surfaces.
+ */
+:root {
+  --linear-font-display: 'Geist Variable', 'Geist', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --linear-font-body: var(--linear-font-display);
+  --linear-font-mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, monospace;
+  --linear-radius-sm: 6px;
+  --linear-radius-md: 8px;
+  --linear-radius-lg: 12px;
+  --linear-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+[data-theme='dark'] {
+  --linear-bg: #08090a;
+  --linear-surface: #0f1011;
+  --linear-surface-warm: #141516;
+  --linear-fg: #ffffff;
+  --linear-fg-2: #e4e4e7;
+  --linear-muted: #a1a1aa;
+  --linear-meta: #71717a;
+  --linear-border: rgba(255, 255, 255, 0.14);
+  --linear-border-soft: rgba(255, 255, 255, 0.08);
+  --linear-accent: #5ec8e8;
+  --linear-accent-on: #ffffff;
+  --linear-accent-hover: #7dd8f0;
+  --linear-accent-active: #3eb5db;
+  --linear-success: #34d399;
+  --linear-warn: #fbbf24;
+  --linear-danger: #f87171;
+  --linear-elev-raised:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  --linear-focus-ring:
+    0 0 0 2px color-mix(in oklab, var(--linear-accent), transparent 25%),
+    0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme='light'] {
+  --linear-bg: #fafafa;
+  --linear-surface: #ffffff;
+  --linear-surface-warm: #f4f4f5;
+  --linear-fg: #0a0a0a;
+  --linear-fg-2: #262626;
+  --linear-muted: #525252;
+  --linear-meta: #737373;
+  --linear-border: rgba(0, 0, 0, 0.12);
+  --linear-border-soft: rgba(0, 0, 0, 0.07);
+  --linear-accent: #7dd3fc;
+  --linear-accent-on: #0c4a6e;
+  --linear-accent-hover: #93ddff;
+  --linear-accent-active: #5ec8f0;
+  --linear-success: #15803d;
+  --linear-warn: #b45309;
+  --linear-danger: #dc2626;
+  --linear-elev-raised:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 0 0 1px var(--linear-border);
+  --linear-focus-ring:
+    0 0 0 2px color-mix(in oklab, var(--linear-accent), transparent 30%),
+    0 4px 12px rgba(0, 0, 0, 0.08);
+}

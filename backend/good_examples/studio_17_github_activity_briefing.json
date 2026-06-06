@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "studio-github-activity-briefing",
+  "name": "Studio: GitHub activity \u2192 Confluence briefing",
+  "version": "1.0",
+  "description": "List recent commits via github_mcp (github_list_commits), summarize in Starlark, publish to Confluence. Demo mode uses fixture commits; live mode needs GITHUB_TOKEN and GITHUB_REPO in backend/.env.",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "commits",
+      "type": "github_mcp",
+      "label": "MCP: list recent commits",
+      "config": {
+        "tool": "github_list_commits",
+        "params": {
+          "limit": 10
+        }
+      },
+      "position": {
+        "x": 376,
+        "y": 280
+      }
+    },
+    {
+      "id": "briefing",
+      "type": "code",
+      "label": "Starlark: activity briefing row",
+      "config": {
+        "code_summary": "Builds one Confluence-ready row from github_list_commits output: title, markdown body listing each commit author and message.",
+        "code": "def briefing(rows):\n    if not rows:\n        return [{\n            \"title\": \"GitHub Activity Briefing\",\n            \"body_markdown\": \"No commits returned from github_list_commits.\",\n        }]\n    repo = rows[0].get(\"repo\", \"\")\n    body = \"# GitHub Activity Briefing\\n\\n\"\n    if repo:\n        body += \"**Repository:** \" + str(repo) + \"\\n\\n\"\n    body += \"## Recent commits\\n\"\n    for r in rows:\n        body += \"- \" + str(r.get(\"author\", \"\")) + \": \" + str(r.get(\"message\", \"\")) + \" (\" + str(r.get(\"commit_sha\", \"\")) + \")\\n\"\n    return [{\n        \"title\": \"GitHub Activity Briefing\" + (\" — \" + str(repo) if repo else \"\"),\n        \"body_markdown\": body,\n    }]\n\noutput = briefing(input_data[\"rows\"])"
+      },
+      "position": {
+        "x": 672,
+        "y": 280
+      }
+    },
+    {
+      "id": "publish",
+      "type": "confluence_mcp",
+      "label": "MCP: publish Confluence briefing",
+      "config": {
+        "tool": "confluence_publish_report",
+        "params": {}
+      },
+      "position": {
+        "x": 968,
+        "y": 280
+      }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Export commit rows",
+      "config": {
+        "filename": "github_activity_commits.csv"
+      },
+      "position": {
+        "x": 672,
+        "y": 346
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "commits"
+    },
+    {
+      "from": "commits",
+      "to": "briefing"
+    },
+    {
+      "from": "commits",
+      "to": "export"
+    },
+    {
+      "from": "briefing",
+      "to": "publish"
+    }
+  ]
+}

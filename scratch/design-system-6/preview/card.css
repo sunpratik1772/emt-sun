@@ -1,0 +1,57 @@
+/* Shared chrome for design-system preview cards. Each card links
+   ../colors_and_type.css first, then this. The card sets its own data-theme
+   on <html> so swatches/specimens render in their native context. */
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: var(--font-features);
+  letter-spacing: var(--tracking-tight);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-base);
+  color: var(--text-0);
+  padding: 22px 24px;
+  min-height: 100vh;
+}
+
+/* When a card wants the live aurora sky behind it */
+body.aurora-bg {
+  background:
+    radial-gradient(120% 120% at 88% 4%, #16314f 0%, rgba(22,49,79,0) 46%),
+    radial-gradient(120% 130% at 12% 22%, #2a567d 0%, rgba(42,86,125,0) 40%),
+    radial-gradient(140% 120% at 50% 116%, #d9663a 0%, rgba(217,102,58,0) 52%),
+    radial-gradient(90% 90% at 26% 70%, #f3e4d0 0%, rgba(243,228,208,0) 48%),
+    linear-gradient(150deg, #20405f 0%, #b9764f 58%, #ead8c2 100%);
+  background-attachment: fixed;
+}
+
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: stretch; }
+.col { display: flex; flex-direction: column; gap: 12px; }
+.spread { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.cap {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* Color swatch */
+.sw {
+  flex: 1 1 0;
+  min-width: 84px;
+  border-radius: 10px;
+  padding: 12px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 2px;
+  min-height: 76px;
+  border: 1px solid var(--border-soft);
+}
+.sw b { font-size: 11.5px; font-weight: 600; }
+.sw span { font-size: 10px; font-variant-numeric: tabular-nums; opacity: 0.72; }

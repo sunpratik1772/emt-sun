@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "live-confluence-to-jira",
+  "name": "Live: Confluence architecture → 2 Jira tech tasks",
+  "version": "1.0",
+  "description": "Creates two [Tech] Jira tasks in DEMO from the Confluence architecture page (pass page_id in MCP params or upstream).",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": { "x": 60, "y": 280 }
+    },
+    {
+      "id": "create_jira",
+      "type": "mcp",
+      "label": "Create 2 Jira tasks from Confluence",
+      "config": {
+        "integration": "atlassian",
+        "tool": "jira_create_epics_from_confluence",
+        "atlassianSiteUrl": "https://sunnysupratik.atlassian.net",
+        "atlassianEmail": "sunnyhot.supratik@gmail.com",
+        "confluenceSpaceKey": "MFS",
+        "jiraProjectKey": "DEMO",
+        "params": {
+          "page_id": "REPLACE_WITH_PAGE_ID_FROM_WORKFLOW_1"
+        }
+      },
+      "position": { "x": 360, "y": 280 }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Export Jira keys",
+      "config": { "filename": "jira_tasks_from_confluence.csv" },
+      "position": { "x": 680, "y": 280 }
+    }
+  ],
+  "edges": [
+    { "from": "start", "to": "create_jira" },
+    { "from": "create_jira", "to": "export" }
+  ]
+}

@@ -1,0 +1,43 @@
+type_id: code
+description: >-
+  Run sandboxed Starlark on the incoming rows. Assign the transformed table to
+  `output` (preferred) or `result`. No imports, while loops, or filesystem/network
+  access — safe for AI-generated logic.
+ui:
+  display_name: Transform (Starlark)
+  icon: Code2
+  color: "#06b6d4"
+  palette: { section: { id: logic } }
+input_ports:
+  - name: rows
+    type: dataframe
+    description: Table rows from the upstream node.
+output_ports:
+  - name: rows
+    type: dataframe
+    description: Transformed rows produced by your Starlark script.
+params:
+  - name: code_summary
+    type: string
+    required: false
+    widget: textarea
+    description: >-
+      Plain-language explanation of what the Starlark script does (for
+      non-technical readers). Usually filled by the AI when code is generated.
+  - name: code
+    type: code
+    required: true
+    widget: starlark_editor
+    placeholder: |
+      # Example: keep top 5 rows with company + city
+      output = [
+          {
+              "company": r.get("company", {}).get("name", ""),
+              "city": r.get("address", {}).get("city", ""),
+          }
+          for r in input_data["rows"][:5]
+      ]
+constraints:
+  - Do not use import, while, or recursion in Starlark.
+  - Prefer assigning `output`; `result` is accepted for older workflows.
+  - Upstream rows are available as `input_data["rows"]` and as `rows`.

@@ -1,0 +1,137 @@
+type_id: mcp
+description: Legacy combined MCP node — use jira_mcp, confluence_mcp, or github_mcp for new workflows.
+ui:
+  display_name: MCP Tool (legacy)
+  icon: Cpu
+  color: "#0f766e"
+  config_tags: [legacy]
+  palette: { section: { id: integrations } }
+input_ports: [{ name: rows, type: dataframe, optional: true }]
+output_ports: [{ name: rows, type: dataframe }]
+params:
+  - name: integration
+    type: enum
+    required: true
+    default: jira
+    widget: select
+    description: MCP server preset (Hermes/OpenClaw-compatible integrations).
+    enum: [jira, confluence, github, git, atlassian]
+  - name: serverUrl
+    type: string
+    required: false
+    widget: text
+    description: Optional bridge URL override (default http://127.0.0.1:8765 or MCP_SERVER_URL).
+
+  # Jira Integration Parameters
+  - name: jiraSiteUrl
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: ATLASSIAN_SITE_URL
+    widget: locked_env
+    description: Jira site URL (from backend/.env — locked).
+    visible_if: { integration: jira }
+  - name: jiraEmail
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: ATLASSIAN_EMAIL
+    widget: locked_env
+    description: Jira account email (from backend/.env — locked).
+    visible_if: { integration: jira }
+  - name: jiraApiToken
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: ATLASSIAN_API_TOKEN
+    widget: locked_env
+    description: Jira API token (from backend/.env — locked).
+    visible_if: { integration: jira }
+  - name: jiraProjectKey
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: JIRA_PROJECT_KEY
+    widget: locked_env
+    description: Jira project key (from backend/.env — locked).
+    visible_if: { integration: jira }
+
+  # Confluence Integration Parameters
+  - name: confluenceSiteUrl
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: ATLASSIAN_SITE_URL
+    widget: locked_env
+    description: Confluence site URL (from backend/.env — locked).
+    visible_if: { integration: confluence }
+  - name: confluenceEmail
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: ATLASSIAN_EMAIL
+    widget: locked_env
+    description: Confluence account email (from backend/.env — locked).
+    visible_if: { integration: confluence }
+  - name: confluenceApiToken
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: ATLASSIAN_API_TOKEN
+    widget: locked_env
+    description: Confluence API token (from backend/.env — locked).
+    visible_if: { integration: confluence }
+  - name: confluenceSpaceKey
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: CONFLUENCE_SPACE_KEY
+    widget: locked_env
+    description: Confluence space key (from backend/.env — locked).
+    visible_if: { integration: confluence }
+  - name: pageTitle
+    type: string
+    required: false
+    placeholder: "Studio workflow analysis"
+    description: Confluence page title override (defaults to generated name).
+    visible_if: { integration: confluence }
+
+  # GitHub/Git Integration Parameters
+  - name: githubToken
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: GITHUB_TOKEN
+    widget: locked_env
+    description: GitHub PAT (from backend/.env — locked).
+    visible_if: { integration: [github, git] }
+  - name: githubRepo
+    type: string
+    required: false
+    locked_from_env: true
+    env_key: GITHUB_REPO
+    widget: locked_env
+    description: Target repository (from backend/.env — locked).
+    visible_if: { integration: [github, git] }
+
+  - name: tool
+    type: enum
+    required: true
+    widget: select
+    description: Tool to invoke on the selected integration.
+    enum:
+      - confluence_search_pages
+      - confluence_extract_action_items
+      - tasks_bulk_create
+      - jira_create_issue
+      - jira_list_issues
+      - github_implement_fixes
+      - confluence_publish_report
+      - studio_publish_architecture_doc
+      - jira_create_epics_from_confluence
+      - github_fix_jira_and_update
+  - name: params
+    type: json
+    required: false
+    widget: json_editor
+    description: Tool arguments (JSON). Upstream rows are passed as params.data automatically.

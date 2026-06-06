@@ -1,0 +1,25 @@
+/** Shared TanStack Query cache keys. */
+export const queryKeys = {
+  librarySkills: ['library', 'skills'] as const,
+  librarySkill: (id: string) => ['library', 'skills', id] as const,
+  dataSources: ['library', 'data-sources'] as const,
+  dataSourceAccess: ['user', 'data-source-access'] as const,
+  goodExamplePrefs: ['user', 'good-example-prefs'] as const,
+  adminUsers: ['user', 'admin-users'] as const,
+  adminOverview: ['user', 'admin-overview'] as const,
+  adminUserDataSourceAccess: ['user', 'admin-user-data-source-access'] as const,
+  adminUserSkillAccess: ['user', 'admin-user-skill-access'] as const,
+  adminUserFeatureAccess: ['user', 'admin-user-feature-access'] as const,
+  runLogs: ['library', 'run-logs'] as const,
+  automations: ['automations'] as const,
+  automationRuns: (id: string) => ['automations', id, 'runs'] as const,
+  workflows: ['workflows'] as const,
+  drafts: ['drafts'] as const,
+  workflowCatalog: ['workflows', 'catalog'] as const,
+  nodeManifest: ['node-manifest'] as const,
+  copilotGuardrails: ['copilot', 'guardrails'] as const,
+  copilotChats: ['copilot', 'chats'] as const,
+  copilotExamplePrompts: ['copilot', 'example-prompts'] as const,
+  copilotRoutes: (ctx: { wf: boolean; log: boolean; err: boolean }) =>
+    ['copilot', 'routes', ctx.wf, ctx.log, ctx.err] as const,
+}

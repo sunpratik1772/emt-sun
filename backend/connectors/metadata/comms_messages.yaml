@@ -1,0 +1,34 @@
+id: comms_messages
+description: Oracle-backed communications messages scoped by participant, keyword, date, and book.
+connector: oracle
+sources:
+  - oracle:SURVEILLANCE.COMMS_MESSAGES
+columns:
+  - name: message_id
+    type: string
+    include_in_tab: false
+  - name: alert_id
+    type: string
+  - name: participant_id
+    type: string
+    semantic: trader
+  - name: trader_id
+    type: string
+    semantic: trader
+  - name: trader_name
+    type: string
+  - name: book
+    type: string
+  - name: timestamp
+    type: datetime
+    semantic: time
+  - name: keyword
+    type: string
+  - name: channel
+    type: string
+  - name: display_post
+    type: string
+  - name: event_type
+    type: string
+  - name: relevance_score
+    type: number

@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "live-studio-architecture-confluence",
+  "name": "Live: Studio repo → Confluence architecture doc",
+  "version": "1.0",
+  "description": "Analyzes sheep-latest and publishes an architecture page to Confluence (MFS space).",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": { "x": 60, "y": 280 }
+    },
+    {
+      "id": "publish_doc",
+      "type": "mcp",
+      "label": "Publish architecture to Confluence",
+      "config": {
+        "integration": "atlassian",
+        "tool": "studio_publish_architecture_doc",
+        "atlassianSiteUrl": "https://sunnysupratik.atlassian.net",
+        "atlassianEmail": "sunnyhot.supratik@gmail.com",
+        "confluenceSpaceKey": "MFS",
+        "jiraProjectKey": "DEMO",
+        "params": {
+          "title": "Sheep Studio — Architecture"
+        }
+      },
+      "position": { "x": 360, "y": 280 }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Export page link",
+      "config": { "filename": "confluence_architecture_page.csv" },
+      "position": { "x": 680, "y": 280 }
+    }
+  ],
+  "edges": [
+    { "from": "start", "to": "publish_doc" },
+    { "from": "publish_doc", "to": "export" }
+  ]
+}

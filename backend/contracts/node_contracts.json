@@ -1,0 +1,2355 @@
+{
+  "version": "1.0",
+  "description": "I/O contracts for all dbSherpa node types. All datasets are pandas DataFrames passed by name through the shared RunContext.",
+  "nodes": {
+    "agent": {
+      "description": "Call Gemini with rows + prompt (requires GEMINI_API_KEY in backend/.env).",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "response": ""
+      },
+      "config_schema": {
+        "prompt": "",
+        "task": "",
+        "perRow": "",
+        "rowTemplate": "",
+        "outputColumn": "",
+        "maxRows": "Cap rows for per-row AI calls. Keep low (\u226410) for snappy demos.",
+        "model": "",
+        "emitPublishRow": "Replace output rows with one Confluence-ready {title, body_markdown} row.",
+        "pageTitle": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "response",
+            "type": "text",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "prompt",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "textarea"
+        },
+        {
+          "name": "task",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "textarea"
+        },
+        {
+          "name": "perRow",
+          "type": "boolean",
+          "description": "",
+          "required": false,
+          "widget": "switch",
+          "default": false
+        },
+        {
+          "name": "rowTemplate",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "textarea",
+          "visible_if": {
+            "perRow": true
+          }
+        },
+        {
+          "name": "outputColumn",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text",
+          "default": "_ai_response",
+          "visible_if": {
+            "perRow": true
+          }
+        },
+        {
+          "name": "maxRows",
+          "type": "number",
+          "description": "Cap rows for per-row AI calls. Keep low (\u226410) for snappy demos.",
+          "required": false,
+          "widget": "number",
+          "default": 5,
+          "visible_if": {
+            "perRow": true
+          }
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text",
+          "default": "gemini-2.5-flash"
+        },
+        {
+          "name": "emitPublishRow",
+          "type": "boolean",
+          "description": "Replace output rows with one Confluence-ready {title, body_markdown} row.",
+          "required": false,
+          "widget": "switch",
+          "default": false
+        },
+        {
+          "name": "pageTitle",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text",
+          "visible_if": {
+            "emitPublishRow": true
+          }
+        }
+      ]
+    },
+    "api_trigger": {
+      "description": "Trigger via HTTP webhook (returns the request payload).",
+      "outputs": {
+        "payload": ""
+      },
+      "config_schema": {
+        "path": "Webhook path"
+      },
+      "ports": {
+        "inputs": [],
+        "outputs": [
+          {
+            "name": "payload",
+            "type": "object",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "path",
+          "type": "string",
+          "description": "Webhook path",
+          "required": false,
+          "widget": "text",
+          "default": "/webhook"
+        }
+      ]
+    },
+    "code": {
+      "description": "Run sandboxed Starlark on the incoming rows. Assign the transformed table to `output` (preferred) or `result`. No imports, while loops, or filesystem/network access \u2014 safe for AI-generated logic.",
+      "inputs": {
+        "rows": "Table rows from the upstream node."
+      },
+      "outputs": {
+        "rows": "Transformed rows produced by your Starlark script."
+      },
+      "config_schema": {
+        "code_summary": "Plain-language explanation of what the Starlark script does (for non-technical readers). Usually filled by the AI when code is generated.",
+        "code": ""
+      },
+      "constraints": [
+        "Do not use import, while, or recursion in Starlark.",
+        "Prefer assigning `output`; `result` is accepted for older workflows.",
+        "Upstream rows are available as `input_data[\"rows\"]` and as `rows`."
+      ],
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "Table rows from the upstream node.",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "Transformed rows produced by your Starlark script.",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "code_summary",
+          "type": "string",
+          "description": "Plain-language explanation of what the Starlark script does (for non-technical readers). Usually filled by the AI when code is generated.",
+          "required": false,
+          "widget": "textarea"
+        },
+        {
+          "name": "code",
+          "type": "code",
+          "description": "",
+          "required": true,
+          "widget": "starlark"
+        }
+      ]
+    },
+    "condition": {
+      "description": "Branch rows into true / false outputs by an expression.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "true_branch": "",
+        "false_branch": ""
+      },
+      "config_schema": {
+        "expression": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "true_branch",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          },
+          {
+            "name": "false_branch",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "expression",
+          "type": "expression",
+          "description": "",
+          "required": true,
+          "widget": "code"
+        }
+      ]
+    },
+    "confluence_mcp": {
+      "description": "Call Confluence MCP bridge tools \u2014 search pages, extract action items, publish reports.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "serverUrl": "Optional bridge URL override (default http://127.0.0.1:8765 or MCP_SERVER_URL).",
+        "confluenceSiteUrl": "Confluence site URL (from backend/.env \u2014 locked).",
+        "confluenceEmail": "Confluence account email (from backend/.env \u2014 locked).",
+        "confluenceApiToken": "Confluence API token (from backend/.env \u2014 locked).",
+        "confluenceSpaceKey": "Confluence space key (from backend/.env \u2014 locked).",
+        "pageTitle": "Confluence page title override (defaults to generated name).",
+        "tool": "Confluence MCP tool to invoke.",
+        "params": "Tool arguments (JSON). Upstream rows are passed as params.data automatically."
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "serverUrl",
+          "type": "string",
+          "description": "Optional bridge URL override (default http://127.0.0.1:8765 or MCP_SERVER_URL).",
+          "required": false,
+          "widget": "text"
+        },
+        {
+          "name": "confluenceSiteUrl",
+          "type": "string",
+          "description": "Confluence site URL (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_SITE_URL"
+        },
+        {
+          "name": "confluenceEmail",
+          "type": "string",
+          "description": "Confluence account email (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_EMAIL"
+        },
+        {
+          "name": "confluenceApiToken",
+          "type": "string",
+          "description": "Confluence API token (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_API_TOKEN"
+        },
+        {
+          "name": "confluenceSpaceKey",
+          "type": "string",
+          "description": "Confluence space key (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "locked_from_env": true,
+          "env_key": "CONFLUENCE_SPACE_KEY"
+        },
+        {
+          "name": "pageTitle",
+          "type": "string",
+          "description": "Confluence page title override (defaults to generated name).",
+          "required": false,
+          "widget": "text"
+        },
+        {
+          "name": "tool",
+          "type": "enum",
+          "description": "Confluence MCP tool to invoke.",
+          "required": true,
+          "widget": "select",
+          "default": "confluence_publish_report",
+          "enum": [
+            "confluence_search_pages",
+            "confluence_extract_action_items",
+            "confluence_publish_report",
+            "studio_publish_architecture_doc"
+          ]
+        },
+        {
+          "name": "params",
+          "type": "json",
+          "description": "Tool arguments (JSON). Upstream rows are passed as params.data automatically.",
+          "required": false,
+          "widget": "json"
+        }
+      ]
+    },
+    "csv_extract": {
+      "description": "Load rows from an Oracle-backed dataset (alias for table extract).",
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "source": "Dataset id",
+        "limit": "Row limit (optional)"
+      },
+      "ports": {
+        "inputs": [],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false,
+            "store_at": "datasets.<source>"
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "source",
+          "type": "enum",
+          "description": "Dataset id",
+          "required": true,
+          "widget": "select",
+          "enum": [
+            "leads.csv",
+            "products.csv",
+            "orders.csv",
+            "hs_trades",
+            "hs_alerts",
+            "hs_orders",
+            "hs_exec",
+            "market_ticks",
+            "comms_messages"
+          ]
+        },
+        {
+          "name": "limit",
+          "type": "number",
+          "description": "Row limit (optional)",
+          "required": false,
+          "widget": "number"
+        }
+      ]
+    },
+    "csv_output": {
+      "description": "Serialize rows to a CSV string.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "csv": ""
+      },
+      "config_schema": {
+        "filename": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "csv",
+            "type": "text",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "filename",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text",
+          "default": "output.csv"
+        }
+      ]
+    },
+    "data_merge": {
+      "description": "Concatenate or union multiple datasets.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "strategy": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "strategy",
+          "type": "enum",
+          "description": "",
+          "required": true,
+          "widget": "select",
+          "default": "concat",
+          "enum": [
+            "concat",
+            "union"
+          ]
+        }
+      ]
+    },
+    "db_query": {
+      "description": "Run a SELECT against an Oracle-backed dataset.",
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "query": "SELECT * FROM comms_messages LIMIT 20",
+        "source": "Source dataset"
+      },
+      "ports": {
+        "inputs": [],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "query",
+          "type": "string",
+          "description": "SELECT * FROM comms_messages LIMIT 20",
+          "required": true,
+          "widget": "textarea"
+        },
+        {
+          "name": "source",
+          "type": "enum",
+          "description": "Source dataset",
+          "required": false,
+          "widget": "select",
+          "enum": [
+            "leads.csv",
+            "products.csv",
+            "orders.csv",
+            "hs_trades",
+            "hs_alerts",
+            "hs_orders",
+            "hs_exec",
+            "market_ticks",
+            "comms_messages"
+          ]
+        }
+      ]
+    },
+    "deduplicate": {
+      "description": "Remove duplicate rows by a key column.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "key": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "key",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        }
+      ]
+    },
+    "evaluator": {
+      "description": "Evaluate rows against criteria; reports pass / fail rate.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "criteria": "",
+        "label": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "criteria",
+          "type": "expression",
+          "description": "",
+          "required": true,
+          "widget": "code"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text",
+          "default": "passed"
+        }
+      ]
+    },
+    "excel_output": {
+      "description": "Write multi-tab Excel from each upstream dataset.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "file": ""
+      },
+      "config_schema": {
+        "filename": "",
+        "tabNames": "",
+        "highlightColumn": "",
+        "highlightMapping": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "file",
+            "type": "object",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "filename",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text",
+          "default": "output.xlsx"
+        },
+        {
+          "name": "tabNames",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text"
+        },
+        {
+          "name": "highlightColumn",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text"
+        },
+        {
+          "name": "highlightMapping",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text"
+        }
+      ]
+    },
+    "filter": {
+      "description": "Filter rows by an expression (row.column accessible).",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "expression": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "expression",
+          "type": "expression",
+          "description": "",
+          "required": true,
+          "widget": "code"
+        }
+      ]
+    },
+    "function": {
+      "description": "Run Python code with access to input and previous output.",
+      "inputs": {
+        "any": ""
+      },
+      "outputs": {
+        "any": ""
+      },
+      "config_schema": {
+        "code": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "any",
+            "type": "any",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "any",
+            "type": "any",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "code",
+          "type": "code",
+          "description": "",
+          "required": true,
+          "widget": "code"
+        }
+      ]
+    },
+    "github": {
+      "description": "GitHub API actions. Requires GITHUB_TOKEN and GITHUB_REPO (or config.repo).",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "action": "",
+        "repo": "",
+        "state": "",
+        "title": "",
+        "body": "",
+        "labels": "",
+        "filePath": "",
+        "fileContent": "",
+        "fileFormat": "",
+        "branch": "",
+        "commitMessage": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "action",
+          "type": "enum",
+          "description": "",
+          "required": true,
+          "widget": "select",
+          "default": "list-repos",
+          "enum": [
+            "list-repos",
+            "list-issues",
+            "list-prs",
+            "list-commits",
+            "get-repo",
+            "create-issue",
+            "push-file"
+          ]
+        },
+        {
+          "name": "repo",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text",
+          "visible_if": {
+            "action": [
+              "list-issues",
+              "list-prs",
+              "list-commits",
+              "get-repo",
+              "create-issue",
+              "push-file"
+            ]
+          }
+        },
+        {
+          "name": "state",
+          "type": "enum",
+          "description": "",
+          "required": true,
+          "widget": "select",
+          "default": "open",
+          "enum": [
+            "open",
+            "closed",
+            "all"
+          ],
+          "visible_if": {
+            "action": [
+              "list-issues",
+              "list-prs"
+            ]
+          }
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text",
+          "visible_if": {
+            "action": "create-issue"
+          }
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "textarea",
+          "visible_if": {
+            "action": "create-issue"
+          }
+        },
+        {
+          "name": "labels",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text",
+          "visible_if": {
+            "action": "create-issue"
+          }
+        },
+        {
+          "name": "filePath",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text",
+          "visible_if": {
+            "action": "push-file"
+          }
+        },
+        {
+          "name": "fileContent",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "textarea",
+          "visible_if": {
+            "action": "push-file"
+          }
+        },
+        {
+          "name": "fileFormat",
+          "type": "enum",
+          "description": "",
+          "required": true,
+          "widget": "select",
+          "default": "json",
+          "enum": [
+            "json",
+            "csv"
+          ],
+          "visible_if": {
+            "action": "push-file"
+          }
+        },
+        {
+          "name": "branch",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text",
+          "default": "main",
+          "visible_if": {
+            "action": "push-file"
+          }
+        },
+        {
+          "name": "commitMessage",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text",
+          "visible_if": {
+            "action": "push-file"
+          }
+        }
+      ]
+    },
+    "github_mcp": {
+      "description": "Call GitHub MCP bridge tools \u2014 implement fixes, open PRs linked to Jira issues.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "serverUrl": "Optional bridge URL override (default http://127.0.0.1:8765 or MCP_SERVER_URL).",
+        "githubToken": "GitHub PAT (from backend/.env \u2014 locked).",
+        "githubRepo": "Target repository (from backend/.env \u2014 locked).",
+        "tool": "GitHub MCP tool to invoke.",
+        "params": "Tool arguments (JSON). Upstream rows are passed as params.data automatically."
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "serverUrl",
+          "type": "string",
+          "description": "Optional bridge URL override (default http://127.0.0.1:8765 or MCP_SERVER_URL).",
+          "required": false,
+          "widget": "text"
+        },
+        {
+          "name": "githubToken",
+          "type": "string",
+          "description": "GitHub PAT (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "locked_from_env": true,
+          "env_key": "GITHUB_TOKEN"
+        },
+        {
+          "name": "githubRepo",
+          "type": "string",
+          "description": "Target repository (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "locked_from_env": true,
+          "env_key": "GITHUB_REPO"
+        },
+        {
+          "name": "tool",
+          "type": "enum",
+          "description": "GitHub MCP tool to invoke.",
+          "required": true,
+          "widget": "select",
+          "default": "github_implement_fixes",
+          "enum": [
+            "github_implement_fixes",
+            "github_fix_jira_and_update"
+          ]
+        },
+        {
+          "name": "params",
+          "type": "json",
+          "description": "Tool arguments (JSON). Upstream rows are passed as params.data automatically.",
+          "required": false,
+          "widget": "json"
+        }
+      ]
+    },
+    "gmail": {
+      "description": "Send email via Gmail. Requires GMAIL_CLIENT_SECRET in backend/.env.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "result": ""
+      },
+      "config_schema": {
+        "to": "",
+        "subject": "",
+        "body": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "type": "object",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "to",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        },
+        {
+          "name": "subject",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "textarea"
+        }
+      ]
+    },
+    "group_by": {
+      "description": "Aggregate rows by a column.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "groupBy": "",
+        "aggregateCol": "",
+        "aggregateFn": "",
+        "alias": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "groupBy",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        },
+        {
+          "name": "aggregateCol",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        },
+        {
+          "name": "aggregateFn",
+          "type": "enum",
+          "description": "",
+          "required": true,
+          "widget": "select",
+          "default": "sum",
+          "enum": [
+            "sum",
+            "avg",
+            "min",
+            "max",
+            "count"
+          ]
+        },
+        {
+          "name": "alias",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text"
+        }
+      ]
+    },
+    "http": {
+      "description": "Fetch data from any HTTP URL.",
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "url": "",
+        "method": "",
+        "headers": "",
+        "body": ""
+      },
+      "ports": {
+        "inputs": [],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "url",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        },
+        {
+          "name": "method",
+          "type": "enum",
+          "description": "",
+          "required": true,
+          "widget": "select",
+          "default": "GET",
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "PATCH"
+          ]
+        },
+        {
+          "name": "headers",
+          "type": "json",
+          "description": "",
+          "required": false,
+          "widget": "json"
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "textarea"
+        }
+      ]
+    },
+    "jira_mcp": {
+      "description": "Call Jira MCP bridge tools \u2014 create issues, list tickets, epics from Confluence.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "serverUrl": "Optional bridge URL override (default http://127.0.0.1:8765 or MCP_SERVER_URL).",
+        "jiraSiteUrl": "Jira site URL (from backend/.env \u2014 locked).",
+        "jiraEmail": "Jira account email (from backend/.env \u2014 locked).",
+        "jiraApiToken": "Jira API token (from backend/.env \u2014 locked).",
+        "jiraProjectKey": "Jira project key (from backend/.env \u2014 locked).",
+        "tool": "Jira MCP tool to invoke.",
+        "params": "Tool arguments (JSON). Upstream rows are passed as params.data automatically."
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "serverUrl",
+          "type": "string",
+          "description": "Optional bridge URL override (default http://127.0.0.1:8765 or MCP_SERVER_URL).",
+          "required": false,
+          "widget": "text"
+        },
+        {
+          "name": "jiraSiteUrl",
+          "type": "string",
+          "description": "Jira site URL (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_SITE_URL"
+        },
+        {
+          "name": "jiraEmail",
+          "type": "string",
+          "description": "Jira account email (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_EMAIL"
+        },
+        {
+          "name": "jiraApiToken",
+          "type": "string",
+          "description": "Jira API token (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_API_TOKEN"
+        },
+        {
+          "name": "jiraProjectKey",
+          "type": "string",
+          "description": "Jira project key (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "locked_from_env": true,
+          "env_key": "JIRA_PROJECT_KEY"
+        },
+        {
+          "name": "tool",
+          "type": "enum",
+          "description": "Jira MCP tool to invoke.",
+          "required": true,
+          "widget": "select",
+          "default": "jira_create_issue",
+          "enum": [
+            "jira_create_issue",
+            "jira_list_issues",
+            "jira_create_epics_from_confluence",
+            "tasks_bulk_create"
+          ]
+        },
+        {
+          "name": "params",
+          "type": "json",
+          "description": "Tool arguments (JSON). Upstream rows are passed as params.data automatically.",
+          "required": false,
+          "widget": "json"
+        }
+      ]
+    },
+    "join": {
+      "description": "Join two upstream datasets on key columns.",
+      "inputs": {
+        "left": "",
+        "right": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "leftKey": "",
+        "rightKey": "",
+        "joinType": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "left",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          },
+          {
+            "name": "right",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "leftKey",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        },
+        {
+          "name": "rightKey",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        },
+        {
+          "name": "joinType",
+          "type": "enum",
+          "description": "",
+          "required": true,
+          "widget": "select",
+          "default": "inner",
+          "enum": [
+            "inner",
+            "left",
+            "right",
+            "outer"
+          ]
+        }
+      ]
+    },
+    "loop": {
+      "description": "Iterate over rows (pass-through; surfaces iteration metadata).",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "maxIterations": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "maxIterations",
+          "type": "number",
+          "description": "",
+          "required": true,
+          "widget": "number",
+          "default": 1000
+        }
+      ]
+    },
+    "manual_trigger": {
+      "description": "Start workflow manually.",
+      "outputs": {
+        "payload": ""
+      },
+      "ports": {
+        "inputs": [],
+        "outputs": [
+          {
+            "name": "payload",
+            "type": "object",
+            "description": "",
+            "optional": false,
+            "store_at": "alert_payload"
+          }
+        ]
+      },
+      "params": []
+    },
+    "map_transform": {
+      "description": "Rename columns or compute new ones from row expressions.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "mappings": "[{ to: 'revenue', expression: 'row.qty * row.price' }, { from: 'old', to: 'new' }]"
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "mappings",
+          "type": "json",
+          "description": "[{ to: 'revenue', expression: 'row.qty * row.price' }, { from: 'old', to: 'new' }]",
+          "required": true,
+          "widget": "json"
+        }
+      ]
+    },
+    "mcp": {
+      "description": "Legacy combined MCP node \u2014 use jira_mcp, confluence_mcp, or github_mcp for new workflows.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "integration": "MCP server preset (Hermes/OpenClaw-compatible integrations).",
+        "serverUrl": "Optional bridge URL override (default http://127.0.0.1:8765 or MCP_SERVER_URL).",
+        "jiraSiteUrl": "Jira site URL (from backend/.env \u2014 locked).",
+        "jiraEmail": "Jira account email (from backend/.env \u2014 locked).",
+        "jiraApiToken": "Jira API token (from backend/.env \u2014 locked).",
+        "jiraProjectKey": "Jira project key (from backend/.env \u2014 locked).",
+        "confluenceSiteUrl": "Confluence site URL (from backend/.env \u2014 locked).",
+        "confluenceEmail": "Confluence account email (from backend/.env \u2014 locked).",
+        "confluenceApiToken": "Confluence API token (from backend/.env \u2014 locked).",
+        "confluenceSpaceKey": "Confluence space key (from backend/.env \u2014 locked).",
+        "pageTitle": "Confluence page title override (defaults to generated name).",
+        "githubToken": "GitHub PAT (from backend/.env \u2014 locked).",
+        "githubRepo": "Target repository (from backend/.env \u2014 locked).",
+        "tool": "Tool to invoke on the selected integration.",
+        "params": "Tool arguments (JSON). Upstream rows are passed as params.data automatically."
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "integration",
+          "type": "enum",
+          "description": "MCP server preset (Hermes/OpenClaw-compatible integrations).",
+          "required": true,
+          "widget": "select",
+          "default": "jira",
+          "enum": [
+            "jira",
+            "confluence",
+            "github",
+            "git",
+            "atlassian"
+          ]
+        },
+        {
+          "name": "serverUrl",
+          "type": "string",
+          "description": "Optional bridge URL override (default http://127.0.0.1:8765 or MCP_SERVER_URL).",
+          "required": false,
+          "widget": "text"
+        },
+        {
+          "name": "jiraSiteUrl",
+          "type": "string",
+          "description": "Jira site URL (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "visible_if": {
+            "integration": "jira"
+          },
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_SITE_URL"
+        },
+        {
+          "name": "jiraEmail",
+          "type": "string",
+          "description": "Jira account email (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "visible_if": {
+            "integration": "jira"
+          },
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_EMAIL"
+        },
+        {
+          "name": "jiraApiToken",
+          "type": "string",
+          "description": "Jira API token (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "visible_if": {
+            "integration": "jira"
+          },
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_API_TOKEN"
+        },
+        {
+          "name": "jiraProjectKey",
+          "type": "string",
+          "description": "Jira project key (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "visible_if": {
+            "integration": "jira"
+          },
+          "locked_from_env": true,
+          "env_key": "JIRA_PROJECT_KEY"
+        },
+        {
+          "name": "confluenceSiteUrl",
+          "type": "string",
+          "description": "Confluence site URL (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "visible_if": {
+            "integration": "confluence"
+          },
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_SITE_URL"
+        },
+        {
+          "name": "confluenceEmail",
+          "type": "string",
+          "description": "Confluence account email (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "visible_if": {
+            "integration": "confluence"
+          },
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_EMAIL"
+        },
+        {
+          "name": "confluenceApiToken",
+          "type": "string",
+          "description": "Confluence API token (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "visible_if": {
+            "integration": "confluence"
+          },
+          "locked_from_env": true,
+          "env_key": "ATLASSIAN_API_TOKEN"
+        },
+        {
+          "name": "confluenceSpaceKey",
+          "type": "string",
+          "description": "Confluence space key (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "visible_if": {
+            "integration": "confluence"
+          },
+          "locked_from_env": true,
+          "env_key": "CONFLUENCE_SPACE_KEY"
+        },
+        {
+          "name": "pageTitle",
+          "type": "string",
+          "description": "Confluence page title override (defaults to generated name).",
+          "required": false,
+          "widget": "text",
+          "visible_if": {
+            "integration": "confluence"
+          }
+        },
+        {
+          "name": "githubToken",
+          "type": "string",
+          "description": "GitHub PAT (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "visible_if": {
+            "integration": [
+              "github",
+              "git"
+            ]
+          },
+          "locked_from_env": true,
+          "env_key": "GITHUB_TOKEN"
+        },
+        {
+          "name": "githubRepo",
+          "type": "string",
+          "description": "Target repository (from backend/.env \u2014 locked).",
+          "required": false,
+          "widget": "locked_env",
+          "visible_if": {
+            "integration": [
+              "github",
+              "git"
+            ]
+          },
+          "locked_from_env": true,
+          "env_key": "GITHUB_REPO"
+        },
+        {
+          "name": "tool",
+          "type": "enum",
+          "description": "Tool to invoke on the selected integration.",
+          "required": true,
+          "widget": "select",
+          "enum": [
+            "confluence_search_pages",
+            "confluence_extract_action_items",
+            "tasks_bulk_create",
+            "jira_create_issue",
+            "jira_list_issues",
+            "github_implement_fixes",
+            "confluence_publish_report",
+            "studio_publish_architecture_doc",
+            "jira_create_epics_from_confluence",
+            "github_fix_jira_and_update"
+          ]
+        },
+        {
+          "name": "params",
+          "type": "json",
+          "description": "Tool arguments (JSON). Upstream rows are passed as params.data automatically.",
+          "required": false,
+          "widget": "json"
+        }
+      ]
+    },
+    "note": {
+      "description": "Canvas comment / annotation. Pass-through with text.",
+      "config_schema": {
+        "content": ""
+      },
+      "ports": {
+        "inputs": [],
+        "outputs": []
+      },
+      "params": [
+        {
+          "name": "content",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "textarea",
+          "default": ""
+        }
+      ]
+    },
+    "notion": {
+      "description": "Read or write to a Notion database (requires NOTION_API_KEY).",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "databaseId": "",
+        "action": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "databaseId",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        },
+        {
+          "name": "action",
+          "type": "enum",
+          "description": "",
+          "required": true,
+          "widget": "select",
+          "default": "query",
+          "enum": [
+            "query"
+          ]
+        }
+      ]
+    },
+    "outlook": {
+      "description": "Prepare or send an Outlook email via Microsoft Graph. Stubbed until Graph credentials are configured.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "result": ""
+      },
+      "config_schema": {
+        "to": "",
+        "subject": "",
+        "body": "",
+        "tenantId": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "type": "object",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "to",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        },
+        {
+          "name": "subject",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "textarea"
+        },
+        {
+          "name": "tenantId",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text"
+        }
+      ]
+    },
+    "pause": {
+      "description": "Wait for a number of milliseconds before continuing.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "durationMs": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "durationMs",
+          "type": "number",
+          "description": "",
+          "required": true,
+          "widget": "number",
+          "default": 500
+        }
+      ]
+    },
+    "pdf_extract": {
+      "description": "Extract text from a PDF (mock content by default).",
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "source": "PDF filename"
+      },
+      "ports": {
+        "inputs": [],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "source",
+          "type": "string",
+          "description": "PDF filename",
+          "required": true,
+          "widget": "text",
+          "default": "default"
+        }
+      ]
+    },
+    "response": {
+      "description": "Return a final workflow response.",
+      "inputs": {
+        "any": ""
+      },
+      "outputs": {
+        "response": ""
+      },
+      "config_schema": {
+        "content": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "any",
+            "type": "any",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "response",
+            "type": "text",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "content",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "textarea"
+        }
+      ]
+    },
+    "router": {
+      "description": "Route rows to labelled branches by an expression returning a label.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "expression": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "expression",
+          "type": "expression",
+          "description": "",
+          "required": true,
+          "widget": "code"
+        }
+      ]
+    },
+    "schedule": {
+      "description": "Run on a cron schedule.",
+      "outputs": {
+        "payload": ""
+      },
+      "config_schema": {
+        "cron": "Cron expression"
+      },
+      "ports": {
+        "inputs": [],
+        "outputs": [
+          {
+            "name": "payload",
+            "type": "object",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "cron",
+          "type": "string",
+          "description": "Cron expression",
+          "required": true,
+          "widget": "text",
+          "default": "0 * * * *"
+        }
+      ]
+    },
+    "select_columns": {
+      "description": "Pick a specific subset of columns.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "columns": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "columns",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        }
+      ]
+    },
+    "slack": {
+      "description": "Send a Slack message via Bot Token (chat.postMessage) or incoming webhook.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "result": ""
+      },
+      "config_schema": {
+        "channel": "",
+        "message": "",
+        "webhookUrl": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "type": "object",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "channel",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text",
+          "default": "#general"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "textarea"
+        },
+        {
+          "name": "webhookUrl",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text"
+        }
+      ]
+    },
+    "sort": {
+      "description": "Sort rows by a column.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "rows": ""
+      },
+      "config_schema": {
+        "sortBy": "",
+        "order": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "sortBy",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text"
+        },
+        {
+          "name": "order",
+          "type": "enum",
+          "description": "",
+          "required": true,
+          "widget": "select",
+          "default": "asc",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      ]
+    },
+    "teams": {
+      "description": "Post a Microsoft Teams channel message via incoming webhook. Graph mode is planned.",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "result": ""
+      },
+      "config_schema": {
+        "deliveryMode": "",
+        "message": "",
+        "webhookUrl": "",
+        "teamId": "",
+        "channelId": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "type": "object",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "deliveryMode",
+          "type": "enum",
+          "description": "",
+          "required": true,
+          "widget": "select",
+          "default": "incoming_webhook",
+          "enum": [
+            "incoming_webhook",
+            "graph"
+          ]
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "textarea"
+        },
+        {
+          "name": "webhookUrl",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text"
+        },
+        {
+          "name": "teamId",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text",
+          "visible_if": {
+            "deliveryMode": "graph"
+          }
+        },
+        {
+          "name": "channelId",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text",
+          "visible_if": {
+            "deliveryMode": "graph"
+          }
+        }
+      ]
+    },
+    "telegram": {
+      "description": "Send a Telegram message via Bot API (sendMessage).",
+      "inputs": {
+        "rows": ""
+      },
+      "outputs": {
+        "result": ""
+      },
+      "config_schema": {
+        "chatId": "",
+        "message": "",
+        "parseMode": "",
+        "botToken": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "name": "rows",
+            "type": "dataframe",
+            "description": "",
+            "optional": true
+          }
+        ],
+        "outputs": [
+          {
+            "name": "result",
+            "type": "object",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "chatId",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "textarea"
+        },
+        {
+          "name": "parseMode",
+          "type": "string",
+          "description": "",
+          "required": true,
+          "widget": "text",
+          "default": "Markdown"
+        },
+        {
+          "name": "botToken",
+          "type": "string",
+          "description": "",
+          "required": false,
+          "widget": "text"
+        }
+      ]
+    },
+    "webhook_trigger": {
+      "description": "Listen for incoming webhooks.",
+      "outputs": {
+        "payload": ""
+      },
+      "config_schema": {
+        "secret": "Optional shared secret"
+      },
+      "ports": {
+        "inputs": [],
+        "outputs": [
+          {
+            "name": "payload",
+            "type": "object",
+            "description": "",
+            "optional": false
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "secret",
+          "type": "string",
+          "description": "Optional shared secret",
+          "required": false,
+          "widget": "text"
+        }
+      ]
+    }
+  }
+}

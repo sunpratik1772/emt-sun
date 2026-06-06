@@ -1,0 +1,11 @@
+id: orders.csv
+description: Demo orders for join and revenue workflows
+connector: oracle
+sources:
+  - oracle:DEMO.ORDERS
+columns:
+  - { name: order_id, type: string }
+  - { name: sku, type: string }
+  - { name: region, type: string }
+  - { name: quantity, type: number }
+  - { name: revenue, type: number }

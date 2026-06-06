@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "demo-revenue-ai-pipeline",
+  "name": "Demo: Revenue AI pipeline",
+  "version": "1.0",
+  "description": "Orders CSV \u2192 region rollup \u2192 AI narrative \u2192 quality gate \u2192 Excel export. Studio: Run only (requires GEMINI_API_KEY).",
+  "tags": [
+    "studio_demo"
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "config": {},
+      "position": {
+        "x": 40,
+        "y": 280
+      }
+    },
+    {
+      "id": "load_orders",
+      "type": "csv_extract",
+      "label": "Load orders",
+      "config": {
+        "source": "orders.csv"
+      },
+      "position": {
+        "x": 240,
+        "y": 280
+      }
+    },
+    {
+      "id": "rollup",
+      "type": "group_by",
+      "label": "Revenue by region",
+      "config": {
+        "groupBy": "region",
+        "aggregateCol": "revenue",
+        "aggregateFn": "sum",
+        "alias": "total_revenue"
+      },
+      "position": {
+        "x": 460,
+        "y": 280
+      }
+    },
+    {
+      "id": "top_regions",
+      "type": "sort",
+      "label": "Sort by revenue",
+      "config": {
+        "sortBy": "total_revenue",
+        "order": "desc"
+      },
+      "position": {
+        "x": 680,
+        "y": 280
+      }
+    },
+    {
+      "id": "ai_summary",
+      "type": "agent",
+      "label": "AI regional summary",
+      "config": {
+        "prompt": "You are a revenue analyst for a workflow automation product.",
+        "task": "In 3 bullets, summarize regional revenue patterns and name the top region.",
+        "perRow": false,
+        "model": "gemini-2.5-flash"
+      },
+      "position": {
+        "x": 900,
+        "y": 280
+      }
+    },
+    {
+      "id": "quality",
+      "type": "evaluator",
+      "label": "Flag strong regions",
+      "config": {
+        "criteria": "row.total_revenue >= 600",
+        "label": "strong_region"
+      },
+      "position": {
+        "x": 900,
+        "y": 480
+      }
+    },
+    {
+      "id": "export",
+      "type": "excel_output",
+      "label": "Export Excel",
+      "config": {
+        "filename": "revenue_ai_pipeline.xlsx"
+      },
+      "position": {
+        "x": 1140,
+        "y": 380
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "load_orders"
+    },
+    {
+      "from": "load_orders",
+      "to": "rollup"
+    },
+    {
+      "from": "rollup",
+      "to": "top_regions"
+    },
+    {
+      "from": "top_regions",
+      "to": "ai_summary"
+    },
+    {
+      "from": "ai_summary",
+      "to": "quality"
+    },
+    {
+      "from": "quality",
+      "to": "export"
+    }
+  ]
+}

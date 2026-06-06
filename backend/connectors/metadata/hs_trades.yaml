@@ -1,0 +1,44 @@
+id: hs_trades
+description: Oracle-backed trade rows for surveillance workflows.
+connector: oracle
+sources:
+  - oracle:SURVEILLANCE.HS_TRADES
+columns:
+  - name: trade_id
+    type: string
+  - name: exec_id
+    type: string
+  - name: order_id
+    type: string
+  - name: alert_id
+    type: string
+  - name: participant_id
+    type: string
+    semantic: trader
+  - name: trader_id
+    type: string
+    semantic: trader
+  - name: trader_name
+    type: string
+  - name: book
+    type: string
+  - name: currency_pair
+    type: string
+  - name: trade_time
+    type: datetime
+    semantic: time
+  - name: side
+    type: string
+  - name: trade_quantity
+    type: number
+    semantic: size
+  - name: trade_price
+    type: number
+    semantic: price
+  - name: counterparty
+    type: string
+  - name: notional_usd
+    type: number
+    semantic: notional
+  - name: risk_flag
+    type: string

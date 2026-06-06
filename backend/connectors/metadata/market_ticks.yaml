@@ -1,0 +1,44 @@
+id: market_ticks
+description: Oracle-backed market ticks scoped by alert, currency pair, time window, feed source, and tick query type.
+connector: oracle
+sources:
+  - oracle:SURVEILLANCE.MARKET_TICKS
+columns:
+  - name: tick_id
+    type: string
+    include_in_tab: false
+  - name: alert_id
+    type: string
+  - name: currency_pair
+    type: string
+  - name: timestamp
+    type: datetime
+    semantic: time
+  - name: symbol
+    type: string
+  - name: bid
+    type: number
+    semantic: price
+  - name: ask
+    type: number
+    semantic: price
+  - name: mid
+    type: number
+    semantic: price
+  - name: spread_pips
+    type: number
+  - name: bid_size
+    type: number
+    semantic: size
+  - name: ask_size
+    type: number
+    semantic: size
+  - name: venue_name
+    type: string
+    description: Feed source (e.g. EBS, Reuters) — use as "source" filter on DB_MARKET_CONNECTOR.
+  - name: query_type
+    type: string
+    description: fxperiodtick or forwardperiodtick
+  - name: seq_no
+    type: integer
+    include_in_tab: false

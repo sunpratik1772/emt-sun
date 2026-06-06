@@ -1,0 +1,189 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "demo-join-analyze-confluence",
+  "name": "Demo: Join \u2192 analyze \u2192 AI summary \u2192 Confluence",
+  "version": "1.0",
+  "description": "Join orders and products, compute regional revenue, AI Agent writes the narrative, MCP publishes to Confluence. Run from Studio (Run button) \u2014 MCP bridge starts with the backend. Studio only: Run button. Set GEMINI_API_KEY in backend/.env. MCP: atlassian integration in demo mode (local fixtures) or live mode with Atlassian tokens.",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "orders",
+      "type": "csv_extract",
+      "label": "Orders",
+      "config": {
+        "source": "orders.csv"
+      },
+      "position": {
+        "x": 376,
+        "y": 214.0
+      }
+    },
+    {
+      "id": "products",
+      "type": "csv_extract",
+      "label": "Products",
+      "config": {
+        "source": "products.csv"
+      },
+      "position": {
+        "x": 376,
+        "y": 346.0
+      }
+    },
+    {
+      "id": "join",
+      "type": "join",
+      "label": "Join on SKU",
+      "config": {
+        "leftKey": "sku",
+        "rightKey": "sku",
+        "joinType": "inner"
+      },
+      "position": {
+        "x": 672,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "calc",
+      "type": "map_transform",
+      "label": "Line total",
+      "config": {
+        "mappings": [
+          {
+            "to": "line_total",
+            "expression": "row.quantity * row.unit_price"
+          }
+        ]
+      },
+      "position": {
+        "x": 968,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "by_region",
+      "type": "group_by",
+      "label": "Revenue by region",
+      "config": {
+        "groupBy": "region",
+        "aggregateCol": "line_total",
+        "aggregateFn": "sum",
+        "alias": "region_revenue"
+      },
+      "position": {
+        "x": 1264,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "rank",
+      "type": "sort",
+      "label": "Top regions",
+      "config": {
+        "sortBy": "region_revenue",
+        "order": "desc"
+      },
+      "position": {
+        "x": 1560,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "ai_summary",
+      "type": "agent",
+      "label": "AI: executive summary for Confluence",
+      "config": {
+        "prompt": "You are a revenue analyst writing an internal Confluence report.",
+        "task": "Summarize regional performance, call out the top 2 regions, note any gaps, and give 2 actionable recommendations. Use markdown headings and bullet lists.",
+        "perRow": false,
+        "emitPublishRow": true,
+        "pageTitle": "Regional revenue analysis (Studio workflow)",
+        "model": "gemini-2.5-flash"
+      },
+      "position": {
+        "x": 1856,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "publish",
+      "type": "confluence_mcp",
+      "label": "MCP: publish to Confluence",
+      "config": {
+        "tool": "confluence_publish_report",
+        "params": {}
+      },
+      "position": {
+        "x": 2152,
+        "y": 280.0
+      }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Export Confluence link",
+      "config": {
+        "filename": "confluence_analysis_page.csv"
+      },
+      "position": {
+        "x": 2448,
+        "y": 280.0
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "orders"
+    },
+    {
+      "from": "start",
+      "to": "products"
+    },
+    {
+      "from": "orders",
+      "to": "join"
+    },
+    {
+      "from": "products",
+      "to": "join"
+    },
+    {
+      "from": "join",
+      "to": "calc"
+    },
+    {
+      "from": "calc",
+      "to": "by_region"
+    },
+    {
+      "from": "by_region",
+      "to": "rank"
+    },
+    {
+      "from": "rank",
+      "to": "ai_summary"
+    },
+    {
+      "from": "ai_summary",
+      "to": "publish"
+    },
+    {
+      "from": "publish",
+      "to": "export"
+    }
+  ],
+  "tags": [
+    "studio_demo"
+  ]
+}

@@ -1,0 +1,25 @@
+/**
+ * Arc design system — nexu-io/open-design
+ * https://github.com/nexu-io/open-design/tree/main/design-systems/arc
+ */
+:root {
+  --arc-bg: #fdf3ec;
+  --arc-surface: #ffffff;
+  --arc-surface-warm: #fff4ea;
+  --arc-fg: #1a1a1f;
+  --arc-fg-2: #54545a;
+  --arc-muted: #8c8c93;
+  --arc-border: #ece5db;
+  --arc-border-soft: #f6f0e8;
+  --arc-coral: #ff5f5f;
+  --arc-sunset-a: #ff7e5f;
+  --arc-sunset-b: #feb47b;
+  --arc-elev-raised: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --arc-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --arc-radius-sm: 8px;
+  --arc-radius-md: 12px;
+  --arc-radius-lg: 16px;
+  --arc-font-display: 'Geist Variable', 'Geist', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --arc-font-body: 'Geist Variable', 'Geist', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --arc-font-mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, monospace;
+}

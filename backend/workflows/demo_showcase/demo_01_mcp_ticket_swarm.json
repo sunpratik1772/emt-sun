@@ -1,0 +1,119 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "demo-mcp-ticket-swarm",
+  "name": "Demo: MCP ticket swarm (Confluence \u2192 tasks \u2192 Jira)",
+  "version": "1.0",
+  "description": "Chains four MCP tools on the demo bridge \u2014 great live canvas demo, no Atlassian/GitHub tokens required. Open in Studio \u2192 Run (GEMINI_API_KEY required for AI nodes). Uses atlassian integration. Start: python3 -m mcp_bridge.server",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": {
+        "x": 80,
+        "y": 280
+      }
+    },
+    {
+      "id": "mcp_search",
+      "type": "mcp",
+      "label": "MCP: search Confluence pages",
+      "config": {
+        "integration": "atlassian",
+        "tool": "confluence_search_pages",
+        "params": {
+          "space": "ENG",
+          "limit": 5
+        }
+      },
+      "position": {
+        "x": 376,
+        "y": 280
+      }
+    },
+    {
+      "id": "mcp_extract",
+      "type": "mcp",
+      "label": "MCP: extract action items",
+      "config": {
+        "integration": "atlassian",
+        "tool": "confluence_extract_action_items",
+        "params": {}
+      },
+      "position": {
+        "x": 672,
+        "y": 280
+      }
+    },
+    {
+      "id": "mcp_tasks",
+      "type": "mcp",
+      "label": "MCP: save tasks",
+      "config": {
+        "integration": "atlassian",
+        "tool": "tasks_bulk_create",
+        "params": {}
+      },
+      "position": {
+        "x": 968,
+        "y": 280
+      }
+    },
+    {
+      "id": "mcp_jira",
+      "type": "mcp",
+      "label": "MCP: create Jira issues",
+      "config": {
+        "integration": "atlassian",
+        "tool": "jira_create_issue",
+        "params": {
+          "project": "DEMO",
+          "issue_type": "Task"
+        }
+      },
+      "position": {
+        "x": 1264,
+        "y": 280
+      }
+    },
+    {
+      "id": "export",
+      "type": "excel_output",
+      "label": "Excel: MCP run summary",
+      "config": {
+        "filename": "mcp_ticket_swarm_results.xlsx",
+        "tabNames": "tasks,jira"
+      },
+      "position": {
+        "x": 1560,
+        "y": 280
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "mcp_search"
+    },
+    {
+      "from": "mcp_search",
+      "to": "mcp_extract"
+    },
+    {
+      "from": "mcp_extract",
+      "to": "mcp_tasks"
+    },
+    {
+      "from": "mcp_tasks",
+      "to": "mcp_jira"
+    },
+    {
+      "from": "mcp_jira",
+      "to": "export"
+    }
+  ],
+  "tags": [
+    "studio_demo"
+  ]
+}

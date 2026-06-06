@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "mcp-confluence-to-tasks",
+  "name": "Confluence pages → action-item tasks",
+  "version": "1.0",
+  "description": "Search Confluence (MCP), extract checklist/action items, persist as tasks.",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": { "x": 60, "y": 280 }
+    },
+    {
+      "id": "fetch_pages",
+      "type": "mcp",
+      "label": "Confluence: search pages",
+      "config": {
+        "tool": "confluence_search_pages",
+        "params": { "space": "ENG", "limit": 10 }
+      },
+      "position": { "x": 300, "y": 280 }
+    },
+    {
+      "id": "extract_tasks",
+      "type": "mcp",
+      "label": "Confluence: extract action items",
+      "config": {
+        "tool": "confluence_extract_action_items",
+        "params": {}
+      },
+      "position": { "x": 560, "y": 280 }
+    },
+    {
+      "id": "save_tasks",
+      "type": "mcp",
+      "label": "Tasks: bulk create",
+      "config": {
+        "tool": "tasks_bulk_create",
+        "params": {}
+      },
+      "position": { "x": 820, "y": 280 }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Export tasks CSV",
+      "config": {
+        "filename": "confluence_tasks.csv"
+      },
+      "position": { "x": 1080, "y": 280 }
+    }
+  ],
+  "edges": [
+    { "from": "start", "to": "fetch_pages" },
+    { "from": "fetch_pages", "to": "extract_tasks" },
+    { "from": "extract_tasks", "to": "save_tasks" },
+    { "from": "save_tasks", "to": "export" }
+  ]
+}

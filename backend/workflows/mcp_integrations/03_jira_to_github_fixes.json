@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "mcp-jira-to-github",
+  "name": "Jira bugs → GitHub branches, tests, PRs",
+  "version": "1.0",
+  "description": "List open Jira issues, take up to 3, generate test stubs and open PRs via MCP.",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "label": "Start",
+      "config": {},
+      "position": { "x": 60, "y": 280 }
+    },
+    {
+      "id": "list_jira",
+      "type": "mcp",
+      "label": "Jira: list To Do",
+      "config": {
+        "integration": "atlassian",
+        "tool": "jira_list_issues",
+        "params": { "project": "DEMO", "status": "To Do", "max": 3 }
+      },
+      "position": { "x": 300, "y": 280 }
+    },
+    {
+      "id": "github_fix",
+      "type": "mcp",
+      "label": "GitHub: implement fixes",
+      "config": {
+        "integration": "github",
+        "tool": "github_implement_fixes",
+        "params": { "repo": "demo-org/demo-app" }
+      },
+      "position": { "x": 560, "y": 280 }
+    },
+    {
+      "id": "export",
+      "type": "csv_output",
+      "label": "Export PR summary",
+      "config": {
+        "filename": "github_prs_from_jira.csv"
+      },
+      "position": { "x": 820, "y": 280 }
+    }
+  ],
+  "edges": [
+    { "from": "start", "to": "list_jira" },
+    { "from": "list_jira", "to": "github_fix" },
+    { "from": "github_fix", "to": "export" }
+  ]
+}

@@ -1,0 +1,46 @@
+id: hs_exec
+description: Oracle-backed execution lifecycle rows for surveillance workflows.
+connector: oracle
+sources:
+  - oracle:SURVEILLANCE.HS_EXEC
+columns:
+  - name: exec_id
+    type: string
+  - name: order_id
+    type: string
+  - name: alert_id
+    type: string
+  - name: participant_id
+    type: string
+    semantic: trader
+  - name: trader_id
+    type: string
+    semantic: trader
+  - name: trader_name
+    type: string
+  - name: book
+    type: string
+  - name: currency_pair
+    type: string
+  - name: exec_time
+    type: datetime
+    semantic: time
+  - name: side
+    type: string
+  - name: exec_quantity
+    type: number
+    semantic: size
+  - name: exec_price
+    type: number
+    semantic: price
+  - name: venue
+    type: string
+  - name: counterparty
+    type: string
+  - name: notional_usd
+    type: number
+    semantic: notional
+  - name: trade_version
+    type: integer
+  - name: lifecycle_event
+    type: string

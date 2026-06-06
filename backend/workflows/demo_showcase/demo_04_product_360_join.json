@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "demo-product-360-join",
+  "name": "Demo: Product 360 join",
+  "version": "1.0",
+  "description": "Join orders to products, enrich line totals, sort, export multi-tab Excel. Open in Studio \u2192 Run (GEMINI_API_KEY required for AI nodes).",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "manual_trigger",
+      "config": {},
+      "position": {
+        "x": 40,
+        "y": 300
+      }
+    },
+    {
+      "id": "orders",
+      "type": "csv_extract",
+      "label": "Orders",
+      "config": {
+        "source": "orders.csv"
+      },
+      "position": {
+        "x": 220,
+        "y": 200
+      }
+    },
+    {
+      "id": "products",
+      "type": "csv_extract",
+      "label": "Products",
+      "config": {
+        "source": "products.csv"
+      },
+      "position": {
+        "x": 220,
+        "y": 400
+      }
+    },
+    {
+      "id": "join",
+      "type": "join",
+      "label": "Join on SKU",
+      "config": {
+        "leftKey": "sku",
+        "rightKey": "sku",
+        "joinType": "inner"
+      },
+      "position": {
+        "x": 480,
+        "y": 300
+      }
+    },
+    {
+      "id": "enrich",
+      "type": "map_transform",
+      "label": "Line total",
+      "config": {
+        "mappings": [
+          {
+            "to": "line_total",
+            "expression": "row.quantity * row.unit_price"
+          }
+        ]
+      },
+      "position": {
+        "x": 700,
+        "y": 300
+      }
+    },
+    {
+      "id": "rank",
+      "type": "sort",
+      "label": "Top line totals",
+      "config": {
+        "sortBy": "line_total",
+        "order": "desc"
+      },
+      "position": {
+        "x": 920,
+        "y": 300
+      }
+    },
+    {
+      "id": "export",
+      "type": "excel_output",
+      "label": "Product 360 workbook",
+      "config": {
+        "filename": "product_360_join.xlsx",
+        "tabNames": "enriched"
+      },
+      "position": {
+        "x": 1140,
+        "y": 300
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "start",
+      "to": "orders"
+    },
+    {
+      "from": "start",
+      "to": "products"
+    },
+    {
+      "from": "orders",
+      "to": "join"
+    },
+    {
+      "from": "products",
+      "to": "join"
+    },
+    {
+      "from": "join",
+      "to": "enrich"
+    },
+    {
+      "from": "enrich",
+      "to": "rank"
+    },
+    {
+      "from": "rank",
+      "to": "export"
+    }
+  ],
+  "tags": [
+    "studio_demo"
+  ]
+}

@@ -1,0 +1,16 @@
+type_id: teams
+description: Post a Microsoft Teams channel message via incoming webhook. Graph mode is planned.
+ui:
+  display_name: Microsoft Teams
+  icon: Users
+  color: "#6264A7"
+  studio_active: false
+  palette: { section: { id: integrations, label: Integrations, color: "#14B8A6", order: 25 }, node_order: 41 }
+input_ports: [{ name: rows, type: dataframe, optional: true }]
+output_ports: [{ name: result, type: object }]
+params:
+  - { name: deliveryMode, type: enum, default: incoming_webhook, enum: [incoming_webhook, graph] }
+  - { name: message, type: string, widget: textarea, required: false }
+  - { name: webhookUrl, type: string, required: false, placeholder: "https://outlook.office.com/webhook/... or set TEAMS_INCOMING_WEBHOOK_URL" }
+  - { name: teamId, type: string, required: false, visible_if: { deliveryMode: graph } }
+  - { name: channelId, type: string, required: false, visible_if: { deliveryMode: graph } }

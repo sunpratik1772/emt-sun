@@ -1,0 +1,43 @@
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
+
+/* Ronzino — OFL-1.1 (collletttivo/ronzino) */
+@font-face {
+  font-family: 'Ronzino';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/ronzino/Ronzino-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Ronzino';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/ronzino/Ronzino-Oblique.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Ronzino';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../assets/fonts/ronzino/Ronzino-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Ronzino';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../assets/fonts/ronzino/Ronzino-MediumOblique.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Ronzino';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/ronzino/Ronzino-Bold.woff2') format('woff2');
+}

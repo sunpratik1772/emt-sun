@@ -1,0 +1,11 @@
+id: leads.csv
+description: Demo sales leads for Studio showcase workflows
+connector: oracle
+sources:
+  - oracle:DEMO.LEADS
+columns:
+  - { name: lead_id, type: string }
+  - { name: company, type: string }
+  - { name: region, type: string }
+  - { name: score, type: number }
+  - { name: stage, type: string }

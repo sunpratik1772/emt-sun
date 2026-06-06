@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dbSherpa Studio — AI Workflow Automation</title>
+    <meta name="description" content="Build intelligent AI workflows visually with dbSherpa Studio" />
+    <link rel="icon" id="app-favicon" type="image/png" href="/brand/dbsherpa-logo-dark.png" />
+    <link rel="apple-touch-icon" id="app-apple-touch-icon" href="/brand/dbsherpa-logo-dark.png" />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body, #root { height: 100%; overflow: hidden; }
+      html, body, #root, button, input, textarea, select {
+        font-family: 'Geist Variable', 'Geist', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('dbsherpa:theme');
+          var theme;
+          if (saved === 'aurora') {
+            theme = 'turquoise';
+          } else if (saved === 'light' || saved === 'dark' || saved === 'turquoise' || saved === 'claude') {
+            theme = saved;
+          } else {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', theme);
+          var hour = new Date().getHours();
+          var period = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+          document.documentElement.setAttribute('data-period', period);
+          var logo = (theme === 'dark' || theme === 'claude') ? '/brand/dbsherpa-logo-dark.png' : '/brand/dbsherpa-logo-light.png';
+          var fav = document.getElementById('app-favicon');
+          var apple = document.getElementById('app-apple-touch-icon');
+          if (fav) fav.setAttribute('href', logo);
+          if (apple) apple.setAttribute('href', logo);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          document.documentElement.setAttribute('data-period', 'morning');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

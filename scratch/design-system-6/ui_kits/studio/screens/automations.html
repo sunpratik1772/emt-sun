@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="aurora">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dbSherpa Studio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500;0,6..72,500;0,6..72,600&display=swap">
+<style>
+/* =============================================================================
+   dbSherpa Studio — UI Kit styles (Studio dashboard)
+   Self-contained: includes the 3-theme token contract + dashboard component CSS,
+   distilled from the product's globals.css + dashboard.css. Set data-theme on
+   <html> to "dark" | "light" | "aurora".
+   ============================================================================= */
+
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display-serif: 'Newsreader', Georgia, serif;
+  --radius-card: 20px; --radius-sm: 12px; --radius-pill: 999px;
+  --ease-out: cubic-bezier(0.2,0,0,1);
+  --gap: clamp(14px,1.5vw,20px);
+  --card-pad: clamp(20px,2vw,28px);
+  --port-dataframe:#f59e0b; --port-object:#38bdf8; --port-scalar:#3ecf8e;
+  --port-string-list:#818cf8; --port-workflow:#f472b6;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg-0:#08090a; --bg-1:#0f1011; --bg-2:#141516; --bg-3:#1a1b1d;
+  --text-0:#fff; --text-1:#e4e4e7; --text-2:#a1a1aa; --text-3:#71717a;
+  --border:rgba(255,255,255,0.14); --border-soft:rgba(255,255,255,0.08);
+  --accent:#3eb5db; --accent-on:#fff; --accent-hi:#5ec8e8; --accent-lo:#2d9fc4;
+  --accent-soft:color-mix(in srgb,#3eb5db 22%,transparent);
+  --success:#34d399; --warning:#fbbf24; --danger:#f87171; --heat:#4db8a8;
+  --shadow-card:0 1px 0 rgba(255,255,255,.03) inset,0 4px 20px rgba(0,0,0,.2);
+  --glass:color-mix(in srgb,var(--bg-1) 72%,transparent);
+  --glass-blur:14px;
+  --backdrop:linear-gradient(180deg,#08090a 0%,#000 100%);
+  --dots:rgba(255,255,255,0.12);
+  --seg-track:#1a1b1d; --seg-on-bg:#fff; --seg-on-fg:#0a0a0a;
+}
+[data-theme='light'] {
+  color-scheme: light;
+  --bg-0:#fff; --bg-1:#fafafa; --bg-2:#f4f4f5; --bg-3:#ebebec;
+  --text-0:#0a0a0a; --text-1:#262626; --text-2:#525252; --text-3:#737373;
+  --border:rgba(0,0,0,0.14); --border-soft:rgba(0,0,0,0.09);
+  --accent:#2489ab; --accent-on:#fff; --accent-hi:#2d9fc4; --accent-lo:#1d728f;
+  --accent-soft:color-mix(in srgb,#2489ab 14%,transparent);
+  --success:#15803d; --warning:#b45309; --danger:#dc2626; --heat:#3d9a8b;
+  --shadow-card:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
+  --glass:color-mix(in srgb,#fff 78%,transparent);
+  --glass-blur:14px;
+  --backdrop:#fafafa;
+  --dots:rgba(0,0,0,0.05);
+  --seg-track:#f0f0f2; --seg-on-bg:#0a0a0a; --seg-on-fg:#fff;
+}
+[data-theme='aurora'] {
+  color-scheme: light;
+  --bg-0:rgba(255,255,255,0.92); --bg-1:rgba(255,255,255,0.72);
+  --bg-2:rgba(255,255,255,0.52); --bg-3:rgba(255,255,255,0.34);
+  --text-0:#1b1f2a; --text-1:#353b4a; --text-2:rgba(27,31,42,0.66); --text-3:rgba(27,31,42,0.50);
+  --border:rgba(255,255,255,0.55); --border-soft:rgba(255,255,255,0.38);
+  --accent:#1f6f8b; --accent-on:#fff; --accent-hi:#2489ab; --accent-lo:#17576e;
+  --accent-soft:color-mix(in srgb,#1f6f8b 16%,transparent);
+  --success:#1f8a5b; --warning:#c2730f; --danger:#d1495b; --heat:#c2693e;
+  --shadow-card:0 1px 0 rgba(255,255,255,.55) inset,0 14px 40px rgba(24,38,60,.18);
+  --glass:rgba(255,255,255,0.72);
+  --glass-blur:22px;
+  --backdrop:
+    radial-gradient(120% 120% at 88% 4%, #16314f 0%, rgba(22,49,79,0) 46%),
+    radial-gradient(120% 130% at 12% 22%, #2a567d 0%, rgba(42,86,125,0) 40%),
+    radial-gradient(140% 120% at 50% 116%, #d9663a 0%, rgba(217,102,58,0) 52%),
+    radial-gradient(90% 90% at 26% 70%, #f3e4d0 0%, rgba(243,228,208,0) 48%),
+    linear-gradient(150deg, #20405f 0%, #b9764f 58%, #ead8c2 100%);
+  --dots:rgba(255,255,255,0.16);
+  --seg-track:rgba(255,255,255,0.40); --seg-on-bg:#1b1f2a; --seg-on-fg:#fff;
+}
+
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; height:100%; }
+body {
+  font-family: var(--font-sans);
+  font-feature-settings:'cv01','ss03';
+  letter-spacing:-0.01em;
+  color: var(--text-0);
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  background: var(--bg-0);
+}
+
+/* absolute (not fixed) backdrop sky — fills the 100vh shell while content
+   scrolls over it, giving a fixed-sky effect that all renderers paint correctly */
+.studio-backdrop { position:absolute; inset:0; z-index:0; pointer-events:none; background:var(--backdrop); overflow:hidden; }
+.studio-backdrop::after {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle at 1px 1px, var(--dots) 1px, transparent 0);
+  background-size:24px 24px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 100%);
+  opacity:.5;
+}
+
+.studio { position:relative; display:flex; height:100vh; min-height:0; overflow:hidden; }
+.rail, .main { position:relative; z-index:1; }
+
+/* ── Left nav rail ─────────────────────────────────────────────────────── */
+.rail {
+  flex:0 0 auto; width:56px; display:flex; flex-direction:column; align-items:center;
+  gap:4px; padding:12px 8px; border-right:1px solid var(--border-soft);
+  background:color-mix(in srgb,var(--bg-1) 70%,transparent);
+  backdrop-filter:blur(var(--glass-blur));
+}
+.rail__brand { width:36px; height:36px; border-radius:10px; background:#08090a;
+  display:flex; align-items:center; justify-content:center; margin-bottom:8px; }
+.rail__brand img { width:20px; height:auto; }
+.rail__nav { display:flex; flex-direction:column; gap:3px; }
+.rail__btn { width:40px; height:40px; border-radius:11px; border:none; background:transparent;
+  color:var(--text-2); display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:background 140ms var(--ease-out), color 140ms var(--ease-out); }
+.rail__btn svg { width:19px; height:19px; }
+.rail__btn:hover { background:var(--bg-2); color:var(--text-1); }
+.rail__btn--active { background:var(--bg-3); color:var(--text-0); }
+.rail__spacer { flex:1; }
+.rail__avatar { width:36px; height:36px; border-radius:50%; background:var(--bg-3);
+  border:1px solid var(--border-soft); color:var(--text-1); font-size:11px; font-weight:600;
+  display:flex; align-items:center; justify-content:center; }
+.rail__themes { display:flex; flex-direction:column; gap:2px; padding:6px 0; margin-bottom:6px;
+  border-top:1px solid var(--border-soft); }
+[data-theme='aurora'] .rail__themes { border-top-color:rgba(255,255,255,0.16); }
+
+/* ── Main column ───────────────────────────────────────────────────────── */
+.main { flex:1; min-width:0; display:flex; flex-direction:column; overflow:hidden; }
+.scroll { flex:1; overflow-y:auto; }
+.inner { padding: clamp(22px,3vw,40px) clamp(20px,3vw,44px); max-width:1180px; margin:0 auto; width:100%; }
+
+/* ── Header ────────────────────────────────────────────────────────────── */
+.head { display:flex; align-items:flex-start; justify-content:space-between; gap:20px;
+  flex-wrap:wrap; margin-bottom: clamp(20px,2.4vw,30px); }
+.welcome__eyebrow { font-family:var(--font-display-serif); font-style:italic; font-weight:500;
+  font-size:19px; color:var(--text-2); margin-bottom:2px; }
+.welcome__title { font-size:clamp(26px,2.8vw,34px); font-weight:600; letter-spacing:-0.03em;
+  line-height:1.12; margin:0; }
+.welcome__sub { margin:8px 0 0; font-size:14px; color:var(--text-2); max-width:46ch; line-height:1.45; }
+.head__tools { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+
+.search { display:flex; align-items:center; gap:8px; height:38px; padding:0 12px 0 14px;
+  border-radius:var(--radius-pill); border:1px solid var(--border-soft);
+  background:var(--bg-1); color:var(--text-3); font-size:13px; font-family:inherit; cursor:pointer;
+  min-width:200px; transition:border-color 140ms, background 140ms, color 140ms; }
+.search:hover { border-color:var(--border); background:var(--bg-2); color:var(--text-2); }
+.search svg { width:15px; height:15px; }
+.search__kbd { margin-left:auto; padding:2px 6px; border-radius:5px; border:1px solid var(--border-soft);
+  background:var(--bg-0); color:var(--text-3); font-size:11px; }
+
+/* theme segmented control */
+.seg { display:flex; align-items:center; gap:2px; padding:3px; border-radius:11px;
+  background:var(--seg-track); border:1px solid var(--border-soft); }
+.seg__btn { width:32px; height:30px; border-radius:8px; border:1px solid transparent; background:transparent;
+  color:var(--text-3); display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:background 140ms, color 140ms; }
+.seg__btn svg { width:15px; height:15px; }
+.seg__btn:hover:not(.seg__btn--on) { color:var(--text-1); }
+.seg__btn--on { background:var(--seg-on-bg); color:var(--seg-on-fg); box-shadow:0 1px 3px rgba(0,0,0,.18); }
+
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; height:38px;
+  padding:0 16px; border-radius:var(--radius-pill); font-size:13px; font-weight:550; font-family:inherit;
+  cursor:pointer; border:1px solid transparent; transition:background 140ms,border-color 140ms,color 140ms; }
+.btn svg { width:15px; height:15px; }
+.btn--primary { background:var(--accent); color:var(--accent-on); }
+.btn--primary:hover { background:var(--accent-lo); }
+.btn--ghost { background:var(--bg-1); border-color:var(--border-soft); color:var(--text-1); }
+.btn--ghost:hover { background:var(--bg-2); border-color:var(--border); }
+
+/* ── Sherpa prompt bar ─────────────────────────────────────────────────── */
+.ai-card { padding:var(--card-pad); border-radius:var(--radius-card); background:var(--glass);
+  backdrop-filter:blur(var(--glass-blur)) saturate(1.15); border:1px solid var(--border-soft);
+  box-shadow:var(--shadow-card); margin-bottom:var(--gap); }
+.sherpa { display:flex; align-items:center; gap:12px; padding:5px 6px 5px 16px; border-radius:14px;
+  background:var(--bg-0); border:1px solid var(--border-soft); }
+.sherpa__icon { color:var(--heat); display:flex; flex-shrink:0; }
+.sherpa__icon svg { width:17px; height:17px; }
+.sherpa__input { flex:1; min-width:0; border:none; background:transparent; color:var(--text-0);
+  font-size:15px; font-family:inherit; outline:none; }
+.sherpa__input::placeholder { color:var(--text-3); }
+.sherpa__send { flex-shrink:0; width:38px; height:38px; border-radius:50%; border:none;
+  background:var(--heat); color:#fff; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:transform 140ms, opacity 140ms; }
+.sherpa__send svg { width:17px; height:17px; }
+.sherpa__send:disabled { opacity:.35; cursor:not-allowed; }
+.sherpa__send:not(:disabled):hover { transform:scale(1.05); }
+.suggest-label { font-size:9.5px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-3); margin:14px 0 8px; }
+.suggest { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.suggest__chip { text-align:left; display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+  padding:12px 14px; border-radius:12px; background:var(--bg-1); border:1px solid var(--border-soft);
+  color:var(--text-1); font-size:12.5px; font-family:inherit; line-height:1.35; cursor:pointer;
+  transition:background 140ms, border-color 140ms, transform 140ms; }
+.suggest__chip:hover { background:var(--bg-2); border-color:var(--border); transform:translateY(-2px); }
+.suggest__chip svg { width:14px; height:14px; color:var(--text-3); flex-shrink:0; margin-top:1px; }
+@media (max-width:780px){ .suggest{ grid-template-columns:1fr; } }
+
+/* ── Content grid ──────────────────────────────────────────────────────── */
+.content { display:flex; flex-direction:column; gap:var(--gap); }
+.stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--gap); }
+.stat { position:relative; padding:var(--card-pad); border-radius:var(--radius-card);
+  background:var(--glass); backdrop-filter:blur(var(--glass-blur)) saturate(1.2);
+  border:1px solid var(--border-soft); box-shadow:var(--shadow-card); min-height:120px;
+  display:flex; flex-direction:column; justify-content:flex-end; }
+.stat__top { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:8px; }
+.stat__val { font-size:clamp(32px,3vw,42px); font-weight:600; letter-spacing:-0.04em; line-height:1;
+  font-variant-numeric:tabular-nums; }
+.stat__spark { width:96px; height:26px; opacity:.55; transition:opacity 180ms; }
+.stat:hover .stat__spark { opacity:1; }
+.stat__spark path.line { fill:none; stroke:var(--text-3); stroke-width:1.75; stroke-linecap:round;
+  stroke-linejoin:round; vector-effect:non-scaling-stroke; transition:stroke 180ms; }
+.stat:hover .stat__spark path.line { stroke:var(--accent); }
+.stat__spark path.fill { fill:color-mix(in srgb,var(--text-3) 14%,transparent); transition:fill 180ms; }
+.stat:hover .stat__spark path.fill { fill:color-mix(in srgb,var(--accent) 22%,transparent); }
+.stat__label { font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-2); }
+.stat__sub { font-size:12px; color:var(--text-3); margin-top:6px; }
+.stat__sub--up { color:var(--success); }
+@media (max-width:780px){ .stats{ grid-template-columns:1fr; } }
+
+.insight { display:grid; grid-template-columns:1fr 1.4fr; gap:var(--gap); }
+@media (max-width:980px){ .insight{ grid-template-columns:1fr; } }
+
+.health { position:relative; overflow:hidden; padding:var(--card-pad); border-radius:var(--radius-card);
+  background:var(--glass); backdrop-filter:blur(var(--glass-blur)) saturate(1.2);
+  border:1px solid var(--border-soft); box-shadow:var(--shadow-card); }
+.health__blob { position:absolute; border-radius:50%; filter:blur(38px); opacity:.5; pointer-events:none; }
+.health__blob--1 { width:150px; height:150px; top:-40px; right:-30px;
+  background:radial-gradient(circle, color-mix(in srgb,var(--heat) 65%,transparent), transparent 70%); }
+.health__blob--2 { width:120px; height:120px; bottom:-40px; left:24px;
+  background:radial-gradient(circle, color-mix(in srgb,var(--success) 40%,transparent), transparent 72%); }
+.health__c { position:relative; z-index:1; }
+.health__val { font-size:clamp(30px,2.8vw,40px); font-weight:600; letter-spacing:-0.04em; line-height:1;
+  font-variant-numeric:tabular-nums; color:var(--text-2); }
+.health__val--success { color:var(--success); }
+.health__label { font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--text-2); margin-top:8px; }
+.health__copy { font-size:13px; color:var(--text-2); margin:10px 0 14px; }
+.pill { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:500;
+  padding:4px 11px; border-radius:var(--radius-pill); }
+.pill--online { background:color-mix(in srgb,var(--heat) 13%,transparent); color:var(--heat); }
+.pill__dot { width:6px; height:6px; border-radius:50%; background:currentColor; }
+
+/* activity calendar */
+.activity { padding:var(--card-pad); border-radius:var(--radius-card); background:var(--glass);
+  backdrop-filter:blur(var(--glass-blur)) saturate(1.2); border:1px solid var(--border-soft);
+  box-shadow:var(--shadow-card); display:flex; flex-direction:column; }
+.activity__head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:16px; }
+.activity__title { font-size:14px; font-weight:600; letter-spacing:-0.01em; }
+.activity__streak { font-family:var(--font-display-serif); font-style:italic; font-size:16px; color:var(--text-3); }
+.cal { display:flex; gap:4px; align-items:flex-end; flex:1; }
+.cal__week { display:flex; flex-direction:column; gap:4px; }
+.cal__cell { width:14px; height:14px; border-radius:3px; background:var(--bg-3); }
+.activity__legend { display:flex; align-items:center; gap:6px; justify-content:flex-end; margin-top:14px;
+  font-size:11px; color:var(--text-3); }
+.activity__legend .cal__cell { width:11px; height:11px; }
+
+/* workflow grid */
+.wf-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:2px; }
+.wf-head__title { font-size:14px; font-weight:600; letter-spacing:-0.01em; }
+.wf-head__link { font-size:12.5px; color:var(--text-2); background:none; border:none; cursor:pointer;
+  font-family:inherit; display:inline-flex; align-items:center; gap:4px; }
+.wf-head__link:hover { color:var(--accent); }
+.wf-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--gap); margin-top:12px; }
+@media (max-width:980px){ .wf-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:680px){ .wf-grid{ grid-template-columns:1fr; } }
+.wf { display:flex; flex-direction:column; gap:10px; padding:20px; border-radius:var(--radius-card);
+  background:var(--glass); backdrop-filter:blur(var(--glass-blur)) saturate(1.15);
+  border:1px solid var(--border-soft); box-shadow:var(--shadow-card);
+  transition:transform 180ms var(--ease-out), border-color 180ms; cursor:pointer; }
+.wf:hover { transform:translateY(-3px); }
+.wf--success { border-color:color-mix(in srgb,var(--success) 42%,var(--border-soft)); }
+.wf--error { border-color:color-mix(in srgb,var(--danger) 42%,var(--border-soft)); }
+.wf__head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.wf__title { margin:0; font-size:15px; font-weight:600; letter-spacing:-0.02em; line-height:1.3; }
+.wf__time { font-size:11px; color:var(--text-3); white-space:nowrap; }
+.wf__status { font-size:12px; color:var(--text-2); }
+.wf__status--success { color:var(--success); }
+.wf__status--error { color:var(--danger); }
+.wf__nodes { margin:0; font-size:13px; color:var(--text-3); }
+.wf__chips { display:flex; flex-wrap:wrap; gap:6px; }
+.chip { font-size:11px; padding:3px 9px; border-radius:var(--radius-pill); background:var(--bg-2); color:var(--text-2); }
+.chip--draft { background:var(--accent-soft); color:var(--accent); }
+.wf__action { display:inline-flex; align-items:center; gap:6px; margin-top:auto; border:none; background:none;
+  color:var(--text-0); font-size:13px; font-weight:550; font-family:inherit; cursor:pointer; align-self:flex-start;
+  transition:gap 140ms, color 140ms; }
+.wf__action svg { width:14px; height:14px; }
+.wf:hover .wf__action { color:var(--accent); gap:9px; }
+.wf--new { align-items:center; justify-content:center; text-align:center; border:1px dashed var(--border-soft);
+  background:transparent; box-shadow:none; gap:12px; }
+.wf--new__icon { width:44px; height:44px; border-radius:50%; background:var(--bg-2); color:var(--text-2);
+  display:flex; align-items:center; justify-content:center; }
+.wf--new__hint { font-size:13px; color:var(--text-2); max-width:22ch; }
+
+/* welcome reveal */
+@keyframes reveal { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+.reveal { animation:reveal 480ms var(--ease-out) both; }
+
+/* ── Aurora chrome overrides — keep text & icons legible over the gradient.
+   Header sits directly on the sky (light text); the rail is a dark frosted
+   capsule with light icons; cards stay bright white glass via the token bump. */
+[data-theme='aurora'] .rail { background:rgba(23,34,54,0.42); border-right-color:rgba(255,255,255,0.16); }
+[data-theme='aurora'] .rail__btn { color:rgba(255,255,255,0.74); }
+[data-theme='aurora'] .rail__btn:hover { background:rgba(255,255,255,0.14); color:#fff; }
+[data-theme='aurora'] .rail__btn--active { background:rgba(255,255,255,0.22); color:#fff; }
+[data-theme='aurora'] .rail__avatar { background:rgba(255,255,255,0.20); color:#fff; border-color:rgba(255,255,255,0.28); }
+[data-theme='aurora'] .welcome__eyebrow { color:rgba(255,255,255,0.82); }
+[data-theme='aurora'] .welcome__title { color:#fff; }
+[data-theme='aurora'] .welcome__sub { color:rgba(255,255,255,0.80); }
+
+/* ── Aurora work-surface contrast ──────────────────────────────────────
+   The gradient sky is the dashboard's signature, but dense Studio tools need
+   solid ground to read on. Canvas becomes warm paper; panels + nodes go opaque
+   so the editor has real figure/ground contrast instead of a washed gradient. */
+[data-theme='aurora'] .canvas { background:#ece1d2; }
+[data-theme='aurora'] .canvas__dots {
+  background-image:radial-gradient(circle at 1px 1px, rgba(120,88,58,0.34) 2.4px, transparent 0); }
+[data-theme='aurora'] .pal { background:rgba(255,255,255,0.94); }
+[data-theme='aurora'] .agent { background:rgba(255,255,255,0.94); }
+[data-theme='aurora'] .wt { background:rgba(255,255,255,0.96); }
+[data-theme='aurora'] .cnode { background:#ffffff; }
+[data-theme='aurora'] .cnode__handle { border-color:#ffffff; }
+[data-theme='aurora'] .run-pill,
+[data-theme='aurora'] .cc,
+[data-theme='aurora'] .mmap { background:rgba(255,255,255,0.95); }
+/* Node Library: lift cards off the gradient for legibility */
+[data-theme='aurora'] .nlib-card { background:rgba(255,255,255,0.9); }
+[data-theme='aurora'] .nlib-card__type { color:rgba(27,31,42,0.55); }
+
+/* toast */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:50;
+  background:var(--bg-0); border:1px solid var(--border); box-shadow:var(--shadow-card);
+  color:var(--text-0); font-size:13px; padding:11px 16px; border-radius:12px; display:flex; align-items:center; gap:9px;
+  backdrop-filter:blur(var(--glass-blur)); }
+.toast svg { width:16px; height:16px; color:var(--accent); }
+
+/* ============================================================================
+   Canvas tokens — node/edge/grid colors per theme (from globals.css)
+   ============================================================================ */
+[data-theme='dark']  { --bg-node:#0f1011; --canvas-bg:#111214; --canvas-edge:#a1a1aa; --canvas-dots:rgba(255,255,255,0.18); --running:#3eb5db; --border-strong:rgba(255,255,255,0.20); }
+[data-theme='light'] { --bg-node:#ffffff; --canvas-bg:#e8e8ec; --canvas-edge:#404040; --canvas-dots:rgba(0,0,0,0.15); --running:#2489ab; --border-strong:rgba(0,0,0,0.18); }
+[data-theme='aurora']{ --bg-node:rgba(255,255,255,0.90); --canvas-bg:rgba(255,255,255,0.22); --canvas-edge:rgba(40,55,80,0.55); --canvas-dots:rgba(255,255,255,0.26); --running:#1f6f8b; --border-strong:rgba(27,31,42,0.30); }
+
+/* ── Workspace toolbar (canvas chrome) ─────────────────────────────────── */
+.wt { display:flex; align-items:center; justify-content:space-between; height:46px; padding:0 10px;
+  border-radius:10px; border:1px solid var(--border-soft); background:var(--surface); box-shadow:var(--shadow-card);
+  margin:12px 12px 0; }
+.wt__left { display:flex; align-items:center; gap:12px; }
+.wt__sep { color:var(--text-3); font-size:11px; }
+.wt__right { display:flex; align-items:center; gap:6px; }
+.wt-seg { display:flex; gap:2px; padding:2px; border-radius:9px; background:var(--seg-track); border:1px solid var(--border-soft); }
+.wt-seg__btn { display:inline-flex; align-items:center; gap:5px; height:26px; padding:0 10px; border-radius:7px; border:none;
+  background:transparent; color:var(--text-3); font-family:inherit; font-size:11.5px; font-weight:500; cursor:pointer; }
+.wt-seg__btn svg { width:13px; height:13px; }
+.wt-seg__btn--on { background:var(--seg-on-bg); color:var(--seg-on-fg); box-shadow:0 1px 3px rgba(0,0,0,.18); }
+.wt-ico { width:28px; height:28px; border-radius:6px; border:1px solid var(--border-soft); background:var(--bg-1); color:var(--text-2);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background 120ms,color 120ms; }
+.wt-ico svg { width:14px; height:14px; }
+.wt-ico:hover { background:var(--bg-2); color:var(--text-0); }
+.wt-run { width:28px; height:28px; border-radius:6px; border:none; background:var(--accent); color:var(--accent-on);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.wt-run svg { width:14px; height:14px; }
+.wt-divider { width:1px; height:16px; background:var(--border-soft); }
+
+/* ── Node palette ──────────────────────────────────────────────────────── */
+.pal { width:212px; flex:0 0 auto; display:flex; flex-direction:column; border-right:1px solid var(--border);
+  background:var(--surface); overflow:hidden; }
+.pal__head { display:flex; align-items:center; justify-content:space-between; padding:12px 12px 8px; border-bottom:1px solid var(--border-soft); }
+.pal__title { font-size:11px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-2); }
+.pal__search { display:flex; align-items:center; gap:8px; height:30px; padding:0 10px; margin:12px; border-radius:6px;
+  background:var(--bg-0); border:1px solid var(--border-soft); color:var(--text-3); font-size:12px; }
+.pal__search svg { width:12px; height:12px; }
+.pal__scroll { flex:1; overflow-y:auto; padding-bottom:8px; }
+.pal-sec { padding-top:4px; }
+.pal-sec__head { display:flex; align-items:center; gap:8px; padding:6px 12px; }
+.pal-accent { width:2px; align-self:stretch; min-height:12px; border-radius:1px; }
+.pal-sec__label { font-size:11px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-2); }
+.pal-sec__count { font-size:10px; color:var(--text-3); padding:0 5px; border-radius:3px; background:var(--bg-3); border:1px solid var(--border-soft); font-variant-numeric:tabular-nums; }
+.pal-items { display:flex; flex-direction:column; gap:1px; padding:0 8px 6px; }
+.pal-item { display:flex; align-items:center; gap:10px; padding:6px 9px; border-radius:5px; border:1px solid transparent;
+  cursor:grab; transition:background 120ms,border-color 120ms; }
+.pal-item:hover { background:var(--bg-2); border-color:var(--border-soft); }
+.pal-item__accent { width:2px; align-self:stretch; min-height:18px; border-radius:1px; flex-shrink:0; }
+.pal-item__ico { width:18px; display:inline-flex; align-items:center; justify-content:center; color:var(--text-1); flex-shrink:0; }
+.pal-item__ico svg { width:13px; height:13px; }
+.pal-item__name { font-size:12px; font-weight:460; color:var(--text-0); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pal__foot { padding:10px 12px; border-top:1px solid var(--border-soft); font-size:9.5px; color:var(--text-3); letter-spacing:0.02em; }
+
+/* ── Canvas ────────────────────────────────────────────────────────────── */
+.canvas-wrap { flex:1; min-width:0; display:flex; flex-direction:column; position:relative; overflow:hidden; }
+.canvas { flex:1; position:relative; overflow:hidden; background:var(--canvas-bg); }
+.canvas__dots { position:absolute; inset:0; background-image:radial-gradient(circle at 1px 1px, var(--canvas-dots) 2.4px, transparent 0);
+  background-size:20px 20px; pointer-events:none; }
+.canvas__stage { position:absolute; inset:0; }
+.canvas__edges { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; }
+.edge-path { fill:none; stroke:var(--canvas-edge); stroke-width:2; }
+.edge-path--done { stroke:var(--success); stroke-width:2; opacity:.95; }
+.edge-path--running { stroke:var(--running); stroke-width:2.25; stroke-dasharray:6 5; animation:dashflow .9s linear infinite; }
+@keyframes dashflow { to { stroke-dashoffset:-22; } }
+
+/* node card (CustomNode) */
+.cnode { position:absolute; width:240px; border-radius:10px; background:var(--bg-node); border:1px solid var(--border);
+  box-shadow:none; cursor:pointer; transition:border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out); }
+.cnode--running { border-color:var(--running); box-shadow:0 0 0 2px color-mix(in srgb,var(--running) 40%,transparent); z-index:10; }
+.cnode--ok { border-color:var(--success); }
+.cnode--error { border-color:var(--danger); }
+.cnode--selected { box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 35%,transparent); }
+.cnode__accent { position:absolute; left:0; top:8px; bottom:8px; width:2px; border-radius:2px; }
+.cnode__head { display:flex; align-items:center; gap:10px; padding:11px 56px 8px 14px; }
+.cnode__ico { width:22px; height:22px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.cnode__ico svg { width:14px; height:14px; }
+.cnode__label { font-size:13px; font-weight:530; line-height:1.25; letter-spacing:-0.012em; color:var(--text-0);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cnode__cat { position:absolute; right:8px; top:8px; max-width:112px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  font-size:8.5px; font-weight:650; color:var(--text-3); letter-spacing:0.06em; text-transform:uppercase; font-variant-numeric:tabular-nums; }
+.cnode__status { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:6px 12px; min-height:28px;
+  border-top:1px solid var(--border-soft); }
+.cnode__st-left { display:flex; align-items:center; gap:6px; min-width:0; }
+.cnode__dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.cnode__dot--running { animation:blink-soft 1.6s ease-in-out infinite; }
+@keyframes blink-soft { 0%,100%{opacity:1} 50%{opacity:.4} }
+.cnode__st-label { font-size:9.5px; letter-spacing:0.08em; text-transform:uppercase; }
+.cnode__st-idx { font-size:10px; color:var(--text-2); font-variant-numeric:tabular-nums; }
+.cnode__ms { font-size:10.5px; font-weight:600; font-variant-numeric:tabular-nums; }
+.cnode__tags { display:flex; flex-wrap:wrap; gap:4px; padding:0 12px 10px; }
+.cnode__tag { font-size:10px; padding:2px 6px; border-radius:4px; background:var(--bg-3); color:var(--text-1);
+  border:1px solid var(--border); font-variant-numeric:tabular-nums; }
+.cnode__handle { position:absolute; top:50%; width:8px; height:8px; border-radius:50%; background:var(--text-3);
+  border:2px solid var(--bg-node); transform:translateY(-50%); }
+.cnode__handle--in { left:-4px; }
+.cnode__handle--out { right:-4px; }
+
+/* canvas controls (bottom-left) */
+.cc { position:absolute; left:16px; bottom:16px; display:flex; flex-direction:column; gap:1px; padding:3px;
+  border-radius:8px; background:var(--surface); border:1px solid var(--border-soft); box-shadow:var(--shadow-card); }
+.cc__btn { width:28px; height:28px; display:flex; align-items:center; justify-content:center; background:transparent;
+  border:none; color:var(--text-2); cursor:pointer; border-radius:4px; transition:background 120ms,color 120ms; }
+.cc__btn svg { width:14px; height:14px; }
+.cc__btn:hover { background:var(--bg-3); color:var(--text-0); }
+.cc__btn--on { color:var(--accent); background:color-mix(in srgb,var(--accent) 10%,transparent); }
+.cc__sep { height:1px; background:var(--border-soft); margin:2px 4px; }
+
+/* minimap (bottom-right) */
+.mmap { position:absolute; right:16px; bottom:16px; width:168px; height:104px; border-radius:6px; overflow:hidden;
+  background:var(--surface); border:1px solid var(--border-soft); box-shadow:var(--shadow-card); }
+.mmap svg { width:100%; height:100%; }
+
+/* run pill (canvas top-left status) */
+.run-pill { position:absolute; left:16px; top:16px; display:inline-flex; align-items:center; gap:8px; padding:6px 12px;
+  border-radius:999px; background:var(--surface); border:1px solid var(--border-soft); box-shadow:var(--shadow-card);
+  font-size:12px; color:var(--text-1); }
+.run-pill__dot { width:7px; height:7px; border-radius:50%; background:var(--running); animation:blink-soft 1.6s ease-in-out infinite; }
+
+/* ── Agent / Copilot side panel ────────────────────────────────────────── */
+.agent { width:380px; flex:0 0 auto; display:flex; flex-direction:column; border-left:1px solid var(--border);
+  background:var(--surface); overflow:hidden; }
+.agent__head { display:flex; align-items:center; gap:9px; padding:11px 14px; border-bottom:1px solid var(--border-soft); }
+.agent__avatar { width:22px; height:22px; border-radius:6px; background:color-mix(in srgb,var(--accent) 16%,transparent);
+  color:var(--heat); display:flex; align-items:center; justify-content:center; }
+.agent__avatar svg { width:14px; height:14px; }
+.agent__title { font-size:13px; font-weight:600; letter-spacing:-0.01em; }
+.agent__tools { margin-left:auto; display:flex; gap:4px; }
+.agent__tool { width:26px; height:26px; border-radius:6px; border:1px solid transparent; background:transparent; color:var(--text-2);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.agent__tool svg { width:13px; height:13px; }
+.agent__tool:hover { background:var(--bg-2); color:var(--text-0); border-color:var(--border-soft); }
+.agent__msgs { flex:1; overflow-y:auto; padding:16px 14px; display:flex; flex-direction:column; gap:14px; }
+.msg-user { align-self:flex-end; max-width:88%; background:var(--accent); color:var(--accent-on); padding:9px 13px;
+  border-radius:14px 14px 4px 14px; font-size:12.5px; line-height:1.5; }
+.msg-asst { display:flex; gap:9px; max-width:96%; }
+.msg-asst__avatar { width:22px; height:22px; border-radius:6px; flex-shrink:0; background:color-mix(in srgb,var(--accent) 16%,transparent);
+  color:var(--heat); display:flex; align-items:center; justify-content:center; margin-top:2px; }
+.msg-asst__avatar svg { width:13px; height:13px; }
+.msg-asst__body { font-size:12.5px; line-height:1.55; color:var(--text-1); }
+.msg-asst__body strong { color:var(--text-0); font-weight:600; }
+.msg-asst__body code { font-family:var(--font-sans); font-size:11.5px; background:var(--bg-2); border:1px solid var(--border-soft);
+  border-radius:4px; padding:1px 5px; color:var(--text-0); }
+/* thinking block */
+.think { border:1px solid var(--border-soft); border-radius:10px; background:var(--bg-1); overflow:hidden; }
+.think__head { display:flex; align-items:center; gap:8px; padding:9px 12px; font-size:11.5px; color:var(--text-2); }
+.think__head svg { width:13px; height:13px; color:var(--accent); }
+.think__steps { padding:0 12px 10px; display:flex; flex-direction:column; gap:9px; }
+.think__step { display:flex; gap:9px; }
+.think__bullet { width:16px; height:16px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  background:color-mix(in srgb,var(--success) 14%,transparent); color:var(--success); margin-top:1px; }
+.think__bullet svg { width:10px; height:10px; }
+.think__step-label { font-size:12px; color:var(--text-0); font-weight:500; }
+.think__step-detail { font-size:11px; color:var(--text-3); margin-top:1px; }
+/* routes */
+.routes { border-top:1px solid var(--border-soft); padding:10px 12px; }
+.routes__head { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:7px; }
+.routes__label { font-size:10px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-2); }
+.routes__hint { font-size:10px; color:var(--text-3); }
+.routes__list { display:flex; flex-wrap:wrap; gap:6px; }
+.route-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 9px; border-radius:8px; background:var(--bg-1);
+  border:1px solid var(--border-soft); cursor:pointer; transition:background 120ms,border-color 120ms; }
+.route-chip:hover { background:var(--bg-2); border-color:var(--border); }
+.route-chip__cmd { font-family:var(--font-sans); font-size:10.5px; color:var(--accent); font-weight:600; }
+.route-chip__name { font-size:11.5px; color:var(--text-1); }
+/* agent input */
+.agent__input { padding:12px; border-top:1px solid var(--border-soft); }
+.agent__chip { display:flex; align-items:center; gap:6px; margin-bottom:8px; padding:5px 8px; border-radius:6px;
+  background:color-mix(in srgb,var(--bg-3) 70%,transparent); border:1px solid var(--border-soft); font-size:10.5px; color:var(--accent); }
+.agent__chip svg { width:10px; height:10px; flex-shrink:0; }
+.agent__box { display:flex; gap:8px; align-items:flex-end; }
+.agent__ta { flex:1; min-height:44px; max-height:120px; resize:none; border-radius:9px; border:1px solid var(--border); background:var(--bg-2);
+  color:var(--text-0); font-family:inherit; font-size:12px; line-height:1.5; padding:11px 12px; outline:none; }
+.agent__ta:focus { border-color:color-mix(in srgb,var(--accent) 50%,transparent); }
+.agent__send { min-width:40px; height:38px; border-radius:8px; border:none; background:var(--accent); color:var(--accent-on);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.agent__send:disabled { background:var(--bg-3); color:var(--text-3); cursor:not-allowed; }
+.agent__send svg { width:14px; height:14px; }
+.agent__foot { margin-top:8px; font-size:10px; color:var(--text-3); }
+
+/* ── Generic screen (node library, runs, automations) ─────────────────── */
+.screen { flex:1; min-width:0; overflow-y:auto; }
+.screen__inner { padding:clamp(22px,3vw,40px) clamp(20px,3vw,44px); max-width:1120px; margin:0 auto; }
+.screen__head { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
+.screen__eyebrow { font-family:var(--font-display-serif); font-style:italic; font-size:18px; color:var(--text-2); margin-bottom:2px; }
+.screen__title { font-size:clamp(24px,2.6vw,30px); font-weight:600; letter-spacing:-0.03em; }
+.screen__sub { font-size:13px; color:var(--text-2); margin-top:4px; }
+[data-theme='aurora'] .screen__eyebrow { color:rgba(255,255,255,0.82); }
+[data-theme='aurora'] .screen__title { color:#fff; }
+[data-theme='aurora'] .screen__sub { color:rgba(255,255,255,0.8); }
+
+/* node library */
+.nlib-sec { margin-bottom:26px; }
+.nlib-sec__head { display:flex; align-items:center; gap:9px; margin-bottom:12px; }
+.nlib-sec__accent { width:3px; height:14px; border-radius:2px; }
+.nlib-sec__label { font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-2); }
+.nlib-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; }
+.nlib-card { display:flex; gap:12px; padding:14px; border-radius:14px; background:var(--glass);
+  backdrop-filter:blur(var(--glass-blur)) saturate(1.15); border:1px solid var(--border-soft); box-shadow:var(--shadow-card);
+  transition:transform 160ms var(--ease-out), border-color 160ms; cursor:pointer; }
+.nlib-card:hover { transform:translateY(-2px); }
+.nlib-card__ico { width:34px; height:34px; border-radius:9px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.nlib-card__ico svg { width:18px; height:18px; }
+.nlib-card__name { font-size:13.5px; font-weight:600; letter-spacing:-0.01em; color:var(--text-0); }
+.nlib-card__type { font-size:10px; font-family:var(--font-sans); color:var(--text-3); letter-spacing:0.04em; margin-top:1px; }
+.nlib-card__desc { font-size:11.5px; color:var(--text-2); line-height:1.4; margin-top:6px; }
+
+/* run history */
+.runs-table { border:1px solid var(--border-soft); border-radius:16px; overflow:hidden; background:var(--glass);
+  backdrop-filter:blur(var(--glass-blur)) saturate(1.15); box-shadow:var(--shadow-card); }
+.runs-row { display:grid; grid-template-columns:18px 1.6fr 1fr 0.8fr 0.8fr 0.9fr; gap:14px; align-items:center;
+  padding:14px 18px; border-top:1px solid var(--border-soft); }
+.runs-row--head { border-top:none; padding:11px 18px; }
+.runs-row--head span { font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-3); }
+.runs-row:not(.runs-row--head):hover { background:color-mix(in srgb,var(--bg-2) 60%,transparent); }
+.runs-status { width:9px; height:9px; border-radius:50%; }
+.runs-wf { font-size:13px; font-weight:550; color:var(--text-0); }
+.runs-err { font-size:11px; color:var(--danger); margin-top:2px; }
+.runs-cell { font-size:12.5px; color:var(--text-2); font-variant-numeric:tabular-nums; }
+.runs-when { font-size:12px; color:var(--text-3); }
+.runs-badge { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:500; padding:3px 10px; border-radius:999px; }
+
+/* automations */
+.autom-grid { display:flex; flex-direction:column; gap:12px; }
+.autom-card { display:flex; align-items:center; gap:16px; padding:18px 20px; border-radius:16px; background:var(--glass);
+  backdrop-filter:blur(var(--glass-blur)) saturate(1.15); border:1px solid var(--border-soft); box-shadow:var(--shadow-card); }
+.autom-card__ico { width:40px; height:40px; border-radius:11px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  background:color-mix(in srgb,var(--accent) 14%,transparent); color:var(--accent); }
+.autom-card__ico svg { width:19px; height:19px; }
+.autom-card__main { flex:1; min-width:0; }
+.autom-card__name { font-size:14px; font-weight:600; letter-spacing:-0.01em; }
+.autom-card__cron { font-size:12px; color:var(--text-2); margin-top:2px; }
+.autom-card__cron code { font-family:var(--font-sans); background:var(--bg-2); border:1px solid var(--border-soft); border-radius:4px;
+  padding:1px 6px; font-size:11px; color:var(--text-1); margin-right:8px; }
+.autom-card__meta { text-align:right; flex-shrink:0; }
+.autom-card__next { font-size:12px; color:var(--text-1); font-variant-numeric:tabular-nums; }
+.autom-card__last { font-size:11px; color:var(--text-3); margin-top:2px; }
+/* toggle switch */
+.sw-toggle { width:38px; height:22px; border-radius:999px; border:none; cursor:pointer; position:relative; flex-shrink:0;
+  background:var(--bg-3); transition:background 160ms; }
+.sw-toggle--on { background:var(--success); }
+.sw-toggle__knob { position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#fff;
+  transition:transform 160ms; box-shadow:0 1px 2px rgba(0,0,0,.3); }
+.sw-toggle--on .sw-toggle__knob { transform:translateX(16px); }
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>window.DS_LOGO_DARK="data:image/png;base64,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";window.DS_INIT_SCREEN="automations";window.DS_INIT_THEME="aurora";</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+/* Mock data for the dbSherpa Studio recreation.
+   Mirrors frontend/src/components/dashboard/mockData.ts + nodes/generated.ts. */
+
+/* ── Node registry (verbatim colors/icons/groups from nodes/generated.ts) ── */
+window.PALETTE_SECTIONS = [
+  { id: 'triggers', label: 'Triggers', color: '#0EA5E9' },
+  { id: 'data', label: 'Data', color: '#10B981' },
+  { id: 'transform', label: 'Transform', color: '#6366F1' },
+  { id: 'logic', label: 'Logic', color: '#F59E0B' },
+  { id: 'integrations', label: 'Integrations', color: '#14B8A6' },
+  { id: 'ai', label: 'AI', color: '#8B5CF6' },
+  { id: 'output', label: 'Output', color: '#EC4899' },
+];
+
+// type: [displayName, color, lucideIcon, group, description]
+window.NODE_UI = {
+  manual_trigger: ['Manual Trigger', '#7c3aed', 'play', 'triggers', 'Start workflow manually.'],
+  api_trigger: ['API Trigger', '#7c3aed', 'webhook', 'triggers', 'Trigger via HTTP webhook.'],
+  webhook_trigger: ['Webhook', '#7c3aed', 'zap', 'triggers', 'Listen for incoming webhooks.'],
+  schedule: ['Schedule', '#7c3aed', 'clock', 'triggers', 'Run on a cron schedule.'],
+  db_query: ['DB Query', '#0ea5e9', 'database', 'data', 'Run a SELECT against an Oracle-backed dataset.'],
+  csv_extract: ['Data Extract', '#0ea5e9', 'table-2', 'data', 'Load rows from a dataset.'],
+  http: ['HTTP Request', '#0ea5e9', 'globe', 'data', 'Fetch data from any HTTP URL.'],
+  pdf_extract: ['PDF Extract', '#0ea5e9', 'file-text', 'data', 'Extract text from a PDF.'],
+  filter: ['Filter', '#f59e0b', 'filter', 'transform', 'Filter rows by an expression.'],
+  sort: ['Sort', '#f59e0b', 'arrow-up-down', 'transform', 'Sort rows by a column.'],
+  group_by: ['Group By', '#f59e0b', 'bar-chart-3', 'transform', 'Aggregate rows by a column.'],
+  join: ['Join', '#f59e0b', 'merge', 'transform', 'Join two upstream datasets.'],
+  map_transform: ['Map / Transform', '#f59e0b', 'wand-2', 'transform', 'Rename or compute columns.'],
+  select_columns: ['Select Columns', '#f59e0b', 'columns', 'transform', 'Pick a subset of columns.'],
+  deduplicate: ['Deduplicate', '#f59e0b', 'copy', 'transform', 'Remove duplicate rows by key.'],
+  data_merge: ['Merge', '#f59e0b', 'layers', 'transform', 'Concatenate or union datasets.'],
+  csv_output: ['CSV Output', '#f59e0b', 'download', 'transform', 'Serialize rows to a CSV string.'],
+  code: ['Transform (Starlark)', '#06b6d4', 'code-2', 'logic', 'Run sandboxed Starlark on rows.'],
+  condition: ['Condition', '#06b6d4', 'git-branch', 'logic', 'Branch rows by an expression.'],
+  router: ['Router', '#06b6d4', 'share-2', 'logic', 'Route rows to labelled branches.'],
+  loop: ['Loop', '#06b6d4', 'refresh-cw', 'logic', 'Iterate over rows.'],
+  pause: ['Pause', '#06b6d4', 'pause-circle', 'logic', 'Wait before continuing.'],
+  function: ['Function', '#06b6d4', 'function-square', 'logic', 'Run Python with input/output.'],
+  jira_mcp: ['Jira MCP', '#0052CC', 'ticket', 'integrations', 'Create issues, list tickets, epics.'],
+  confluence_mcp: ['Confluence MCP', '#172B4D', 'scroll-text', 'integrations', 'Search pages, publish reports.'],
+  github_mcp: ['GitHub MCP', '#24292F', 'git-pull-request', 'integrations', 'Implement fixes, open PRs.'],
+  github: ['GitHub', '#24292e', 'git-branch', 'integrations', 'GitHub API actions.'],
+  agent: ['AI Agent', '#8b5cf6', 'bot', 'ai', 'Call Gemini with rows + prompt.'],
+  evaluator: ['Evaluator', '#8b5cf6', 'check-square', 'ai', 'Evaluate rows; report pass/fail rate.'],
+  excel_output: ['Excel Export', '#16a34a', 'file-spreadsheet', 'output', 'Write multi-tab Excel.'],
+  response: ['Response', '#b45309', 'arrow-right', 'output', 'Return a final workflow response.'],
+  note: ['Note', '#475569', 'sticky-note', 'output', 'Canvas comment / annotation.'],
+};
+
+/* ── A sample workflow DAG for the canvas (status reflects a recent run) ── */
+window.WORKFLOW = {
+  name: 'Lead scoring pipeline',
+  nodes: [
+    { id: 'n1', type: 'manual_trigger', label: 'Start run',       x: 40,  y: 60,  status: 'ok',      ms: 12 },
+    { id: 'n2', type: 'db_query',       label: 'Load leads',      x: 40,  y: 210, status: 'ok',      ms: 340, tags: ['leads.csv'] },
+    { id: 'n3', type: 'filter',         label: 'Score ≥ 70',      x: 360, y: 210, status: 'ok',      ms: 28,  tags: ['row.score >= 70'] },
+    { id: 'n4', type: 'agent',          label: 'Summarize lead',  x: 680, y: 120, status: 'running', ms: 1840, idx: 4, total: 6 },
+    { id: 'n5', type: 'jira_mcp',       label: 'Create tickets',  x: 680, y: 300, status: 'idle' },
+    { id: 'n6', type: 'excel_output',   label: 'Export report',   x: 1000, y: 210, status: 'idle',   tags: ['→ leads.xlsx'] },
+  ],
+  edges: [
+    { from: 'n1', to: 'n2', state: 'done' },
+    { from: 'n2', to: 'n3', state: 'done' },
+    { from: 'n3', to: 'n4', state: 'running' },
+    { from: 'n3', to: 'n5', state: 'idle' },
+    { from: 'n4', to: 'n6', state: 'idle' },
+    { from: 'n5', to: 'n6', state: 'idle' },
+  ],
+};
+
+/* ── Agent (sherpa copilot) sample thread ── */
+window.AGENT_THREAD = [
+  { role: 'user', text: 'Build a workflow that loads leads, keeps the high scorers, summarizes each with AI, and files Jira tickets.' },
+  { role: 'thinking', steps: [
+    { kind: 'plan', label: 'Planning workflow', detail: 'Trigger → DB query → filter → agent → Jira MCP → Excel' },
+    { kind: 'build', label: 'Adding 6 nodes', detail: 'Wiring ports and validating contracts' },
+    { kind: 'check', label: 'Validating', detail: 'All ports typed · no cycles' },
+  ] },
+  { role: 'assistant', text: 'Done — I built **Lead scoring pipeline** with 6 nodes. It loads `leads.csv`, filters to `score ≥ 70`, summarizes each lead with the AI Agent, then creates Jira tickets and exports an Excel report. Hit **Run** to try it with sample data.' },
+];
+
+window.AGENT_ROUTES = [
+  { command: '/run', label: 'Run with sample data' },
+  { command: '/build', label: 'Generate a workflow' },
+  { command: '/check-run', label: 'Explain last run' },
+  { command: '/fix', label: 'Fix validation errors' },
+];
+
+/* ── Run history ── */
+window.RUNS = [
+  { id: 'r1', wf: 'Lead scoring pipeline', status: 'success', when: '2h ago', dur: '3.2s', nodes: 6, rows: 248 },
+  { id: 'r2', wf: 'Daily data sync', status: 'error', when: '5h ago', dur: '1.1s', nodes: 5, rows: 0, err: 'db_query: source not found' },
+  { id: 'r3', wf: 'Quarterly report generator', status: 'success', when: '1d ago', dur: '8.7s', nodes: 11, rows: 1204 },
+  { id: 'r4', wf: 'Lead scoring pipeline', status: 'success', when: '1d ago', dur: '3.0s', nodes: 6, rows: 240 },
+  { id: 'r5', wf: 'Trade anomaly detection', status: 'success', when: '2d ago', dur: '5.4s', nodes: 9, rows: 512 },
+  { id: 'r6', wf: 'Daily data sync', status: 'success', when: '2d ago', dur: '1.4s', nodes: 5, rows: 96 },
+  { id: 'r7', wf: 'Quarterly report generator', status: 'running', when: 'now', dur: '—', nodes: 11, rows: null },
+];
+
+/* ── Automations (scheduled workflows) ── */
+window.AUTOMATIONS = [
+  { id: 'a1', wf: 'Daily data sync', cron: '0 6 * * *', human: 'Every day at 6:00 AM', active: true, last: 'Succeeded 5h ago', next: 'in 19h' },
+  { id: 'a2', wf: 'Quarterly report generator', cron: '0 9 1 */3 *', human: 'First of every quarter, 9:00 AM', active: true, last: 'Succeeded 1d ago', next: 'in 12d' },
+  { id: 'a3', wf: 'Trade anomaly detection', cron: '*/30 * * * *', human: 'Every 30 minutes', active: false, last: 'Paused', next: '—' },
+];
+
+window.STUDIO_DATA = {
+  user: { name: 'John', initials: 'JD' },
+  nav: [
+    { id: 'dashboard', label: 'Dashboard', icon: 'layout-grid' },
+    { id: 'workflow', label: 'Workflow', icon: 'workflow' },
+    { id: 'agent', label: 'Sherpa Copilot', icon: 'sparkles' },
+    { id: 'nodes', label: 'Node Library', icon: 'boxes' },
+    { id: 'runs', label: 'Run History', icon: 'activity' },
+    { id: 'automations', label: 'Automations', icon: 'zap' },
+    { id: 'data', label: 'Data Sources', icon: 'database' },
+    { id: 'settings', label: 'Settings', icon: 'settings' },
+  ],
+  suggestions: [
+    'Create an Excel report from orders.csv with sorted top contributors.',
+    'Run "Trade Anomaly Detection" with sample alert context.',
+    'Flag accounts with attrition risk by office.',
+  ],
+  stats: [
+    { label: 'Workflows', value: '4', sub: '2 drafts ready to open', spark: [4,5,5,7,6,8,8], up: false },
+    { label: 'Runs this month', value: '12', sub: '+2 vs last month', spark: [2,4,3,6,8,9,12], up: true },
+    { label: 'Automations', value: '2', sub: '2 scheduled — on autopilot', spark: [0,1,1,1,2,2,2], up: false },
+  ],
+  health: { rate: '92%', summary: '12 runs · 1 failed', online: true,
+    heat: [1,3,2,0,4,1,2, 2,1,3,0,1,4,2, 0,2,1,3,1,0,2] },
+  workflows: [
+    { id: 'leads', name: 'Lead scoring pipeline', time: '2h ago', status: 'success',
+      statusLabel: 'Succeeded 2h ago', nodes: 8, chips: ['DB query','Agent','Jira MCP'] },
+    { id: 'sync', name: 'Daily data sync', time: '5h ago', status: 'error',
+      statusLabel: 'Failed 5h ago', nodes: 5, chips: ['CSV extract','Transform','Output'] },
+    { id: 'report', name: 'Quarterly report generator', time: '1d ago', status: 'success',
+      statusLabel: 'Succeeded 1d ago', nodes: 11, chips: ['DB query','Agent','Sheets'] },
+    { id: 'draft', name: 'Untitled workflow', time: '1d ago', status: 'draft',
+      statusLabel: 'Not run yet', nodes: 2, chips: ['Trigger','Agent'], draft: true },
+  ],
+};
+
+</script>
+<!-- components.jsx -->
+<script type="text/babel" data-presets="react">
+/* dbSherpa Studio — UI Kit components.
+   Presentational React components for the Studio dashboard. Exported to window
+   so app.jsx can compose them. Icons are Lucide (rendered from <i data-lucide>;
+   App calls lucide.createIcons() after each render). */
+const { useState, useRef } = React;
+
+/* Brand monogram (logo data-URI is injected by index.html as window.DS_LOGO_DARK) */
+function Brand({ size = 20 }) {
+  return (
+    <div className="rail__brand" title="dbSherpa Studio">
+      <img src={window.DS_LOGO_DARK} alt="dbSherpa" style={{ width: size }} />
+    </div>
+  );
+}
+
+function Icon({ name, size }) {
+  const style = size ? { width: size, height: size } : undefined;
+  return <i data-lucide={name} style={style} />;
+}
+
+/* Left navigation rail */
+function Rail({ active, onNav, user, theme, onTheme }) {
+  const themeOpts = [{ id: 'dark', icon: 'moon' }, { id: 'light', icon: 'sun' }, { id: 'aurora', icon: 'sparkles' }];
+  return (
+    <nav className="rail">
+      <Brand />
+      <div className="rail__nav">
+        {window.STUDIO_DATA.nav.map((item) => (
+          <button
+            key={item.id}
+            className={'rail__btn' + (active === item.id ? ' rail__btn--active' : '')}
+            title={item.label}
+            aria-label={item.label}
+            aria-current={active === item.id ? 'page' : undefined}
+            onClick={() => onNav(item.id)}
+          >
+            <Icon name={item.icon} />
+          </button>
+        ))}
+      </div>
+      <div className="rail__spacer" />
+      {onTheme && (
+        <div className="rail__themes">
+          {themeOpts.map((o) => (
+            <button key={o.id} className={'rail__btn' + (theme === o.id ? ' rail__btn--active' : '')}
+              title={'Theme: ' + o.id} aria-pressed={theme === o.id} onClick={() => onTheme(o.id)}>
+              <Icon name={o.icon} />
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="rail__avatar" title={user.name}>{user.initials}</div>
+    </nav>
+  );
+}
+
+/* Theme segmented control: dark / light / aurora */
+function ThemeSeg({ theme, onChange }) {
+  const opts = [
+    { id: 'dark', icon: 'moon', label: 'Dark' },
+    { id: 'light', icon: 'sun', label: 'Light' },
+    { id: 'aurora', icon: 'sparkles', label: 'Aurora' },
+  ];
+  return (
+    <div className="seg" role="group" aria-label="Theme">
+      {opts.map((o) => (
+        <button
+          key={o.id}
+          className={'seg__btn' + (theme === o.id ? ' seg__btn--on' : '')}
+          title={o.label}
+          aria-pressed={theme === o.id}
+          onClick={() => onChange(o.id)}
+        >
+          <Icon name={o.icon} />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* Header: time-aware greeting + tools */
+function Header({ greeting, name, onSearch, onNew }) {
+  return (
+    <header className="head">
+      <div className="welcome reveal">
+        <div className="welcome__eyebrow">{greeting.date}</div>
+        <h1 className="welcome__title">{greeting.hello}, {name}</h1>
+        <p className="welcome__sub">Here's what's ready to run or automate today.</p>
+      </div>
+      <div className="head__tools">
+        <button className="search" onClick={onSearch}>
+          <Icon name="search" />
+          <span>Search Studio…</span>
+          <span className="search__kbd">⌘K</span>
+        </button>
+        <button className="btn btn--ghost" onClick={onNew}>
+          <Icon name="plus" /> New workflow
+        </button>
+      </div>
+    </header>
+  );
+}
+
+/* Sherpa prompt bar + suggestion chips */
+function SherpaBar({ onSubmit }) {
+  const [value, setValue] = useState('');
+  const ref = useRef(null);
+  const submit = (e) => { e.preventDefault(); const t = value.trim(); if (t) { onSubmit(t); setValue(''); } };
+  return (
+    <section className="ai-card">
+      <form className="sherpa" onSubmit={submit}>
+        <span className="sherpa__icon"><Icon name="sparkles" /></span>
+        <input ref={ref} className="sherpa__input" placeholder="Ask Sherpa anything…"
+          value={value} onChange={(e) => setValue(e.target.value)} aria-label="Ask Sherpa" />
+        <button type="submit" className="sherpa__send" disabled={!value.trim()} aria-label="Send to Sherpa">
+          <Icon name="arrow-up-right" />
+        </button>
+      </form>
+      <div className="suggest-label">Suggested for you</div>
+      <div className="suggest">
+        {window.STUDIO_DATA.suggestions.map((s, i) => (
+          <button key={i} className="suggest__chip" onClick={() => { setValue(s); ref.current && ref.current.focus(); }}>
+            <span>{s}</span><Icon name="arrow-up-right" />
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* Tiny sparkline path builder */
+function sparkPath(values, w = 96, h = 26) {
+  const max = Math.max(...values, 1), min = Math.min(...values, 0);
+  const span = max - min || 1;
+  const pts = values.map((v, i) => [
+    (i / (values.length - 1)) * w,
+    h - ((v - min) / span) * (h - 4) - 2,
+  ]);
+  const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const fill = line + ` L${w},${h} L0,${h} Z`;
+  return { line, fill };
+}
+
+function StatCard({ stat }) {
+  const { line, fill } = sparkPath(stat.spark);
+  return (
+    <div className="stat">
+      <div className="stat__top">
+        <div className="stat__val">{stat.value}</div>
+        <svg className="stat__spark" viewBox="0 0 96 26" preserveAspectRatio="none">
+          <path className="fill" d={fill} /><path className="line" d={line} />
+        </svg>
+      </div>
+      <div className="stat__label">{stat.label}</div>
+      <div className={'stat__sub' + (stat.up ? ' stat__sub--up' : '')}>{stat.sub}</div>
+    </div>
+  );
+}
+
+function HealthCard({ health }) {
+  return (
+    <section className="health">
+      <span className="health__blob health__blob--1" />
+      <span className="health__blob health__blob--2" />
+      <div className="health__c">
+        <div className="health__val health__val--success">{health.rate}</div>
+        <div className="health__label">Success rate this month</div>
+        <p className="health__copy">{health.summary}</p>
+        <span className="pill pill--online"><span className="pill__dot" />{health.online ? 'Engine online' : 'Engine offline'}</span>
+      </div>
+    </section>
+  );
+}
+
+function ActivityCalendar({ health }) {
+  const heat = health.heat;
+  const weeks = [];
+  for (let i = 0; i < heat.length; i += 7) weeks.push(heat.slice(i, i + 7));
+  const tone = (v) => {
+    if (v <= 0) return 'var(--bg-3)';
+    const pct = Math.min(1, v / 4) * 100;
+    return `color-mix(in srgb, var(--heat) ${20 + pct * 0.7}%, var(--bg-3))`;
+  };
+  return (
+    <section className="activity">
+      <div className="activity__head">
+        <span className="activity__title">Run activity</span>
+        <span className="activity__streak">3-week streak</span>
+      </div>
+      <div className="cal">
+        {weeks.map((wk, i) => (
+          <div className="cal__week" key={i}>
+            {wk.map((v, j) => <span className="cal__cell" key={j} style={{ background: tone(v) }} />)}
+          </div>
+        ))}
+      </div>
+      <div className="activity__legend">
+        Less
+        <span className="cal__cell" style={{ background: 'var(--bg-3)' }} />
+        <span className="cal__cell" style={{ background: 'color-mix(in srgb, var(--heat) 45%, var(--bg-3))' }} />
+        <span className="cal__cell" style={{ background: 'color-mix(in srgb, var(--heat) 75%, var(--bg-3))' }} />
+        <span className="cal__cell" style={{ background: 'var(--heat)' }} />
+        More
+      </div>
+    </section>
+  );
+}
+
+function WorkflowCard({ wf, onOpen }) {
+  const cls = 'wf' + (wf.status === 'success' ? ' wf--success' : wf.status === 'error' ? ' wf--error' : '');
+  const statusCls = 'wf__status' + (wf.status === 'success' ? ' wf__status--success' : wf.status === 'error' ? ' wf__status--error' : '');
+  return (
+    <article className={cls} onClick={onOpen}>
+      <div className="wf__head">
+        <h3 className="wf__title">{wf.name}</h3>
+        <span className="wf__time">{wf.time}</span>
+      </div>
+      <div className="wf__chips" style={{ marginBottom: '-2px' }}>
+        {wf.draft && <span className="chip chip--draft">Draft</span>}
+        <span className={statusCls}>{wf.statusLabel}</span>
+      </div>
+      <p className="wf__nodes">{wf.nodes} nodes</p>
+      <div className="wf__chips">{wf.chips.map((c) => <span className="chip" key={c}>{c}</span>)}</div>
+      <button className="wf__action">Open Studio <Icon name="arrow-up-right" /></button>
+    </article>
+  );
+}
+
+function NewWorkflowCard({ onNew }) {
+  return (
+    <article className="wf wf--new" onClick={onNew}>
+      <div className="wf--new__icon"><Icon name="plus" /></div>
+      <p className="wf--new__hint">Start from scratch or pick a template</p>
+    </article>
+  );
+}
+
+function Toast({ msg }) {
+  if (!msg) return null;
+  return <div className="toast"><Icon name="sparkles" />{msg}</div>;
+}
+
+Object.assign(window, {
+  Brand, Icon, Rail, ThemeSeg, Header, SherpaBar,
+  StatCard, HealthCard, ActivityCalendar, WorkflowCard, NewWorkflowCard, Toast,
+});
+
+</script>
+<!-- canvas.jsx -->
+<script type="text/babel" data-presets="react">
+/* dbSherpa Studio — Workflow Canvas (DAG editor) components.
+   Faithful to WorkflowCanvas/CustomNode.tsx, NodePanel, WorkspaceToolbar. */
+
+const NODE_W = 240;
+function nodeHeight(n) { return 64 + (n.tags && n.tags.length ? 28 : 0); }
+
+function WorkspaceToolbar({ view, onView, running, onRun, flash }) {
+  return (
+    <div className="wt">
+      <div className="wt__left">
+        <div className="wt-seg">
+          <button className={'wt-seg__btn' + (view === 'canvas' ? ' wt-seg__btn--on' : '')} onClick={() => onView('canvas')}>
+            <Icon name="workflow" /> Canvas
+          </button>
+          <button className={'wt-seg__btn' + (view === 'code' ? ' wt-seg__btn--on' : '')} onClick={() => onView('code')}>
+            <Icon name="code-2" /> Code
+          </button>
+        </div>
+        <span className="wt__sep">/</span>
+        <div className="wt-seg">
+          <button className="wt-seg__btn wt-seg__btn--on">View</button>
+          <button className="wt-seg__btn" onClick={() => flash('Edit mode')}>Edit</button>
+        </div>
+      </div>
+      <div className="wt__right">
+        <button className="wt-ico" title="Import" onClick={() => flash('Import workflow')}><Icon name="upload" /></button>
+        <button className="wt-ico" title="Export" onClick={() => flash('Export workflow')}><Icon name="download" /></button>
+        <button className="wt-ico" title="Clear" onClick={() => flash('Clear run state')}><Icon name="trash-2" /></button>
+        <button className="wt-ico" title="Save" onClick={() => flash('Workflow saved')}><Icon name="save" /></button>
+        <button className="wt-run" title={running ? 'Stop' : 'Run workflow'} onClick={onRun}>
+          <Icon name={running ? 'square' : 'play'} />
+        </button>
+        <span className="wt-divider" />
+        <button className="wt-ico" title="New workflow" onClick={() => flash('New workflow')}><Icon name="plus" /></button>
+      </div>
+    </div>
+  );
+}
+
+function NodePalette({ onAdd }) {
+  const sections = window.PALETTE_SECTIONS.map((sec) => ({
+    ...sec,
+    types: Object.entries(window.NODE_UI).filter(([, m]) => m[3] === sec.id),
+  })).filter((s) => s.types.length);
+  return (
+    <aside className="pal">
+      <div className="pal__head"><span className="pal__title">Palette</span>
+        <button className="wt-ico" style={{ width: 22, height: 22 }} title="Collapse"><Icon name="panel-left-close" /></button>
+      </div>
+      <div className="pal__search"><Icon name="search" /><span>Search nodes…</span></div>
+      <div className="pal__scroll">
+        {sections.map((sec) => (
+          <div className="pal-sec" key={sec.id}>
+            <div className="pal-sec__head">
+              <span className="pal-accent" style={{ background: sec.color }} />
+              <span className="pal-sec__label">{sec.label}</span>
+              <span className="pal-sec__count">{sec.types.length}</span>
+            </div>
+            <div className="pal-items">
+              {sec.types.map(([type, m]) => (
+                <div className="pal-item" key={type} title={m[4]} onClick={() => onAdd(m[0])}>
+                  <span className="pal-item__accent" style={{ background: sec.color }} />
+                  <span className="pal-item__ico"><Icon name={m[2]} /></span>
+                  <span className="pal-item__name">{m[0]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="pal__foot">drag · double-click to add</div>
+    </aside>
+  );
+}
+
+function statusLabel(s) { return s === 'running' ? 'Running' : s === 'ok' ? 'Complete' : s === 'error' ? 'Error' : 'Idle'; }
+function statusColor(s) { return s === 'running' ? 'var(--running)' : s === 'ok' ? 'var(--success)' : s === 'error' ? 'var(--danger)' : 'var(--border-strong)'; }
+
+function CanvasNode({ node, selected, onSelect }) {
+  const m = window.NODE_UI[node.type];
+  const [name, color, icon, group] = m;
+  const cls = 'cnode'
+    + (node.status === 'running' ? ' cnode--running' : node.status === 'ok' ? ' cnode--ok' : node.status === 'error' ? ' cnode--error' : '')
+    + (selected ? ' cnode--selected' : '');
+  const accent = node.status === 'ok' ? 'var(--success)' : node.status === 'error' ? 'var(--danger)' : node.status === 'running' ? 'var(--running)' : color;
+  const hasRun = node.status === 'ok' || node.status === 'error' || node.status === 'running';
+  return (
+    <div className={cls} style={{ left: node.x, top: node.y }} onClick={(e) => { e.stopPropagation(); onSelect(node.id); }}>
+      <span className="cnode__accent" style={{ background: accent, opacity: selected || hasRun ? 0.95 : 0.55 }} />
+      <span className="cnode__handle cnode__handle--in" style={{ background: selected ? color : 'var(--text-3)' }} />
+      <span className="cnode__handle cnode__handle--out" style={{ background: node.status === 'ok' ? 'var(--success)' : selected ? color : 'var(--text-3)' }} />
+      <span className="cnode__cat">{node.type}</span>
+      <div className="cnode__head">
+        <span className="cnode__ico" style={{ color }}><Icon name={icon} /></span>
+        <span className="cnode__label">{node.label}</span>
+      </div>
+      <div className="cnode__status">
+        <div className="cnode__st-left">
+          <span className={'cnode__dot' + (node.status === 'running' ? ' cnode__dot--running' : '')} style={{ background: statusColor(node.status) }} />
+          <span className="cnode__st-label" style={{ color: statusColor(node.status) }}>{statusLabel(node.status)}</span>
+          {node.status === 'running' && node.idx != null && <span className="cnode__st-idx">· {node.idx}/{node.total}</span>}
+        </div>
+        {hasRun && node.ms != null && (
+          <span className="cnode__ms" style={{ color: node.status === 'error' ? 'var(--danger)' : node.status === 'running' ? 'var(--running)' : 'var(--text-1)' }}>
+            {(node.ms / 1000).toFixed(node.ms < 1000 ? 1 : 2)} s
+          </span>
+        )}
+      </div>
+      {node.tags && node.tags.length > 0 && (
+        <div className="cnode__tags">{node.tags.map((t, i) => <span className="cnode__tag" key={i}>{t}</span>)}</div>
+      )}
+    </div>
+  );
+}
+
+function edgePath(a, b) {
+  const x1 = a.x + NODE_W, y1 = a.y + nodeHeight(a) / 2;
+  const x2 = b.x, y2 = b.y + nodeHeight(b) / 2;
+  const dx = Math.max(40, (x2 - x1) / 2);
+  return `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`;
+}
+
+function WorkflowCanvasScreen({ flash }) {
+  const wf = window.WORKFLOW;
+  const [nodes, setNodes] = React.useState(wf.nodes);
+  const [sel, setSel] = React.useState('n4');
+  const [zoom, setZoom] = React.useState(0.82);
+  const [grid, setGrid] = React.useState(true);
+  const [minimap, setMinimap] = React.useState(true);
+  const [view, setView] = React.useState('canvas');
+  const [running, setRunning] = React.useState(true);
+  const byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
+
+  const bounds = nodes.reduce((b, n) => ({
+    maxX: Math.max(b.maxX, n.x + NODE_W), maxY: Math.max(b.maxY, n.y + nodeHeight(n)),
+  }), { maxX: 0, maxY: 0 });
+
+  return (
+    <div className="canvas-wrap">
+      <WorkspaceToolbar view={view} onView={setView} running={running}
+        onRun={() => { setRunning((r) => !r); flash(running ? 'Run stopped' : 'Running workflow…'); }} flash={flash} />
+      <div className="canvas" onClick={() => setSel(null)}>
+        {grid && <div className="canvas__dots" />}
+        <span className="run-pill"><span className="run-pill__dot" />Running · {wf.name}</span>
+        <div className="canvas__stage" style={{ transform: `scale(${zoom})`, transformOrigin: '0 0', left: 28, top: 24 }}>
+          <svg className="canvas__edges" style={{ width: bounds.maxX + 80, height: bounds.maxY + 80 }}>
+            {wf.edges.map((e, i) => {
+              const a = byId[e.from], b = byId[e.to];
+              if (!a || !b) return null;
+              const cls = 'edge-path' + (e.state === 'done' ? ' edge-path--done' : e.state === 'running' ? ' edge-path--running' : '');
+              return <path key={i} className={cls} d={edgePath(a, b)} markerEnd={`url(#arrow-${e.state})`} />;
+            })}
+            <defs>
+              {['idle', 'done', 'running'].map((s) => (
+                <marker key={s} id={`arrow-${s}`} markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                  <path d="M0,0 L9,4.5 L0,9 z" fill={s === 'done' ? 'var(--success)' : s === 'running' ? 'var(--running)' : 'var(--canvas-edge)'} />
+                </marker>
+              ))}
+            </defs>
+          </svg>
+          {nodes.map((n) => <CanvasNode key={n.id} node={n} selected={sel === n.id} onSelect={setSel} />)}
+        </div>
+
+        <div className="cc">
+          <button className={'cc__btn' + (grid ? ' cc__btn--on' : '')} title="Toggle grid" onClick={() => setGrid((g) => !g)}><Icon name="grid-3x3" /></button>
+          <div className="cc__sep" />
+          <button className="cc__btn" title="Zoom in" onClick={() => setZoom((z) => Math.min(1.5, z + 0.12))}><Icon name="plus" /></button>
+          <button className="cc__btn" title="Zoom out" onClick={() => setZoom((z) => Math.max(0.4, z - 0.12))}><Icon name="minus" /></button>
+          <button className="cc__btn" title="Fit view" onClick={() => setZoom(0.82)}><Icon name="maximize" /></button>
+          <div className="cc__sep" />
+          <button className={'cc__btn' + (minimap ? ' cc__btn--on' : '')} title="Toggle minimap" onClick={() => setMinimap((m) => !m)}><Icon name="layers" /></button>
+        </div>
+
+        {minimap && (
+          <div className="mmap">
+            <svg viewBox={`-20 -20 ${bounds.maxX + 80} ${bounds.maxY + 80}`} preserveAspectRatio="xMidYMid meet">
+              {wf.edges.map((e, i) => {
+                const a = byId[e.from], b = byId[e.to]; if (!a || !b) return null;
+                return <line key={i} x1={a.x + NODE_W} y1={a.y + nodeHeight(a) / 2} x2={b.x} y2={b.y + nodeHeight(b) / 2}
+                  stroke="var(--canvas-edge)" strokeWidth="2" opacity="0.5" />;
+              })}
+              {nodes.map((n) => (
+                <rect key={n.id} x={n.x} y={n.y} width={NODE_W} height={nodeHeight(n)} rx="8"
+                  fill={window.NODE_UI[n.type][1]} opacity={n.status === 'idle' ? 0.5 : 0.9} />
+              ))}
+            </svg>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { WorkspaceToolbar, NodePalette, CanvasNode, WorkflowCanvasScreen, nodeHeight });
+
+</script>
+<!-- agent.jsx -->
+<script type="text/babel" data-presets="react">
+/* dbSherpa Studio — Sherpa Copilot (agent) side panel.
+   Faithful to Copilot/index.tsx, CopilotChatInput.tsx, SherpaRouteChips.tsx. */
+
+function AgentMessage({ m }) {
+  if (m.role === 'user') return <div className="msg-user">{m.text}</div>;
+  if (m.role === 'thinking') {
+    return (
+      <div className="think">
+        <div className="think__head"><Icon name="sparkles" /> Thought for a few seconds</div>
+        <div className="think__steps">
+          {m.steps.map((s, i) => (
+            <div className="think__step" key={i}>
+              <span className="think__bullet"><Icon name="check" /></span>
+              <div>
+                <div className="think__step-label">{s.label}</div>
+                <div className="think__step-detail">{s.detail}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  // assistant — render light markdown (**bold**, `code`)
+  const html = m.text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`(.+?)`/g, '<code>$1</code>');
+  return (
+    <div className="msg-asst">
+      <span className="msg-asst__avatar"><Icon name="sparkles" /></span>
+      <div className="msg-asst__body" dangerouslySetInnerHTML={{ __html: html }} />
+    </div>
+  );
+}
+
+function AgentPanel({ flash, onClose, wfName = 'Lead scoring pipeline', nodeCount = 6 }) {
+  const [value, setValue] = React.useState('');
+  const taRef = React.useRef(null);
+  const endRef = React.useRef(null);
+  const submit = () => { const t = value.trim(); if (!t) return; flash('Sherpa: "' + (t.length > 40 ? t.slice(0, 40) + '…' : t) + '"'); setValue(''); };
+
+  return (
+    <aside className="agent">
+      <div className="agent__head">
+        <span className="agent__avatar"><Icon name="sparkles" /></span>
+        <span className="agent__title">sherpa</span>
+        <div className="agent__tools">
+          <button className="agent__tool" title="Chat history" onClick={() => flash('Chat history')}><Icon name="clock" /></button>
+          <button className="agent__tool" title="New chat" onClick={() => flash('New chat')}><Icon name="message-square" /></button>
+          {onClose && <button className="agent__tool" title="Close" onClick={onClose}><Icon name="x" /></button>}
+        </div>
+      </div>
+
+      <div className="agent__msgs">
+        {window.AGENT_THREAD.map((m, i) => <AgentMessage key={i} m={m} />)}
+        <div ref={endRef} />
+      </div>
+
+      <div className="routes">
+        <div className="routes__head">
+          <span className="routes__label">Routes</span>
+          <span className="routes__hint">Press \ or tap a route</span>
+        </div>
+        <div className="routes__list">
+          {window.AGENT_ROUTES.map((r) => (
+            <button className="route-chip" key={r.command} onClick={() => { setValue(r.command + ' '); taRef.current && taRef.current.focus(); }}>
+              <span className="route-chip__cmd">{r.command}</span>
+              <span className="route-chip__name">{r.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="agent__input">
+        <div className="agent__chip"><Icon name="wrench" /><span>Editing "{wfName}" · {nodeCount} nodes</span></div>
+        <div className="agent__box">
+          <textarea ref={taRef} className="agent__ta" rows={1} placeholder="Ask Sherpa to build or edit…"
+            value={value} onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); } }} />
+          <button className="agent__send" disabled={!value.trim()} onClick={submit} aria-label="Send"><Icon name="arrow-up" /></button>
+        </div>
+        <div className="agent__foot">⏎ send · ⇧⏎ newline · \ for routes · /run /build /check-run</div>
+      </div>
+    </aside>
+  );
+}
+
+Object.assign(window, { AgentPanel, AgentMessage });
+
+</script>
+<!-- screens.jsx -->
+<script type="text/babel" data-presets="react">
+/* dbSherpa Studio — Node Library, Run History, Automations screens.
+   Node data from nodes/generated.ts; runs/automations from RunHistoryDrawer +
+   AutomationsDrawer mock shapes. */
+
+function ScreenHeader({ eyebrow, title, sub, children }) {
+  return (
+    <div className="screen__head">
+      <div>
+        {eyebrow && <div className="screen__eyebrow">{eyebrow}</div>}
+        <div className="screen__title">{title}</div>
+        {sub && <div className="screen__sub">{sub}</div>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function NodeLibraryScreen({ flash }) {
+  const sections = window.PALETTE_SECTIONS.map((sec) => ({
+    ...sec, types: Object.entries(window.NODE_UI).filter(([, m]) => m[3] === sec.id),
+  })).filter((s) => s.types.length);
+  const total = Object.keys(window.NODE_UI).length;
+  return (
+    <div className="screen">
+      <div className="screen__inner">
+        <ScreenHeader eyebrow="Building blocks" title="Node Library"
+          sub={`${total} nodes across ${sections.length} categories — drag onto the canvas or ask Sherpa.`}>
+          <button className="btn btn--ghost" onClick={() => flash('Search nodes')}><Icon name="search" /> Search</button>
+        </ScreenHeader>
+        {sections.map((sec) => (
+          <section className="nlib-sec" key={sec.id}>
+            <div className="nlib-sec__head">
+              <span className="nlib-sec__accent" style={{ background: sec.color }} />
+              <span className="nlib-sec__label">{sec.label}</span>
+              <span className="pal-sec__count">{sec.types.length}</span>
+            </div>
+            <div className="nlib-grid">
+              {sec.types.map(([type, m]) => {
+                const [name, color, icon, , desc] = m;
+                return (
+                  <article className="nlib-card" key={type} onClick={() => flash('Add ' + name)}>
+                    <span className="nlib-card__ico" style={{ background: `color-mix(in srgb, ${color} 16%, transparent)`, color }}>
+                      <Icon name={icon} />
+                    </span>
+                    <div style={{ minWidth: 0 }}>
+                      <div className="nlib-card__name">{name}</div>
+                      <div className="nlib-card__type">{type}</div>
+                      <div className="nlib-card__desc">{desc}</div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function runTone(s) { return s === 'success' ? 'var(--success)' : s === 'error' ? 'var(--danger)' : 'var(--running)'; }
+
+function RunHistoryScreen({ flash }) {
+  return (
+    <div className="screen">
+      <div className="screen__inner">
+        <ScreenHeader eyebrow="Execution log" title="Run History"
+          sub="Every workflow run with status, duration, and rows processed.">
+          <button className="btn btn--ghost" onClick={() => flash('Filter runs')}><Icon name="list-filter" /> Filter</button>
+        </ScreenHeader>
+        <div className="runs-table">
+          <div className="runs-row runs-row--head">
+            <span></span><span>Workflow</span><span>When</span><span>Duration</span><span>Rows</span><span>Status</span>
+          </div>
+          {window.RUNS.map((r) => (
+            <div className="runs-row" key={r.id} onClick={() => flash('Open run ' + r.id)} style={{ cursor: 'pointer' }}>
+              <span className="runs-status" style={{ background: runTone(r.status) }} />
+              <div style={{ minWidth: 0 }}>
+                <div className="runs-wf">{r.wf}</div>
+                {r.err && <div className="runs-err">{r.err}</div>}
+                {!r.err && <div className="runs-when" style={{ marginTop: 2 }}>{r.nodes} nodes</div>}
+              </div>
+              <span className="runs-when">{r.when}</span>
+              <span className="runs-cell">{r.dur}</span>
+              <span className="runs-cell">{r.rows == null ? '—' : r.rows.toLocaleString()}</span>
+              <span>
+                <span className="runs-badge" style={{ background: `color-mix(in srgb, ${runTone(r.status)} 13%, transparent)`, color: runTone(r.status) }}>
+                  <span className="runs-status" style={{ background: runTone(r.status), width: 6, height: 6 }} />
+                  {r.status === 'success' ? 'Succeeded' : r.status === 'error' ? 'Failed' : 'Running'}
+                </span>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AutomationsScreen({ flash }) {
+  const [items, setItems] = React.useState(window.AUTOMATIONS);
+  const toggle = (id) => setItems((arr) => arr.map((a) => a.id === id ? { ...a, active: !a.active } : a));
+  return (
+    <div className="screen">
+      <div className="screen__inner">
+        <ScreenHeader eyebrow="Running on autopilot" title="Automations"
+          sub="Workflows scheduled to run on a cron — toggle, inspect last run, and see what's next.">
+          <button className="btn btn--ghost" onClick={() => flash('Schedule a workflow')}><Icon name="plus" /> New schedule</button>
+        </ScreenHeader>
+        <div className="autom-grid">
+          {items.map((a) => (
+            <article className="autom-card" key={a.id}>
+              <span className="autom-card__ico"><Icon name="clock" /></span>
+              <div className="autom-card__main">
+                <div className="autom-card__name">{a.wf}</div>
+                <div className="autom-card__cron"><code>{a.cron}</code>{a.human}</div>
+              </div>
+              <div className="autom-card__meta">
+                <div className="autom-card__next">Next: {a.active ? a.next : '—'}</div>
+                <div className="autom-card__last">{a.active ? a.last : 'Paused'}</div>
+              </div>
+              <button className={'sw-toggle' + (a.active ? ' sw-toggle--on' : '')} aria-pressed={a.active}
+                title={a.active ? 'Active' : 'Paused'} onClick={() => { toggle(a.id); flash((a.active ? 'Paused ' : 'Activated ') + a.wf); }}>
+                <span className="sw-toggle__knob" />
+              </button>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { ScreenHeader, NodeLibraryScreen, RunHistoryScreen, AutomationsScreen });
+
+</script>
+<!-- app.jsx -->
+<script type="text/babel" data-presets="react">
+/* dbSherpa Studio — UI Kit app shell. Routes the rail nav across surfaces:
+   Dashboard · Workflow canvas · Sherpa Copilot · Node Library · Run History ·
+   Automations. Theme (dark/light/aurora) lives in the rail and applies globally. */
+
+function greetingFor(d = new Date()) {
+  const h = d.getHours();
+  const hello = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+  const date = d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  return { hello, date };
+}
+
+const SCREEN_NAVS = ['dashboard', 'workflow', 'agent', 'nodes', 'runs', 'automations'];
+
+function DashboardScreen({ D, greeting, flash }) {
+  return (
+    <div className="scroll">
+      <div className="inner">
+        <Header greeting={greeting} name={D.user.name}
+          onSearch={() => flash('Command palette — ⌘K')} onNew={() => flash('New workflow — opening Studio…')} />
+        <SherpaBar onSubmit={(t) => flash('Sherpa is planning: "' + truncate(t) + '"')} />
+        <div className="content">
+          <div className="stats">{D.stats.map((s) => <StatCard key={s.label} stat={s} />)}</div>
+          <div className="insight">
+            <HealthCard health={D.health} />
+            <ActivityCalendar health={D.health} />
+          </div>
+          <div>
+            <div className="wf-head">
+              <span className="wf-head__title">Recent workflows</span>
+              <button className="wf-head__link" onClick={() => flash('Opening workflow library…')}>
+                View all <Icon name="arrow-up-right" size={13} />
+              </button>
+            </div>
+            <div className="wf-grid">
+              {D.workflows.slice(0, 3).map((wf) => (
+                <WorkflowCard key={wf.id} wf={wf} onOpen={() => flash('Opening "' + wf.name + '"')} />
+              ))}
+              <NewWorkflowCard onNew={() => flash('New workflow — opening Studio…')} />
+              {D.workflows.slice(3).map((wf) => (
+                <WorkflowCard key={wf.id} wf={wf} onOpen={() => flash('Opening "' + wf.name + '"')} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const D = window.STUDIO_DATA;
+  const [theme, setTheme] = React.useState(() => localStorage.getItem('dssk:theme') || window.DS_INIT_THEME || 'aurora');
+  const [nav, setNav] = React.useState(window.DS_INIT_SCREEN || 'dashboard');
+  const [toast, setToast] = React.useState('');
+  const greeting = greetingFor();
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('dssk:theme', theme);
+  }, [theme]);
+
+  React.useEffect(() => { if (window.lucide) window.lucide.createIcons({ attrs: { 'stroke-width': 1.75 } }); });
+
+  React.useEffect(() => {
+    if (!toast) return;
+    const id = setTimeout(() => setToast(''), 2400);
+    return () => clearTimeout(id);
+  }, [toast]);
+
+  const flash = (m) => setToast(m);
+
+  function handleNav(id) {
+    if (SCREEN_NAVS.includes(id)) setNav(id);
+    else flash(navMsg(id));
+  }
+
+  return (
+    <div className="studio">
+      <div className="studio-backdrop" aria-hidden />
+      <Rail active={nav} onNav={handleNav} user={D.user} theme={theme} onTheme={setTheme} />
+      <div className="main">
+        {nav === 'dashboard' && <DashboardScreen D={D} greeting={greeting} flash={flash} />}
+
+        {(nav === 'workflow' || nav === 'agent') && (
+          <div style={{ display: 'flex', flex: 1, minHeight: 0, minWidth: 0 }}>
+            <NodePalette onAdd={(n) => flash('Added ' + n)} />
+            <WorkflowCanvasScreen flash={flash} />
+            {nav === 'agent' && <AgentPanel flash={flash} onClose={() => setNav('workflow')} />}
+          </div>
+        )}
+
+        {nav === 'nodes' && <NodeLibraryScreen flash={flash} />}
+        {nav === 'runs' && <RunHistoryScreen flash={flash} />}
+        {nav === 'automations' && <AutomationsScreen flash={flash} />}
+      </div>
+      <Toast msg={toast} />
+    </div>
+  );
+}
+
+function truncate(s, n = 38) { return s.length > n ? s.slice(0, n) + '…' : s; }
+function navMsg(id) {
+  const map = { data: 'Data Sources', settings: 'Settings' };
+  return (map[id] || 'Section') + ' — demo view';
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+</script>
+</body>
+</html>
