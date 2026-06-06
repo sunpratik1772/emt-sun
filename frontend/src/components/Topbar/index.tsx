@@ -22,7 +22,6 @@ import {
 import { Square } from 'lucide-react'
 import { finalizeStuckRunLog, flushRunEventQueue, useWorkflowStore } from '../../store/workflowStore'
 
-import ThemeToggleButton from '../ThemeToggleButton'
 import { toast } from '../../store/toastStore'
 import Modal from '../Modal'
 import { Button } from '../ui/Button'
@@ -751,10 +750,6 @@ function TopbarStudio({ headless = false }: { headless?: boolean }) {
         >
           {validating ? <ArcIcon icon={Loader2} size={14} className="animate-spin" /> : <ArcIcon icon={ShieldCheck} size={14} />}
         </StatusIconButton>
-
-        <span className="w-px h-[18px] shrink-0" style={{ background: borderHi, marginLeft: 2, marginRight: 2 }} />
-
-        <ThemeToggleButton />
       </div>
     </div>
       ) : null}

@@ -18,6 +18,8 @@ import {
   AlertTriangle,
   Ticket,
   Shield,
+  Maximize2,
+  Minimize2,
 } from '../../icons/arc'
 import { useLibrarySkillDetail, useLibrarySkills } from '../../hooks/useLibraryQueries'
 import {
@@ -43,13 +45,19 @@ export function SkillsDrawer({ open, onClose }: { open: boolean; onClose: () => 
 
   const [searchQuery, setSearchQuery] = useState('')
   const [disabledSkills, setDisabledSkills] = useState<Record<string, boolean>>({})
+  const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
     if (!open) {
       setActiveId(null)
+      setIsExpanded(false)
       return
     }
   }, [open])
+
+  useEffect(() => {
+    setIsExpanded(false)
+  }, [activeId])
 
   const isEnabled = (id: string) => !disabledSkills[id]
 
@@ -120,7 +128,10 @@ export function SkillsDrawer({ open, onClose }: { open: boolean; onClose: () => 
     activeId !== null && active ? (
       <>
         <div className="studio-detail-drawer-scrim" onClick={() => setActiveId(null)} />
-        <aside className="studio-detail-drawer">
+        <aside
+          className={`studio-detail-drawer${isExpanded ? ' studio-detail-drawer--expanded' : ''}`}
+          style={isExpanded ? { width: '100%', maxWidth: 'none' } : undefined}
+        >
           {(() => {
             const cat = SKILL_DETAILS_CATALOG[active.id] || {
               name: active.title,
@@ -153,6 +164,15 @@ export function SkillsDrawer({ open, onClose }: { open: boolean; onClose: () => 
                     <div className="drawer__eyebrow">SKILL</div>
                     <div className="drawer__title">{cat.name}</div>
                   </div>
+                  <button
+                    type="button"
+                    className="drawer__close"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                    style={{ marginRight: 8 }}
+                  >
+                    <ArcIcon icon={isExpanded ? Minimize2 : Maximize2} size={15} />
+                  </button>
                   <button
                     type="button"
                     className="drawer__close"
@@ -282,7 +302,7 @@ export function SkillsDrawer({ open, onClose }: { open: boolean; onClose: () => 
       }
       overlay={detailOverlay}
     >
-      <div className="screen__inner h-full flex flex-col" style={{ minHeight: '100%' }}>
+      <div className="screen__inner">
         {/* Stats summary strip */}
         <div className="mng-summary">
           <div className="mng-sum">

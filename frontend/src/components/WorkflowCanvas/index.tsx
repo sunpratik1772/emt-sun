@@ -668,11 +668,11 @@ function CustomCanvasControls({
 
   return (
     <div
-      className="absolute bottom-4 left-4 z-20 flex flex-col gap-1 panel-glass"
+      className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 panel-glass"
       style={{
         border: '1px solid var(--border)',
-        borderRadius: 8,
-        padding: 4,
+        borderRadius: 20,
+        padding: '4px 8px',
         boxShadow: 'var(--linear-elev-raised, none)',
       }}
     >

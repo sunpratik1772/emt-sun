@@ -417,6 +417,21 @@
   color: var(--accent);
 }
 
+@keyframes sherpa-chip-haze-blink {
+  0%, 100% {
+    opacity: 0.85;
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 0.52;
+    filter: blur(0.35px);
+  }
+}
+
+.sherpa-activity-chip--live {
+  animation: sherpa-chip-haze-blink 1.8s ease-in-out infinite;
+}
+
 .sherpa-activity-chip--live .sherpa-activity-chip__icon {
   animation: sherpa-activity-icon-blink 1.65s ease-in-out infinite;
 }

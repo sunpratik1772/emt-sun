@@ -1,7 +1,8 @@
 import { useEffect, useState, memo } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Trash2 as TrashIcon, Edit2, Check, Undo2, Redo2, Sparkles } from 'lucide-react'
+import { Trash2 as TrashIcon, Edit2, Check, Undo2, Redo2, Sparkles, ThumbsUp, ThumbsDown, Copy } from 'lucide-react'
+import { toast } from '../../store/toastStore'
 import { ArcIcon } from '../../icons/arc'
 import { SherpaMark } from '../SherpaMark'
 import ThinkingBlock from './ThinkingBlock'
@@ -12,6 +13,8 @@ import { Button } from '../ui/Button'
 import { MarkdownMessage } from './CopilotMarkdown'
 import { CopilotAutomationLink } from './CopilotAutomationLink'
 import { AgentIdleWave } from './AgentChrome'
+import { useWorkflowStore } from '../../store/workflowStore'
+import WorkflowVoteButtons from '../WorkflowVoteButtons'
 
 export function SherpaAvatar({ size = 24 }: { size?: number }) {
   return <SherpaMark size={size} />
@@ -39,6 +42,11 @@ export const MessageBubble = memo(function MessageBubble({
   const [isHovered, setIsHovered] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [dontAsk, setDontAsk] = useState(false)
+
+  const runLog = useWorkflowStore((s) => s.runLog)
+  const runResult = useWorkflowStore((s) => s.runResult)
+  const runError = useWorkflowStore((s) => s.runError)
+  const hasRun = runLog.length > 0 || runResult !== null || runError !== null
 
   const handleRevertClick = () => {
     const skipConfirm = window.localStorage.getItem('dbsherpa:skip-revert-confirm') === 'true'
@@ -122,6 +130,45 @@ export const MessageBubble = memo(function MessageBubble({
                     scheduleSummary={msg.automationLink.schedule_summary}
                   />
                 ) : null}
+                {msg.newWorkflow && hasRun && (
+                  <div className="mt-2.5">
+                    <WorkflowVoteButtons
+                      filename=""
+                      workflow={msg.newWorkflow}
+                      isDraft={true}
+                    />
+                  </div>
+                )}
+                <div className="flex items-center gap-1 mt-2 text-[var(--text-3)] opacity-60 hover:opacity-100 transition-opacity">
+                  <button
+                    type="button"
+                    title="Helpful"
+                    className="p-1 hover:text-[var(--text-1)] rounded hover:bg-[var(--bg-2)] transition-colors cursor-pointer"
+                    style={{ background: 'transparent', border: 'none' }}
+                  >
+                    <ThumbsUp size={12} />
+                  </button>
+                  <button
+                    type="button"
+                    title="Not helpful"
+                    className="p-1 hover:text-[var(--text-1)] rounded hover:bg-[var(--bg-2)] transition-colors cursor-pointer"
+                    style={{ background: 'transparent', border: 'none' }}
+                  >
+                    <ThumbsDown size={12} />
+                  </button>
+                  <button
+                    type="button"
+                    title="Copy message"
+                    className="p-1 hover:text-[var(--text-1)] rounded hover:bg-[var(--bg-2)] transition-colors cursor-pointer"
+                    style={{ background: 'transparent', border: 'none' }}
+                    onClick={() => {
+                      navigator.clipboard.writeText(msg.content)
+                      toast.success('Copied to clipboard')
+                    }}
+                  >
+                    <Copy size={12} />
+                  </button>
+                </div>
               </>
             )}
           </div>

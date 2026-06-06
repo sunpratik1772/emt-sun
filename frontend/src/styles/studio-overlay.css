@@ -30,13 +30,13 @@
 }
 
 [data-theme='turquoise'] .ov {
-  --ov-surface: #ffffff;
-  --ov-bar-bg: #fafafa;
+  --ov-surface: #d5e8e8;
+  --ov-bar-bg: #c9e1e1;
   --ov-bar-fg: var(--text-0);
   --ov-bar-eyebrow: var(--text-2);
   --ov-bar-sub: var(--text-2);
   --ov-bar-border: var(--border-soft);
-  --ov-panel: #f7f7f8;
+  --ov-panel: #bdd6d6;
 }
 
 [data-theme='aurora'] .ov {
@@ -50,9 +50,9 @@
 }
 
 [data-theme='claude'] .ov {
-  --ov-surface: #f9f7f2;
-  --ov-bar-bg: #f9f7f2;
-  --ov-panel: #ffffff;
+  --ov-surface: #ebe4d6;
+  --ov-bar-bg: #ebe4d6;
+  --ov-panel: #dacfba;
 }
 
 .ov-host {
@@ -956,6 +956,21 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+}
+
+.docs-page .docs--home {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.docs-page .docs--home .docs__toc {
+  display: none;
+}
+
+.docs-page .docs--home .docs__main {
+  margin: 0 auto;
+  max-width: 960px;
+  width: 100%;
+  padding: 48px 24px;
 }
 
 .docs-page .docs--with-onpage {

@@ -318,7 +318,7 @@ export function AgentActivityTimeline({
   if (isStreaming && steps.length === 0) {
     return (
       <div className="agent-activity-timeline flex flex-col gap-1.5 py-1 select-text">
-        <div className="think">
+        <div className={`think${isStreaming ? ' think--streaming' : ''}`}>
           <div className="think__head">
             <Sparkles size={13} style={{ color: 'var(--accent)' }} />
             <span>Thinking process…</span>
@@ -334,7 +334,7 @@ export function AgentActivityTimeline({
   if (thoughtExclusive) {
     return (
       <div className="agent-activity-timeline flex flex-col gap-1.5 py-1 select-text">
-        <div className="think">
+        <div className={`think${isStreaming ? ' think--streaming' : ''}`}>
           <div className="think__head">
             <Sparkles size={13} style={{ color: 'var(--accent)' }} />
             <span>Thinking process…</span>
@@ -358,7 +358,7 @@ export function AgentActivityTimeline({
   if (showUnderstanding) {
     return (
       <div className="agent-activity-timeline flex flex-col gap-1.5 py-1 select-text">
-        <div className="think">
+        <div className={`think${isStreaming ? ' think--streaming' : ''}`}>
           <div className="think__head">
             <Sparkles size={13} style={{ color: 'var(--accent)' }} />
             <span>Thinking process…</span>
@@ -389,7 +389,7 @@ export function AgentActivityTimeline({
 
   return (
     <div className="agent-activity-timeline flex flex-col gap-1.5 py-1 select-text">
-      <div className="think">
+      <div className={`think${isStreaming ? ' think--streaming' : ''}`}>
         <div className="think__head">
           <Sparkles size={13} style={{ color: 'var(--accent)' }} />
           <span>{headerText}</span>

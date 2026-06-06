@@ -1,3 +1,4 @@
+import { Brain } from 'lucide-react'
 import { Sparkles } from '../../icons/arc'
 import {
   sherpaActivityLabel,
@@ -25,7 +26,11 @@ export default function SherpaActivityChip({ mode, live = false }: Props) {
       aria-label={ariaLabel}
     >
       <span className="sherpa-activity-chip__icon" aria-hidden>
-        <Sparkles size={14} strokeWidth={2.2} />
+        {live ? (
+          <Brain size={14} strokeWidth={2.2} />
+        ) : (
+          <Sparkles size={14} strokeWidth={2.2} />
+        )}
       </span>
       <span className="sherpa-activity-chip__text">
         <span className="sherpa-activity-chip__label">{label}</span>

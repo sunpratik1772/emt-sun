@@ -96,6 +96,7 @@ export default function DocsPage() {
 
   const currentSection = docs.find((s) => s.id === section)
   const currentItem = currentSection?.items.find((i) => i.id === item)
+  const isHome = !section || !item || !currentItem
 
   const filteredDocs = useMemo(() => {
     if (!searchQuery.trim()) return docs
@@ -175,7 +176,7 @@ export default function DocsPage() {
       </div>
 
       <div className="ov__body ov__body--flush">
-        <div className={`docs${currentItem && toc.length > 0 ? ' docs--with-onpage' : ''}`}>
+        <div className={`docs${isHome ? ' docs--home' : ''}${currentItem && toc.length > 0 ? ' docs--with-onpage' : ''}`}>
           <aside className="docs__toc">
             <label className="docs__search">
               <Search size={13} />

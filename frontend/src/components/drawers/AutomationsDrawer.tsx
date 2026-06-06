@@ -271,7 +271,7 @@ export function AutomationsDrawer({ open, onClose }: { open: boolean; onClose: (
         </span>
       }
     >
-      <div className="screen__inner h-full flex flex-col" style={{ minHeight: '100%' }}>
+      <div className="screen__inner">
         {/* Stats summary strip */}
         <div className="mng-summary">
           <div className="mng-sum">

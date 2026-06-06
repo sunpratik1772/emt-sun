@@ -671,7 +671,7 @@
 
 /* ── Claude theme — warm library (image 1 reference) ───────────────────── */
 [data-theme='claude'] .wf-drawer--fullscreen {
-  background: #f9f7f2;
+  background: #ebe4d6;
 }
 
 [data-theme='claude'] .wf-drawer__head {
@@ -681,7 +681,7 @@
 }
 
 [data-theme='claude'] .wf-drawer__tabs {
-  background: #f0ebe3;
+  background: #ded7cb;
   border-color: rgba(80, 50, 20, 0.08);
 }
 
@@ -698,7 +698,7 @@
 }
 
 [data-theme='claude'] .wf-drawer__sort-options {
-  background: #f0ebe3;
+  background: #ded7cb;
   border-color: rgba(80, 50, 20, 0.08);
 }
 

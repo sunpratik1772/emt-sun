@@ -16,6 +16,7 @@ export function openOutputPanelSummary(source: OutputSummarySource) {
 export function openRunOutputOnComplete() {
   useWorkflowStore.setState({
     rightPanelMode: 'output',
+    outputOrientation: 'bottom',
     outputSummarySource: 'run',
     outputSummaryAt: Date.now(),
   })

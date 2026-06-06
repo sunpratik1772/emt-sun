@@ -36,7 +36,6 @@ import {
   Moon,
   Droplets,
   Palette,
-  Check,
   type LucideIcon,
 } from '../icons/arc'
 import { useWorkflowStore } from '../store/workflowStore'
@@ -432,8 +431,8 @@ export default function LeftNav() {
         )}
       </div>
 
-      {/* Theme Switcher Popover */}
-      <ThemePopover showLabels={showLabels} />
+      {/* Theme Switcher Toggle */}
+      <ThemeToggle showLabels={showLabels} />
 
       {/* User profile row */}
       <UserProfileRow showLabels={showLabels} sidebarMode={mode} />
@@ -627,8 +626,6 @@ function UserProfileRow({ showLabels, sidebarMode }: { showLabels: boolean; side
   const user = useAuthStore((s) => s.user)
   const refresh = useAuthStore((s) => s.refresh)
   const logout = useAuthStore((s) => s.logout)
-  const theme = useThemeStore((s) => s.theme)
-  const toggleTheme = useThemeStore((s) => s.toggle)
   const setSection = useStudioSectionStore((s) => s.setSection)
   const setDrawerOpen = useWorkflowStore((s) => s.setWorkflowDrawerOpen)
   const [open, setOpen] = useState(false)
@@ -990,26 +987,9 @@ function UserProfileRow({ showLabels, sidebarMode }: { showLabels: boolean; side
   )
 }
 
-function ThemePopover({ showLabels }: { showLabels: boolean }) {
+function ThemeToggle({ showLabels }: { showLabels: boolean }) {
   const theme = useThemeStore((s) => s.theme)
-  const setTheme = useThemeStore((s) => s.setTheme)
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    if (!open) return
-    const close = () => setOpen(false)
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
-    }
-    document.addEventListener('keydown', onKey)
-    const t = setTimeout(() => document.addEventListener('click', close), 0)
-    return () => {
-      document.removeEventListener('keydown', onKey)
-      document.removeEventListener('click', close)
-      clearTimeout(t)
-    }
-  }, [open])
+  const toggle = useThemeStore((s) => s.toggle)
 
   const opts = [
     { id: 'dark' as const, icon: Moon, label: 'Dark' },
@@ -1023,9 +1003,7 @@ function ThemePopover({ showLabels }: { showLabels: boolean }) {
 
   return (
     <div
-      ref={ref}
       className="rail__themes shrink-0"
-      onClick={(e) => e.stopPropagation()}
       style={{
         padding: '6px 0',
         display: 'flex',
@@ -1035,20 +1013,16 @@ function ThemePopover({ showLabels }: { showLabels: boolean }) {
     >
       <button
         type="button"
-        className={`rail__btn${open ? ' rail__btn--active' : ''}`}
-        title="Theme"
-        aria-haspopup="true"
-        aria-expanded={open}
-        onClick={(e) => {
-          e.stopPropagation()
-          setOpen((o) => !o)
-        }}
+        className="rail__btn"
+        title={`Current theme: ${current.label}. Click to switch theme.`}
+        aria-label={`Current theme: ${current.label}. Click to switch theme.`}
+        onClick={toggle}
         style={{
           width: showLabels ? 'calc(100% - 20px)' : 40,
           height: 32,
           borderRadius: 6,
           border: '1px solid transparent',
-          background: open ? 'var(--bg-3)' : 'transparent',
+          background: 'transparent',
           color: 'var(--text-1)',
           display: 'flex',
           alignItems: 'center',
@@ -1058,18 +1032,14 @@ function ThemePopover({ showLabels }: { showLabels: boolean }) {
           cursor: 'pointer',
         }}
         onMouseEnter={(e) => {
-          if (!open) {
-            e.currentTarget.style.background = 'var(--bg-2)'
-            e.currentTarget.style.borderColor = 'var(--border-soft)'
-            e.currentTarget.style.color = 'var(--text-0)'
-          }
+          e.currentTarget.style.background = 'var(--bg-2)'
+          e.currentTarget.style.borderColor = 'var(--border-soft)'
+          e.currentTarget.style.color = 'var(--text-0)'
         }}
         onMouseLeave={(e) => {
-          if (!open) {
-            e.currentTarget.style.background = 'transparent'
-            e.currentTarget.style.borderColor = 'transparent'
-            e.currentTarget.style.color = 'var(--text-1)'
-          }
+          e.currentTarget.style.background = 'transparent'
+          e.currentTarget.style.borderColor = 'transparent'
+          e.currentTarget.style.color = 'var(--text-1)'
         }}
       >
         <ArcIcon icon={Icon} size={15} className="shrink-0" />
@@ -1088,39 +1058,6 @@ function ThemePopover({ showLabels }: { showLabels: boolean }) {
           </span>
         )}
       </button>
-      {open && (
-        <div
-          className="theme-pop"
-          onClick={(e) => e.stopPropagation()}
-          style={{
-            bottom: 4,
-            left: showLabels ? 190 : 54,
-          }}
-        >
-          <div className="theme-pop__label">Theme</div>
-          {opts.map((o) => {
-            const ActiveIcon = o.icon
-            return (
-              <button
-                key={o.id}
-                type="button"
-                className={`theme-pop__item${theme === o.id ? ' theme-pop__item--on' : ''}`}
-                aria-pressed={theme === o.id}
-                onClick={() => {
-                  setTheme(o.id)
-                  setOpen(false)
-                }}
-              >
-                <ArcIcon icon={ActiveIcon} size={13} className="shrink-0" />
-                <span>{o.label}</span>
-                {theme === o.id && (
-                  <ArcIcon icon={Check} size={12} className="theme-pop__check shrink-0" />
-                )}
-              </button>
-            )
-          })}
-        </div>
-      )}
     </div>
   )
 }

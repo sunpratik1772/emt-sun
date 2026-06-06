@@ -209,7 +209,7 @@ export default function WorkflowDrawer() {
       ariaLabel="Templates"
       bodyClass="ov__body--wide ov__body--mng"
     >
-      <div className="screen__inner h-full flex flex-col" style={{ minHeight: '100%' }}>
+      <div className="screen__inner">
         <div className="wfp-bar">
           <div className="wfp-tabs" role="tablist" aria-label="Template lists">
             <TabButton

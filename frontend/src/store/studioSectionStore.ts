@@ -7,6 +7,8 @@
  */
 import { create } from 'zustand'
 import type { RunLogSummary } from '../services/api'
+import { hydrateRunForOutputPanel } from '../lib/runHistoryOutput'
+import { useWorkflowStore } from './workflowStore'
 
 export type StudioSection = null | 'dashboard' | 'skills' | 'data' | 'run-history' | 'nodes' | 'settings' | 'automations'
 
@@ -91,7 +93,21 @@ export const useStudioSectionStore = create<State>((set, get) => ({
     })
   },
   openRunOutputModal: (run) => {
-    set({ runOutputModalRun: run })
+    const hydrated = hydrateRunForOutputPanel(run)
+    useWorkflowStore.setState({
+      runLog: hydrated.runLog,
+      runResult: hydrated.runResult,
+      runTotalMs: hydrated.runTotalMs,
+      runError: hydrated.runError,
+      rightPanelMode: 'output',
+      outputOrientation: 'bottom',
+      outputSummarySource: 'run',
+      outputSummaryAt: Date.now(),
+    })
+    set({
+      section: null,
+      runOutputModalRun: null,
+    })
   },
   closeRunOutputModal: () => {
     set({ runOutputModalRun: null })

@@ -34,7 +34,7 @@ export default {
         sans: ['Geist Variable', 'Geist', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         heading: ['Geist Variable', 'Geist', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         mono: ['Geist Mono Variable', 'Geist Mono', 'ui-monospace', 'monospace'],
-        display: ['Ronzino', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['Geist Variable', 'Geist', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       keyframes: {
         'blink-soft': {

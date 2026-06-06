@@ -41,3 +41,36 @@
   font-display: swap;
   src: url('../assets/fonts/ronzino/Ronzino-Bold.woff2') format('woff2');
 }
+
+/* Ortica — OFL-1.1 (collletttivo/ortica) */
+@font-face {
+  font-family: 'Ortica';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('../assets/fonts/ortica/OrticaLinear-Light.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Ortica';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/ortica/OrticaLinear-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Ortica';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/ortica/OrticaLinear-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Ortica Angular';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/ortica/OrticaAngular-Bold.woff2') format('woff2');
+}
