@@ -30,7 +30,7 @@
 }
 
 [data-theme='turquoise'] .ov {
-  --ov-surface: #d5e8e8;
+  --ov-surface: #f2f7f7;
   --ov-bar-bg: #c9e1e1;
   --ov-bar-fg: var(--text-0);
   --ov-bar-eyebrow: var(--text-2);
@@ -50,7 +50,7 @@
 }
 
 [data-theme='claude'] .ov {
-  --ov-surface: #ebe4d6;
+  --ov-surface: #faf8f5;
   --ov-bar-bg: #ebe4d6;
   --ov-panel: #dacfba;
 }

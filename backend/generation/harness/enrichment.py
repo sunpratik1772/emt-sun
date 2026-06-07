@@ -86,6 +86,37 @@ def format_user_enrichment(
     if hint:
         enrichments.append(hint)
 
+    import os
+    if os.environ.get("DBSHERPA_ENABLE_UA_CONTEXT", "1").lower() in {"1", "true", "yes"}:
+        ua_blocks = []
+        if getattr(retrieved, "ua_domains", None):
+            ua_blocks.append("Matching Domains:")
+            for dom in retrieved.ua_domains:
+                ua_blocks.append(f"- Domain: {dom.get('name')} ({dom.get('id')})")
+                ua_blocks.append(f"  Summary: {dom.get('summary')}")
+                
+        if getattr(retrieved, "ua_flows", None):
+            ua_blocks.append("Matching Flows:")
+            for flow in retrieved.ua_flows:
+                ua_blocks.append(f"- Flow: {flow.get('name')} ({flow.get('id')})")
+                ua_blocks.append(f"  Summary: {flow.get('summary')}")
+                
+        if getattr(retrieved, "ua_steps", None):
+            ua_blocks.append("Matching Code Steps/Files:")
+            for step in retrieved.ua_steps:
+                path_str = f" in {step.get('filePath')}" if step.get("filePath") else ""
+                ua_blocks.append(f"- Step: {step.get('name')}{path_str}")
+                ua_blocks.append(f"  Summary: {step.get('summary')}")
+
+        if ua_blocks:
+            enrichments.append(
+                "\n\n<understand_anything_context>\n"
+                "This matching domain/flow metadata from the codebase flowchart describes the target components, "
+                "relevant database/execution layers, and related business rules:\n"
+                + "\n".join(ua_blocks)
+                + "\n</understand_anything_context>"
+            )
+
     return "".join(enrichments)
 
 

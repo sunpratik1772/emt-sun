@@ -347,6 +347,7 @@
   --accent: #0284c7;
   --accent-hi: #0ea5e9;
   --accent-lo: #0369a1;
+  --accent-on: #ffffff;
 }
 
 [data-period='afternoon'][data-theme='turquoise'] {
@@ -365,12 +366,14 @@
   --accent: #818cf8;
   --accent-hi: #a5b4fc;
   --accent-lo: #6366f1;
+  --accent-on: #ffffff;
 }
 
 [data-period='evening'][data-theme='light'] {
   --accent: #7c3aed;
   --accent-hi: #8b5cf6;
   --accent-lo: #6d28d9;
+  --accent-on: #ffffff;
 }
 
 [data-period='evening'][data-theme='turquoise'] {
@@ -1610,6 +1613,8 @@ kbd {
 
 .studio-canvas {
   background: var(--canvas-bg);
+  container-type: inline-size;
+  container-name: canvas-container;
 }
 
 .workflow-canvas,
@@ -2236,9 +2241,11 @@ kbd {
 [data-theme='dark'] .drawer {
   background: linear-gradient(180deg, #08090a 0%, #000000 100%) !important;
 }
-[data-theme='light'] .drawer,
-[data-theme='turquoise'] .drawer {
+[data-theme='light'] .drawer {
   background: var(--bg-0) !important;
+}
+[data-theme='turquoise'] .drawer {
+  background: #f2f7f7 !important;
 }
 
 [data-theme='claude'] .drawer.wf-drawer {
@@ -2363,6 +2370,84 @@ kbd {
 /* ── Panel Background Overrides ── */
 .wt {
   background: var(--chrome-elevated);
+}
+
+.workspace-toolbar-inner {
+  height: 46px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--linear-elev-raised, none);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.workspace-toolbar-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.toolbar-expanded-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-collapsed-actions {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+@container canvas-container (max-width: 520px) {
+  .workspace-toolbar-inner {
+    padding: 0 6px;
+    gap: 6px;
+  }
+  .workspace-toolbar-right {
+    gap: 4px;
+  }
+  .studio-toolbar-slash {
+    display: none;
+  }
+  .studio-btn-text {
+    display: none;
+  }
+  .studio-btn-icon {
+    margin-right: 0 !important;
+  }
+  .toolbar-expanded-actions {
+    display: none !important;
+  }
+  .toolbar-collapsed-actions {
+    display: flex !important;
+  }
+  .studio-segment-track {
+    padding: 1px;
+    border-radius: 6px;
+  }
+  .studio-segment-btn {
+    height: 24px !important;
+    padding: 0 6px !important;
+    border-radius: 5px !important;
+  }
+  .toolbar-icon-btn,
+  .workspace-run-btn,
+  .workspace-new-btn {
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 5px !important;
+  }
+  .toolbar-icon-btn svg,
+  .workspace-run-btn svg,
+  .workspace-new-btn svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
 }
 
 .pal {

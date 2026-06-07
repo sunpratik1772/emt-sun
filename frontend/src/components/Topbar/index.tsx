@@ -18,6 +18,7 @@ import {
   Pencil,
   LayoutGrid,
   Code2,
+  Eye,
 } from '../../icons/arc'
 import { Square } from 'lucide-react'
 import { finalizeStuckRunLog, flushRunEventQueue, useWorkflowStore } from '../../store/workflowStore'
@@ -1315,8 +1316,8 @@ export function ViewModeToggle({
         title="Canvas"
         testId="view-mode-canvas"
       >
-        <ArcIcon icon={LayoutGrid} size={13} style={{ marginRight: 5 }} />
-        Canvas
+        <ArcIcon icon={LayoutGrid} size={13} className="studio-btn-icon" style={{ marginRight: 5 }} />
+        <span className="studio-btn-text">Canvas</span>
       </ViewModeIconBtn>
       <ViewModeIconBtn
         active={value === 'code'}
@@ -1326,8 +1327,8 @@ export function ViewModeToggle({
         title="Code editor"
         testId="view-mode-code"
       >
-        <ArcIcon icon={Code2} size={13} style={{ marginRight: 5 }} />
-        Code
+        <ArcIcon icon={Code2} size={13} className="studio-btn-icon" style={{ marginRight: 5 }} />
+        <span className="studio-btn-text">Code</span>
       </ViewModeIconBtn>
     </div>
   )
@@ -1390,7 +1391,8 @@ export function ViewEditToggle({
         title="View workflow"
         testId="workspace-mode-view"
       >
-        View
+        <ArcIcon icon={Eye} size={13} className="studio-btn-icon" style={{ marginRight: 5 }} />
+        <span className="studio-btn-text">View</span>
       </ViewEditBtn>
       <ViewEditBtn
         active={value === 'edit'}
@@ -1398,7 +1400,8 @@ export function ViewEditToggle({
         title="Edit workflow with sherpa"
         testId="workspace-mode-edit"
       >
-        Edit
+        <ArcIcon icon={Pencil} size={13} className="studio-btn-icon" style={{ marginRight: 5 }} />
+        <span className="studio-btn-text">Edit</span>
       </ViewEditBtn>
     </div>
   )

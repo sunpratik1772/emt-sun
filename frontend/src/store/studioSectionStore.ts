@@ -93,20 +93,8 @@ export const useStudioSectionStore = create<State>((set, get) => ({
     })
   },
   openRunOutputModal: (run) => {
-    const hydrated = hydrateRunForOutputPanel(run)
-    useWorkflowStore.setState({
-      runLog: hydrated.runLog,
-      runResult: hydrated.runResult,
-      runTotalMs: hydrated.runTotalMs,
-      runError: hydrated.runError,
-      rightPanelMode: 'output',
-      outputOrientation: 'bottom',
-      outputSummarySource: 'run',
-      outputSummaryAt: Date.now(),
-    })
     set({
-      section: null,
-      runOutputModalRun: null,
+      runOutputModalRun: run,
     })
   },
   closeRunOutputModal: () => {

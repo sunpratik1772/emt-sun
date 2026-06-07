@@ -28,6 +28,7 @@ const DOC_GUIDES = [
   'generation-harness.md',
   'mcp-integrations.md',
   'database.md',
+  'sherpa-agent-harness-onboarding.md',
 ]
 
 /** Mirror backend/app/routers/docs.py _load_md preprocessing. */

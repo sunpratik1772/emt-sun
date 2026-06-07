@@ -14,7 +14,7 @@ import {
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import ErrorBoundary from '../../components/ErrorBoundary'
-import { ArcIcon, X as XIcon } from '../../icons/arc'
+import { ArcIcon, X as XIcon, Boxes } from '../../icons/arc'
 import {
   extractToc,
   headingOffsetTop,
@@ -96,7 +96,7 @@ export default function DocsPage() {
 
   const currentSection = docs.find((s) => s.id === section)
   const currentItem = currentSection?.items.find((i) => i.id === item)
-  const isHome = !section || !item || !currentItem
+  const isHome = false
 
   const filteredDocs = useMemo(() => {
     if (!searchQuery.trim()) return docs
@@ -195,6 +195,14 @@ export default function DocsPage() {
               <Home size={14} />
               Overview
             </button>
+            <button
+              type="button"
+              className={`docs__link${section === 'code-graph' ? ' docs__link--on' : ''}`}
+              onClick={() => navigate('/docs/code-graph')}
+            >
+              <ArcIcon icon={Boxes} size={14} />
+              Codebase Graph
+            </button>
             {navDocs.map((sec) => (
               <div key={sec.id}>
                 <div className="docs__group">
@@ -216,67 +224,77 @@ export default function DocsPage() {
             ))}
           </aside>
 
-          <div
-            className={`docs__scroll${currentItem && toc.length > 0 ? ' docs__scroll--with-onpage' : ''}`}
-            ref={scrollRef}
-          >
-            <main className="docs__main">
-              {loading ? (
-                <div className="docs-loading">
-                  <span
-                    className="animate-spin"
-                    style={{
-                      width: 18,
-                      height: 18,
-                      border: '2px solid var(--border-soft)',
-                      borderTopColor: 'var(--accent)',
-                      borderRadius: '50%',
-                      display: 'inline-block',
-                    }}
-                  />
-                  Loading docs…
-                </div>
-              ) : loadError ? (
-                <DocsLoadError message={loadError} onRetry={loadDocs} />
-              ) : section && item && !currentItem ? (
-                <DocsLoadError message={`Page not found: ${item.replace(/-/g, ' ')}`} onRetry={loadDocs} />
-              ) : !currentItem ? (
-                <DocsHome docs={docs} navigate={navigate} />
-              ) : (
-                <>
-                  <h1 className="docs__h1">{currentItem.title}</h1>
-                  {currentItem.description ? (
-                    <p className="docs-article-desc">{currentItem.description}</p>
-                  ) : null}
-                  <ErrorBoundary region="Documentation">
-                    <MarkdownRenderer content={currentItem.content} onGuideLink={(path) => navigate(path)} />
-                  </ErrorBoundary>
-                  <ArticleNav
-                    docs={docs}
-                    currentSection={currentSection!}
-                    currentItem={currentItem}
-                    navigate={navigate}
-                  />
-                </>
-              )}
-            </main>
+          {section === 'code-graph' ? (
+            <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+              <iframe
+                src="/api/code-graph/view"
+                title="Codebase Graph"
+                style={{ width: '100%', height: '100%', border: 'none' }}
+              />
+            </div>
+          ) : (
+            <div
+              className={`docs__scroll${currentItem && toc.length > 0 ? ' docs__scroll--with-onpage' : ''}`}
+              ref={scrollRef}
+            >
+              <main className="docs__main">
+                {loading ? (
+                  <div className="docs-loading">
+                    <span
+                      className="animate-spin"
+                      style={{
+                        width: 18,
+                        height: 18,
+                        border: '2px solid var(--border-soft)',
+                        borderTopColor: 'var(--accent)',
+                        borderRadius: '50%',
+                        display: 'inline-block',
+                      }}
+                    />
+                    Loading docs…
+                  </div>
+                ) : loadError ? (
+                  <DocsLoadError message={loadError} onRetry={loadDocs} />
+                ) : section && item && !currentItem ? (
+                  <DocsLoadError message={`Page not found: ${item.replace(/-/g, ' ')}`} onRetry={loadDocs} />
+                ) : !currentItem ? (
+                  <DocsHome docs={docs} navigate={navigate} />
+                ) : (
+                  <>
+                    <h1 className="docs__h1">{currentItem.title}</h1>
+                    {currentItem.description ? (
+                      <p className="docs-article-desc">{currentItem.description}</p>
+                    ) : null}
+                    <ErrorBoundary region="Documentation">
+                      <MarkdownRenderer content={currentItem.content} onGuideLink={(path) => navigate(path)} />
+                    </ErrorBoundary>
+                    <ArticleNav
+                      docs={docs}
+                      currentSection={currentSection!}
+                      currentItem={currentItem}
+                      navigate={navigate}
+                    />
+                  </>
+                )}
+              </main>
 
-            {currentItem && toc.length > 0 ? (
-              <aside className="docs__onpage">
-                <div className="docs__onpage-label">On this page</div>
-                {toc.map((entry) => (
-                  <button
-                    key={entry.id}
-                    type="button"
-                    className={`docs__onpage-link${entry.id === activeHeadingId ? ' docs__onpage-link--on' : ''}`}
-                    onClick={() => scrollToHeading(entry.id)}
-                  >
-                    {entry.text}
-                  </button>
-                ))}
-              </aside>
-            ) : null}
-          </div>
+              {currentItem && toc.length > 0 ? (
+                <aside className="docs__onpage">
+                  <div className="docs__onpage-label">On this page</div>
+                  {toc.map((entry) => (
+                    <button
+                      key={entry.id}
+                      type="button"
+                      className={`docs__onpage-link${entry.id === activeHeadingId ? ' docs__onpage-link--on' : ''}`}
+                      onClick={() => scrollToHeading(entry.id)}
+                    >
+                      {entry.text}
+                    </button>
+                  ))}
+                </aside>
+              ) : null}
+            </div>
+          )}
         </div>
       </div>
     </div>

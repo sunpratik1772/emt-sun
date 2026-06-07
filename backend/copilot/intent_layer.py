@@ -493,6 +493,16 @@ def resolve_sherpa_disposition(
         )
 
     meta = dict(route.metadata or {})
+    if meta.get("edit_existing_workflow") and not has_workflow:
+        meta["edit_existing_workflow"] = False
+        route = SherpaRoute(
+            intent=route.intent,
+            reason=route.reason,
+            enhanced_question=route.enhanced_question,
+            keywords=route.keywords,
+            metadata=meta,
+            source=route.source,
+        )
     advisory_disp = (
         None
         if meta.get("clarification_resolved") or meta.get("edit_existing_workflow")
@@ -556,6 +566,7 @@ def resolve_sherpa_disposition(
     if (
         str(route.intent) == "build"
         and meta.get("edit_existing_workflow")
+        and has_workflow
         and not meta.get("propose_build_plan")
         and not meta.get("propose_fix_plan")
     ):

@@ -36,6 +36,7 @@ from app.routers import docs as docs_routes
 from app.routers import automations as automations_routes
 from app.routers import workspace as workspace_routes
 from app.routers import user as user_routes
+from app.routers import code_graph as code_graph_routes
 from app.main import _lifespan
 
 app = FastAPI(title="dbSherpa Studio API", version="1.1.0", lifespan=_lifespan)
@@ -67,6 +68,7 @@ app.include_router(user_routes.router, prefix="/api")
 app.include_router(docs_routes.router, prefix="/api")
 app.include_router(automations_routes.router, prefix="/api")
 app.include_router(workspace_routes.router, prefix="/api")
+app.include_router(code_graph_routes.router, prefix="/api")
 
 
 @app.get("/api/")

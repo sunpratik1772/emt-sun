@@ -185,6 +185,74 @@ class WorkflowCopilot:
         )
         if binding:
             parts.append("\n" + binding)
+
+        # Match UA context for Chat Mode (Ask Mode)
+        import os
+        if os.environ.get("DBSHERPA_ENABLE_UA_CONTEXT", "1").lower() in {"1", "true", "yes"}:
+            try:
+                from app.understand_anything import load_ua_bundle
+                bundle = load_ua_bundle()
+                if bundle and bundle.get("available"):
+                    domain_graph = bundle.get("domainGraph") or {}
+                    nodes = domain_graph.get("nodes", [])
+                    if nodes:
+                        query_terms = set(user_message.lower().split())
+                        if current_workflow:
+                            query_terms.update(str(current_workflow.get("name", "")).lower().split())
+                            query_terms.update(str(current_workflow.get("description", "")).lower().split())
+                        query_terms = {t for t in query_terms if len(t) > 2}
+                        
+                        matched_domains = []
+                        matched_flows = []
+                        matched_steps = []
+                        
+                        for node in nodes:
+                            ntype = node.get("type")
+                            name = str(node.get("name", "")).lower()
+                            summary = str(node.get("summary", "")).lower()
+                            tags = [t.lower() for t in node.get("tags", [])]
+                            
+                            name_terms = set(name.split())
+                            summary_terms = set(summary.split())
+                            
+                            has_term_match = bool(query_terms & name_terms) or bool(query_terms & summary_terms)
+                            has_tag_match = any(t in query_terms for t in tags)
+                            
+                            if has_term_match or has_tag_match:
+                                if ntype == "domain":
+                                    matched_domains.append(node)
+                                elif ntype == "flow":
+                                    matched_flows.append(node)
+                                elif ntype == "step":
+                                    matched_steps.append(node)
+                                    
+                        ua_blocks = []
+                        if matched_domains:
+                            ua_blocks.append("Matching Domains:")
+                            for dom in matched_domains[:3]:
+                                ua_blocks.append(f"- Domain: {dom.get('name')} ({dom.get('id')})")
+                                ua_blocks.append(f"  Summary: {dom.get('summary')}")
+                        if matched_flows:
+                            ua_blocks.append("Matching Flows:")
+                            for flow in matched_flows[:4]:
+                                ua_blocks.append(f"- Flow: {flow.get('name')} ({flow.get('id')})")
+                                ua_blocks.append(f"  Summary: {flow.get('summary')}")
+                        if matched_steps:
+                            ua_blocks.append("Matching Code Steps/Files:")
+                            for step in matched_steps[:6]:
+                                path_str = f" in {step.get('filePath')}" if step.get("filePath") else ""
+                                ua_blocks.append(f"- Step: {step.get('name')}{path_str}")
+                                ua_blocks.append(f"  Summary: {step.get('summary')}")
+                                
+                        if ua_blocks:
+                            parts.append(
+                                "\n[Understand-Anything Codebase Context]\n"
+                                + "\n".join(ua_blocks)
+                            )
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning(f"Failed to retrieve UA context for chat: {e}")
+
         return "\n".join(parts)
 
     def classify_intent(

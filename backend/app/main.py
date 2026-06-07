@@ -41,6 +41,7 @@ from .routers import run as run_routes
 from .routers import validate as validate_routes
 from .routers import workflows as workflow_routes
 from .routers import workspace as workspace_routes
+from .routers import code_graph as code_graph_routes
 
 logging.basicConfig(level=logging.INFO)
 
@@ -87,3 +88,4 @@ app.include_router(library_routes.router)
 # Served at `/api/docs` (Vite proxy). Do not mount at `/docs` — FastAPI reserves that for Swagger UI.
 app.include_router(docs_routes.router, prefix="/api")
 app.include_router(workspace_routes.router)
+app.include_router(code_graph_routes.router, prefix="/api")

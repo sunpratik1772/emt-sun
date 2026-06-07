@@ -2,7 +2,8 @@
  * Persistent workspace chrome — canvas/code toggle and mode-specific actions
  * live in one fixed bar so switching views never remounts or shifts the toolbar.
  */
-import { Upload, Download, Trash2, Save, Play, ArcIcon, Copy, Check } from '../../icons/arc'
+import { useState, useRef, useEffect } from 'react'
+import { Upload, Download, Trash2, Save, Play, ArcIcon, Copy, Check, MoreHorizontal } from '../../icons/arc'
 import { X, Square } from 'lucide-react'
 import { ViewModeToggle, ViewEditToggle } from '../Topbar'
 import NewWorkflowButton from '../shared/NewWorkflowButton'
@@ -20,54 +21,58 @@ export default function WorkspaceToolbar() {
   const workflow = useWorkflowStore((s) => s.workflow)
   const isRunning = useWorkflowStore((s) => s.isRunning)
 
-
   const isCanvas = workspaceView === 'canvas'
 
   return (
     <div className="shrink-0 px-3 pt-3 z-30">
-      <div
-        className="wt panel-glass flex items-center justify-between gap-3 shrink-0"
-        style={{
-          height: BAR_HEIGHT,
-          padding: '0 10px',
-          borderRadius: 10,
-          border: '1px solid var(--border-soft)',
-          boxShadow: 'var(--linear-elev-raised, none)',
-        }}
-      >
+      <div className="wt panel-glass workspace-toolbar-inner shrink-0">
         <div className="flex items-center gap-3 min-w-0">
           <ViewModeToggle value={workspaceView} onChange={setWorkspaceView} />
 
-          <span className="font-mono text-[var(--text-3)] text-[11px]" aria-hidden>
+          <span className="font-mono text-[var(--text-3)] text-[11px] studio-toolbar-slash" aria-hidden>
             /
           </span>
 
           <ViewEditToggle value={workspaceEditMode} onChange={setWorkspaceEditMode} />
         </div>
 
-        <div className="flex items-center justify-end gap-2 shrink-0 min-w-0">
+        <div className="workspace-toolbar-right shrink-0 min-w-0">
           {isCanvas ? (
             <>
               {workflow ? (
                 <>
-                  <ToolbarIconButton
-                    onClick={() => window.dispatchEvent(new CustomEvent('sheep:request-import-workflow'))}
-                    title="Import workflow"
-                  >
-                    <ArcIcon icon={Upload} size={13} />
-                  </ToolbarIconButton>
-                  <ToolbarIconButton
-                    onClick={() => window.dispatchEvent(new CustomEvent('sheep:request-export-workflow'))}
-                    title="Export workflow"
-                  >
-                    <ArcIcon icon={Download} size={13} />
-                  </ToolbarIconButton>
-                  <ToolbarIconButton
-                    onClick={() => window.dispatchEvent(new CustomEvent('sheep:request-delete-workflow'))}
-                    title="Delete workflow"
-                  >
-                    <ArcIcon icon={Trash2} size={13} />
-                  </ToolbarIconButton>
+                  {/* Expanded group: visible when wide */}
+                  <div className="toolbar-expanded-actions">
+                    <ToolbarIconButton
+                      onClick={() => window.dispatchEvent(new CustomEvent('sheep:request-import-workflow'))}
+                      title="Import workflow"
+                    >
+                      <ArcIcon icon={Upload} size={13} />
+                    </ToolbarIconButton>
+                    <ToolbarIconButton
+                      onClick={() => window.dispatchEvent(new CustomEvent('sheep:request-export-workflow'))}
+                      title="Export workflow"
+                    >
+                      <ArcIcon icon={Download} size={13} />
+                    </ToolbarIconButton>
+                    <ToolbarIconButton
+                      onClick={() => window.dispatchEvent(new CustomEvent('sheep:request-delete-workflow'))}
+                      title="Delete workflow"
+                    >
+                      <ArcIcon icon={Trash2} size={13} />
+                    </ToolbarIconButton>
+                  </div>
+
+                  {/* Collapsed group: visible when narrow */}
+                  <div className="toolbar-collapsed-actions">
+                    <CanvasActionsDropdown
+                      onImport={() => window.dispatchEvent(new CustomEvent('sheep:request-import-workflow'))}
+                      onExport={() => window.dispatchEvent(new CustomEvent('sheep:request-export-workflow'))}
+                      onDelete={() => window.dispatchEvent(new CustomEvent('sheep:request-delete-workflow'))}
+                    />
+                  </div>
+
+                  {/* Always visible action buttons */}
                   <ToolbarIconButton
                     onClick={() => window.dispatchEvent(new CustomEvent('sheep:request-save-workflow'))}
                     title="Save workflow"
@@ -76,7 +81,7 @@ export default function WorkspaceToolbar() {
                   </ToolbarIconButton>
                   <Button
                     variant={isRunning ? 'stop' : 'primary'}
-                    className="btn--icon"
+                    className="btn--icon workspace-run-btn"
                     onClick={() =>
                       window.dispatchEvent(
                         new CustomEvent(
@@ -99,7 +104,11 @@ export default function WorkspaceToolbar() {
                   <span className="w-px h-4 shrink-0 bg-[var(--border-soft)]" />
                 </>
               ) : null}
-              <NewWorkflowButton variant="icon" style={{ position: 'relative', top: 0, left: 0 }} />
+              <NewWorkflowButton
+                variant="icon"
+                className="workspace-new-btn"
+                style={{ position: 'relative', top: 0, left: 0 }}
+              />
             </>
           ) : (
             <CodeToolbarActions />
@@ -197,9 +206,137 @@ function ToolbarIconButton({
       aria-label={title}
       disabled={disabled}
       lift={false}
+      className="toolbar-icon-btn"
       style={{ width: 28, height: 28, borderRadius: 6 }}
     >
       {children}
     </Button>
+  )
+}
+
+function CanvasActionsDropdown({
+  onImport,
+  onExport,
+  onDelete,
+}: {
+  onImport: () => void
+  onExport: () => void
+  onDelete: () => void
+}) {
+  const [open, setOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  return (
+    <div ref={containerRef} className="relative inline-block text-left" style={{ display: 'inline-flex' }}>
+      <Button
+        variant="icon"
+        onClick={() => setOpen(!open)}
+        title="More actions"
+        aria-label="More actions"
+        lift={false}
+        className="toolbar-icon-btn"
+        style={{ width: 28, height: 28, borderRadius: 6 }}
+      >
+        <ArcIcon icon={MoreHorizontal} size={13} />
+      </Button>
+
+      {open && (
+        <div
+          className="panel-glass absolute right-0 mt-1.5"
+          style={{
+            width: 140,
+            background: 'var(--bg-2)',
+            border: '1px solid var(--border)',
+            borderRadius: 8,
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.25)',
+            padding: '4px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            zIndex: 100,
+          }}
+        >
+          <DropdownItem
+            onClick={() => {
+              onImport()
+              setOpen(false)
+            }}
+            icon={Upload}
+            label="Import"
+          />
+          <DropdownItem
+            onClick={() => {
+              onExport()
+              setOpen(false)
+            }}
+            icon={Download}
+            label="Export"
+          />
+          <DropdownItem
+            onClick={() => {
+              onDelete()
+              setOpen(false)
+            }}
+            icon={Trash2}
+            label="Delete"
+            danger
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
+function DropdownItem({
+  onClick,
+  icon,
+  label,
+  danger,
+}: {
+  onClick: () => void
+  icon: any
+  label: string
+  danger?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex items-center gap-2"
+      style={{
+        width: '100%',
+        padding: '6px 8px',
+        borderRadius: 6,
+        border: 'none',
+        background: 'transparent',
+        color: danger ? 'var(--danger)' : 'var(--text-1)',
+        cursor: 'pointer',
+        fontSize: '11px',
+        textAlign: 'left',
+        fontWeight: 500,
+        transition: 'background 120ms, color 120ms',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'var(--bg-3)'
+        e.currentTarget.style.color = danger ? 'var(--danger)' : 'var(--text-0)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'transparent'
+        e.currentTarget.style.color = danger ? 'var(--danger)' : 'var(--text-1)'
+      }}
+    >
+      <ArcIcon icon={icon} size={11} />
+      <span>{label}</span>
+    </button>
   )
 }

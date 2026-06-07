@@ -415,6 +415,7 @@ class AgentRunner:
                 intent=intent,
                 blueprint=blueprint,
                 planning_monologue=state.planning_monologue,
+                retrieved=retrieved,
             )
             for task_id in task_ids:
                 try:
@@ -896,6 +897,7 @@ class AgentRunner:
         intent,
         blueprint: BlueprintDecision | None,
         planning_monologue: str = "",
+        retrieved: RetrievedContext | None = None,
     ) -> list[str]:
         if not self._is_tool_allowed(state, "task"):
             return []
@@ -905,6 +907,24 @@ class AgentRunner:
                 "Sherpa planning (binding — align your output with this):\n"
                 f"{planning_monologue.strip()}\n\n"
             )
+        ua_prefix = ""
+        import os
+        if retrieved and os.environ.get("DBSHERPA_ENABLE_UA_CONTEXT", "1").lower() in {"1", "true", "yes"}:
+            ua_blocks = []
+            if getattr(retrieved, "ua_domains", None):
+                ua_blocks.append("Matching Domains:")
+                for dom in retrieved.ua_domains:
+                    ua_blocks.append(f"- Domain: {dom.get('name')} ({dom.get('id')})")
+            if getattr(retrieved, "ua_flows", None):
+                ua_blocks.append("Matching Flows:")
+                for flow in retrieved.ua_flows:
+                    ua_blocks.append(f"- Flow: {flow.get('name')} ({flow.get('id')})")
+            if ua_blocks:
+                ua_prefix = (
+                    "Relevant Architecture context:\n"
+                    + "\n".join(ua_blocks)
+                    + "\n\n"
+                )
         clauses: list[tuple[str, str, str]] = []
         if blueprint is not None and blueprint.parallel_tasks:
             clauses = [
@@ -949,7 +969,7 @@ class AgentRunner:
             task = self.task_manager.create_task(
                 subagent_type=subagent_type,
                 description=description[:120],
-                prompt=plan_prefix + prompt,
+                prompt=plan_prefix + ua_prefix + prompt,
                 background=True,
             )
             task_ids.append(task.task_id)

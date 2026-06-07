@@ -38,6 +38,9 @@ class RetrievedContext:
     example_workflows: list[dict] = field(default_factory=list)
     memory_text: str = ""
     dataset_names: list[str] = field(default_factory=list)
+    ua_domains: list[dict] = field(default_factory=list)
+    ua_flows: list[dict] = field(default_factory=list)
+    ua_steps: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -48,6 +51,9 @@ class RetrievedContext:
             "example_count": len(self.example_workflows),
             "has_memory": bool(self.memory_text),
             "dataset_names": self.dataset_names,
+            "ua_domains_count": len(self.ua_domains),
+            "ua_flows_count": len(self.ua_flows),
+            "ua_steps_count": len(self.ua_steps),
         }
 
 
@@ -80,8 +86,63 @@ class ContextRetriever:
         ctx.example_workflows = self._load_examples(intent, exclude=ctx.template_name)
         ctx.memory_text = self.memory.load()
         ctx.dataset_names = list(intent.datasets)
+        self._retrieve_ua_context(intent, ctx)
 
         return ctx
+
+    def _retrieve_ua_context(self, intent: Intent, ctx: RetrievedContext) -> None:
+        """Find matching domains, flows, and steps from the UA bundle."""
+        import os
+        if os.environ.get("DBSHERPA_ENABLE_UA_CONTEXT", "1").lower() not in {"1", "true", "yes"}:
+            return
+
+        try:
+            from app.understand_anything import load_ua_bundle
+            bundle = load_ua_bundle()
+            if not bundle or not bundle.get("available"):
+                return
+            
+            domain_graph = bundle.get("domainGraph") or {}
+            nodes = domain_graph.get("nodes", [])
+            if not nodes:
+                return
+            
+            query_terms = set()
+            for s in intent.scenarios:
+                query_terms.update(s.lower().split())
+            query_terms.update(intent.raw_scenario.lower().split())
+            query_terms = {t for t in query_terms if len(t) > 2}
+
+            matched_domains = []
+            matched_flows = []
+            matched_steps = []
+
+            for node in nodes:
+                ntype = node.get("type")
+                name = str(node.get("name", "")).lower()
+                summary = str(node.get("summary", "")).lower()
+                tags = [t.lower() for t in node.get("tags", [])]
+                
+                name_terms = set(name.split())
+                summary_terms = set(summary.split())
+                
+                has_term_match = bool(query_terms & name_terms) or bool(query_terms & summary_terms)
+                has_tag_match = any(t in query_terms for t in tags)
+                
+                if has_term_match or has_tag_match:
+                    if ntype == "domain":
+                        matched_domains.append(node)
+                    elif ntype == "flow":
+                        matched_flows.append(node)
+                    elif ntype == "step":
+                        matched_steps.append(node)
+
+            ctx.ua_domains = matched_domains[:3]
+            ctx.ua_flows = matched_flows[:4]
+            ctx.ua_steps = matched_steps[:6]
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).warning(f"Failed to retrieve UA context: {e}")
 
     def _match_skills(self, intent: Intent) -> list[str]:
         """Delegate to PromptBuilder's skill matcher."""

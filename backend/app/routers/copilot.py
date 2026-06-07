@@ -90,6 +90,16 @@ def _slugify(name: str) -> str:
     return s or "draft"
 
 
+def _trigger_bg_refresh() -> None:
+    """Trigger background refresh of understand-anything artifacts asynchronously."""
+    import threading
+    from app.understand_anything import refresh_artifacts
+    try:
+        threading.Thread(target=refresh_artifacts, kwargs={"mode": "all"}).start()
+    except Exception:
+        logger.exception("Failed to trigger background UA refresh")
+
+
 def _autosave_draft(dag: dict[str, Any]) -> str | None:
     """Persist a Copilot-generated workflow to the drafts table."""
     try:
@@ -105,6 +115,7 @@ def _autosave_draft(dag: dict[str, Any]) -> str | None:
             workflow_data=json.dumps(dag),
             user_id=get_current_user_id(),
         )
+        _trigger_bg_refresh()
         return filename
     except Exception:
         logger.exception("Failed to auto-save draft")
