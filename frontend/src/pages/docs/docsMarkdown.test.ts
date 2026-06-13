@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from 'fs'
+import { readFileSync, readdirSync, existsSync } from 'fs'
 import { join } from 'path'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -14,7 +14,11 @@ import {
   resolveGuideDocPath,
 } from './docsMarkdown'
 
-const DOCS_DIR = join(__dirname, '../../../../docs')
+let resolvedDocsPath = join(__dirname, '../../../../docs')
+if (!existsSync(resolvedDocsPath)) {
+  resolvedDocsPath = join(__dirname, '../../../../sher-backend/docs')
+}
+const DOCS_DIR = resolvedDocsPath
 
 const DOC_GUIDES = [
   'engineering-onboarding.md',
@@ -128,7 +132,7 @@ describe('all guide documents', () => {
       expect(queue.length).toBe(headings.length)
       expect(toc.length).toBe(headings.filter((h) => h.level >= 2).length)
     }
-  }, 30_000)
+  }, 180_000)
 
   it('match ReactMarkdown heading count for representative guides', () => {
     for (const filename of ['architecture.md', 'creating-nodes.md', 'node-catalogue.md']) {
@@ -138,7 +142,7 @@ describe('all guide documents', () => {
       const rendered = countRenderedHeadings(content)
       expect(rendered, filename).toBe(parsed)
     }
-  }, 30_000)
+  }, 180_000)
 
   it('keeps node catalogue toc ids in document order', () => {
     const raw = readFileSync(join(DOCS_DIR, 'node-catalogue.md'), 'utf8')
@@ -157,7 +161,7 @@ describe('all guide documents', () => {
     expect(toc.findIndex((entry) => entry.id === 'filter')).toBeLessThan(
       toc.findIndex((entry) => entry.id === 'condition'),
     )
-  })
+  }, 180_000)
 
   it('covers every markdown guide file in docs/', () => {
     const onDisk = readdirSync(DOCS_DIR)

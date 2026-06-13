@@ -2,16 +2,21 @@
  * Persistent workspace chrome — canvas/code toggle and mode-specific actions
  * live in one fixed bar so switching views never remounts or shifts the toolbar.
  */
-import { useState, useRef, useEffect } from 'react'
-import { Upload, Download, Trash2, Save, Play, ArcIcon, Copy, Check, MoreHorizontal } from '../../icons/arc'
+import { useState, useRef, useEffect, useMemo } from 'react'
+import { Upload, Download, Trash2, Save, Play, ArcIcon, Copy, Check, MoreHorizontal, Pencil } from '../../icons/arc'
 import { X, Square } from 'lucide-react'
-import { ViewModeToggle, ViewEditToggle } from '../Topbar'
+import { ViewModeToggle, ViewEditToggle, EnvironmentDropdown } from '../Topbar'
 import NewWorkflowButton from '../shared/NewWorkflowButton'
 import { Button } from '../ui/Button'
 import { useWorkflowStore } from '../../store/workflowStore'
 import { useCodeEditorToolbar } from './context'
 
 const BAR_HEIGHT = 46
+
+function filenameStem(filename: string | null | undefined): string {
+  if (!filename) return ''
+  return filename.replace(/\.(yaml|yml|json)$/i, '').trim()
+}
 
 export default function WorkspaceToolbar() {
   const workspaceView = useWorkflowStore((s) => s.workspaceView)
@@ -20,13 +25,82 @@ export default function WorkspaceToolbar() {
   const setWorkspaceEditMode = useWorkflowStore((s) => s.setWorkspaceEditMode)
   const workflow = useWorkflowStore((s) => s.workflow)
   const isRunning = useWorkflowStore((s) => s.isRunning)
+  const sourceFilename = useWorkflowStore((s) => s.sourceFilename)
+  const lastSavedSignature = useWorkflowStore((s) => s.lastSavedSignature)
+  const [nameHovered, setNameHovered] = useState(false)
 
   const isCanvas = workspaceView === 'canvas'
+
+  const isDirty = useMemo(() => {
+    if (!workflow) return false
+    if (!lastSavedSignature) {
+      return workflow.nodes.length > 0
+    }
+    return lastSavedSignature !== JSON.stringify(workflow)
+  }, [workflow, lastSavedSignature])
+
+  const displayWorkflowName = workflow
+    ? (workflow.name || '').trim() || filenameStem(sourceFilename) || 'Untitled workflow'
+    : 'No active workflow'
+
+  let statusClass = 'saved'
+  let statusLabel = 'Saved'
+
+  if (isRunning) {
+    statusClass = 'running'
+    statusLabel = 'Running'
+  } else if (isDirty) {
+    statusClass = 'unsaved'
+    statusLabel = 'Unsaved'
+  }
 
   return (
     <div className="shrink-0 px-3 pt-3 z-30">
       <div className="wt panel-glass workspace-toolbar-inner shrink-0">
-        <div className="flex items-center gap-3 min-w-0">
+        
+        {/* Left Side: Environment and Name / Status */}
+        <div className="workspace-toolbar-left flex items-center min-w-0" style={{ gap: 6 }}>
+          <EnvironmentDropdown />
+          <span className="font-mono text-[var(--text-3)] text-[11px] studio-toolbar-slash" aria-hidden>
+            /
+          </span>
+          <div
+            className="flex items-center min-w-0"
+            style={{ gap: 6, cursor: workflow ? 'pointer' : 'default' }}
+            onMouseEnter={() => setNameHovered(true)}
+            onMouseLeave={() => setNameHovered(false)}
+            onClick={() => {
+              if (workflow) {
+                window.dispatchEvent(new CustomEvent('sheep:request-save-workflow'))
+              }
+            }}
+            title={workflow ? 'Rename and Save As' : undefined}
+          >
+            {workflow && (
+              <span className={`studio-status-dot ${statusClass}`} />
+            )}
+            <span
+              className="font-mono truncate"
+              style={{
+                color: 'var(--text-1)',
+                fontSize: 12.5,
+                lineHeight: 1.25,
+                fontWeight: 500,
+                maxWidth: 'clamp(120px, calc(30vw - 100px), 280px)',
+              }}
+            >
+              {displayWorkflowName}
+            </span>
+            {workflow && nameHovered && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', color: 'var(--text-3)' }}>
+                <ArcIcon icon={Pencil} size={10} style={{ marginLeft: 2 }} />
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Center: Canvas/Code and View/Edit Toggles */}
+        <div className="workspace-toolbar-center flex items-center gap-3 min-w-0">
           <ViewModeToggle value={workspaceView} onChange={setWorkspaceView} />
 
           <span className="font-mono text-[var(--text-3)] text-[11px] studio-toolbar-slash" aria-hidden>

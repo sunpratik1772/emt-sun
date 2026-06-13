@@ -9,7 +9,7 @@
  *   │         │ BottomOutputPanel (when Output mode — resizable)     │
  *   └────────────────────────────────────────────────────────────────┘
  */
-import { Suspense, lazy, useEffect } from 'react'
+import { Suspense, lazy, useEffect, useState, useMemo } from 'react'
 import NodePanel from './components/NodePanel'
 import RightPanel from './components/RightPanel'
 import Topbar from './components/Topbar'
@@ -21,7 +21,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import ToastHost from './components/ToastHost'
 import AsyncFallback from './components/AsyncFallback'
 import DashboardHome from './pages/DashboardHome'
-import { ArcIcon, PanelLeftOpen } from './icons/arc'
+import { ArcIcon, PanelLeftOpen, Pencil } from './icons/arc'
 import { SkillsDrawer, DataSourcesDrawer, RunHistoryDrawer, NodesDrawer, AutomationsDrawer, SettingsDrawer } from './components/drawers'
 import { useCopilotChatAutosave } from './hooks/useCopilotChatAutosave'
 import { useDraftAutosave } from './store/useDraftAutosave'
@@ -103,7 +103,7 @@ export default function App() {
       <div className="relative z-10 flex h-full min-w-0">
         <LeftNav />
         <div className="flex flex-col flex-1 min-w-0">
-          {showStudio && !workflowDrawerOpen ? <Topbar /> : null}
+          {showStudio && !workflowDrawerOpen ? <Topbar headless /> : null}
           <div className="flex flex-col flex-1 min-h-0 overflow-hidden relative">
             <div className="studio-workspace flex flex-1 overflow-hidden relative min-h-0">
               {showDashboard ? (

@@ -18,7 +18,10 @@ CONFIG_FILE = "config.json"
 
 
 def project_root() -> Path:
-    return Path(__file__).resolve().parents[2]
+    current_file = Path(__file__).resolve()
+    if current_file.parents[1].name == "backend":
+        return current_file.parents[2]
+    return current_file.parents[1]
 
 
 def ua_dir(root: Path | None = None) -> Path:
