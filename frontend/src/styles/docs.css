@@ -754,3 +754,54 @@
   border: 1px solid var(--border-soft);
   margin-bottom: 16px;
 }
+
+/* High-contrast docs pass — adapts to theme via tokens */
+.docs-shell,
+[data-theme='ripeplanet'] .docs-shell,
+[data-theme='altermind'] .docs-shell,
+[data-theme='aurora'] .docs-shell {
+  background: var(--bg-base);
+  color: var(--text-0);
+}
+
+.docs-sidebar,
+.docs-main,
+.docs-header,
+.docs-nav-item,
+.docs-nav-section-btn,
+.docs-card,
+.docs-markdown pre,
+.docs-table-wrap,
+.docs-onpage {
+  background: var(--bg-1);
+  border-color: var(--border);
+}
+
+.docs-nav-item:hover,
+.docs-nav-section-btn:hover,
+.docs-card:hover,
+.docs-icon-btn:hover,
+.docs-studio-btn:hover {
+  background: var(--bg-2);
+}
+
+.docs-nav-item--active,
+.docs-studio-btn,
+.docs-markdown blockquote {
+  background: var(--bg-2);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+
+.docs-brand-name,
+.docs-section-label,
+.docs-nav-section-btn {
+  font-family: var(--font-mono);
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.docs-icon-btn,
+.docs-studio-btn,
+.docs-search-input {
+  border-color: var(--border);
+}

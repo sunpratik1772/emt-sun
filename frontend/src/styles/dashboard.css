@@ -34,23 +34,22 @@
   --dash-heat-muted: color-mix(in srgb, var(--dash-heat) 12%, var(--bg-2));
 }
 
-[data-theme='turquoise'] .dash {
-  background: #f2f7f7;
+[data-theme='altermind'] .dash {
+  background: #0a1f1c;
   --dash-shadow:
-    0 1px 0 rgba(20, 60, 70, 0.03),
-    0 8px 24px -12px rgba(20, 60, 70, 0.18);
-  --dash-heat: #2e8a86;
+    0 1px 0 rgba(245, 241, 232, 0.03) inset,
+    0 8px 24px -8px rgba(0, 0, 0, 0.45);
+  --dash-heat: #d4c9a8;
   --dash-heat-muted: color-mix(in srgb, var(--dash-heat) 18%, var(--bg-2));
 }
 
-[data-theme='claude'] .dash {
-  background: #faf8f5;
-  --dash-shadow:
-    0 1px 0 rgba(80, 50, 20, 0.03),
-    0 8px 24px -12px rgba(80, 50, 20, 0.18);
-  --dash-heat: #cc6a3d;
-  --dash-heat-muted: color-mix(in srgb, var(--dash-heat) 18%, var(--bg-2));
+[data-theme='ripeplanet'] .dash,
+[data-theme='altermind']  .dash {
+  --dash-shadow: none;
+  --dash-heat: var(--accent);
+  --dash-heat-muted: color-mix(in srgb, var(--accent) 12%, var(--bg-1));
 }
+
 
 .dash--preview {
   border-radius: var(--radius-lg);
@@ -512,7 +511,7 @@
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
 }
 
-[data-theme='light'] .dash-stat--glass {
+[data-theme='ripeplanet'] .dash-stat--glass {
   background: color-mix(in srgb, #fff 78%, transparent);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.8) inset,
@@ -1226,14 +1225,14 @@
   border: 1px solid color-mix(in srgb, var(--border-soft) 80%, transparent);
 }
 
-[data-theme='light'] .dash-wf-card--glass {
+[data-theme='ripeplanet'] .dash-wf-card--glass {
   background: color-mix(in srgb, #fff 70%, transparent);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.85) inset,
     0 10px 28px rgba(15, 23, 42, 0.06);
 }
 
-[data-theme='light'] .dash-wf-card--glass:hover {
+[data-theme='ripeplanet'] .dash-wf-card--glass:hover {
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
     0 16px 36px rgba(15, 23, 42, 0.1);
@@ -1269,11 +1268,11 @@
   border-color: color-mix(in srgb, var(--text-3) 35%, transparent);
 }
 
-[data-theme='light'] .dash-wf-card--glass.dash-wf-card--status-success {
+[data-theme='ripeplanet'] .dash-wf-card--glass.dash-wf-card--status-success {
   border-color: color-mix(in srgb, var(--success) 28%, var(--border-soft));
 }
 
-[data-theme='light'] .dash-wf-card--glass.dash-wf-card--status-error {
+[data-theme='ripeplanet'] .dash-wf-card--glass.dash-wf-card--status-error {
   border-color: color-mix(in srgb, var(--danger) 28%, var(--border-soft));
 }
 
@@ -1286,12 +1285,12 @@
   background: color-mix(in srgb, var(--bg-1) 52%, transparent);
 }
 
-[data-theme='light'] .dash-wf-card--glass.dash-wf-card--0,
-[data-theme='light'] .dash-wf-card--glass.dash-wf-card--1,
-[data-theme='light'] .dash-wf-card--glass.dash-wf-card--2,
-[data-theme='light'] .dash-wf-card--glass.dash-wf-card--3,
-[data-theme='light'] .dash-wf-card--glass.dash-wf-card--4,
-[data-theme='light'] .dash-wf-card--glass.dash-wf-card--5 {
+[data-theme='ripeplanet'] .dash-wf-card--glass.dash-wf-card--0,
+[data-theme='ripeplanet'] .dash-wf-card--glass.dash-wf-card--1,
+[data-theme='ripeplanet'] .dash-wf-card--glass.dash-wf-card--2,
+[data-theme='ripeplanet'] .dash-wf-card--glass.dash-wf-card--3,
+[data-theme='ripeplanet'] .dash-wf-card--glass.dash-wf-card--4,
+[data-theme='ripeplanet'] .dash-wf-card--glass.dash-wf-card--5 {
   background: color-mix(in srgb, #fff 68%, transparent);
 }
 
@@ -1302,12 +1301,12 @@
 [data-theme='dark'] .dash-wf-card--4 { background: color-mix(in srgb, #ef4444 7%, var(--bg-1)); }
 [data-theme='dark'] .dash-wf-card--5 { background: color-mix(in srgb, #8b5cf6 8%, var(--bg-1)); }
 
-[data-theme='light'] .dash-wf-card--0 { background: color-mix(in srgb, #f59e0b 6%, #fff); }
-[data-theme='light'] .dash-wf-card--1 { background: color-mix(in srgb, #6366f1 5%, #fff); }
-[data-theme='light'] .dash-wf-card--2 { background: color-mix(in srgb, #10b981 5%, #fff); }
-[data-theme='light'] .dash-wf-card--3 { background: color-mix(in srgb, #0ea5e9 5%, #fff); }
-[data-theme='light'] .dash-wf-card--4 { background: color-mix(in srgb, #ef4444 4%, #fff); }
-[data-theme='light'] .dash-wf-card--5 { background: color-mix(in srgb, #8b5cf6 5%, #fff); }
+[data-theme='ripeplanet'] .dash-wf-card--0 { background: color-mix(in srgb, #f59e0b 6%, #fff); }
+[data-theme='ripeplanet'] .dash-wf-card--1 { background: color-mix(in srgb, #6366f1 5%, #fff); }
+[data-theme='ripeplanet'] .dash-wf-card--2 { background: color-mix(in srgb, #10b981 5%, #fff); }
+[data-theme='ripeplanet'] .dash-wf-card--3 { background: color-mix(in srgb, #0ea5e9 5%, #fff); }
+[data-theme='ripeplanet'] .dash-wf-card--4 { background: color-mix(in srgb, #ef4444 4%, #fff); }
+[data-theme='ripeplanet'] .dash-wf-card--5 { background: color-mix(in srgb, #8b5cf6 5%, #fff); }
 
 .dash-wf-card__head {
   display: flex;
@@ -1593,12 +1592,37 @@
   min-height: 220px;
 }
 
-[data-theme='light'] .dash-health-card--glass {
-  background: color-mix(in srgb, #fff 65%, transparent);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.85) inset,
-    var(--dash-shadow);
+[data-theme='ripeplanet'] .dash-health-card--glass,
+[data-theme='altermind']  .dash-health-card--glass {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
 }
+
+/* Kill the animated colored blobs in light theme — they read as smudges
+   on a parchment background. Use a single static coral accent stripe. */
+[data-theme='ripeplanet'] .dash-health-card__blobs,
+[data-theme='altermind']  .dash-health-card__blobs {
+  display: none;
+}
+[data-theme='ripeplanet'] .dash-health-card--glass::before,
+[data-theme='altermind']  .dash-health-card--glass::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 3px;
+  background: var(--accent);
+  opacity: 0.85;
+}
+[data-theme='ripeplanet'] .dash-health-card--success::before,
+[data-theme='altermind']  .dash-health-card--success::before { background: var(--success); }
+[data-theme='ripeplanet'] .dash-health-card--danger::before,
+[data-theme='altermind']  .dash-health-card--danger::before { background: var(--danger); }
+[data-theme='ripeplanet'] .dash-health-card--warn::before,
+[data-theme='altermind']  .dash-health-card--warn::before { background: var(--warning); }
 
 .dash-health-card__blobs {
   position: absolute;
@@ -1639,7 +1663,7 @@
   height: 40%;
   left: 35%;
   top: 40%;
-  background: radial-gradient(circle, color-mix(in srgb, #6366f1 55%, transparent), transparent 70%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent-secondary, var(--accent-cyan, var(--accent))) 55%, transparent), transparent 70%);
   animation-delay: -8s;
   animation-duration: 20s;
 }
@@ -1649,7 +1673,7 @@
 }
 
 .dash-health-card--danger .dash-health-card__blob--2 {
-  background: radial-gradient(circle, color-mix(in srgb, #f97316 60%, transparent), transparent 72%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--warning, var(--danger-lo)) 60%, transparent), transparent 72%);
 }
 
 .dash-health-card--warn .dash-health-card__blob--1 {
@@ -1675,7 +1699,7 @@
   -webkit-backdrop-filter: blur(14px) saturate(1.15);
 }
 
-[data-theme='light'] .dash-activity-card--glass {
+[data-theme='ripeplanet'] .dash-activity-card--glass {
   background: color-mix(in srgb, #fff 72%, transparent);
 }
 
@@ -2010,5 +2034,114 @@
   .dash-body__inner {
     padding-inline: clamp(40px, 5vw, 80px);
   }
+}
+
+/* High-contrast dashboard pass — adapts to theme via tokens */
+.dash,
+[data-theme='ripeplanet'] .dash,
+[data-theme='altermind'] .dash,
+[data-theme='aurora'] .dash {
+  background: var(--bg-base);
+  color: var(--text-0);
+}
+
+/* High-contrast dashboard pass — adapts to theme via tokens */
+.dash,
+[data-theme='ripeplanet'] .dash,
+[data-theme='altermind'] .dash,
+[data-theme='aurora'] .dash {
+  background: var(--bg-base);
+  color: var(--text-0);
+}
+
+.dash-welcome__eyebrow,
+.dash-section-title,
+.dash-sidebar__brand-sub {
+  font-family: var(--font-mono);
+  font-style: normal;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dash-welcome__eyebrow {
+  font-size: 10px;
+  margin-bottom: 8px;
+  color: var(--text-3);
+}
+
+.dash-welcome__title {
+  font-size: clamp(30px, 3.2vw, 44px);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.dash-sidebar,
+.dash-main,
+.dash-panel,
+.dash-ai-card,
+.dash-wf-card,
+.dash-search-trigger,
+.dash-btn,
+.dash-link-btn,
+.dash-run-calendar,
+.dash-run-item {
+  background: var(--bg-1);
+  border-color: var(--border);
+}
+
+.dash-sidebar,
+.dash-panel,
+.dash-ai-card,
+.dash-wf-card,
+.dash-run-calendar,
+.dash-search-trigger {
+  box-shadow: var(--shadow-card);
+}
+
+.dash-btn--primary {
+  background: var(--text-0);
+  color: var(--bg-0);
+  border-color: var(--text-0);
+}
+
+.dash-btn--ghost,
+.dash-link-btn,
+.dash-search-trigger,
+.dash-panel__link {
+  background: var(--bg-1);
+  color: var(--text-0);
+}
+
+.dash-nav-item:hover,
+.dash-wf-card:hover,
+.dash-run-item:hover,
+.dash-link-btn:hover,
+.dash-btn--ghost:hover,
+.dash-search-trigger:hover {
+  background: var(--bg-2);
+}
+
+.dash-nav-item--active,
+.dash-segment__btn--active,
+.dash-pill--chip {
+  background: var(--bg-2);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  color: var(--text-0);
+}
+
+.dash-sherpa__input,
+.dash-search-trigger,
+.dash-segment,
+.dash-segment__btn,
+.dash-run-calendar__cell {
+  border-color: var(--border);
+}
+
+.dash-sherpa__input:focus,
+.dash-search-trigger:focus,
+.dash-btn:focus-visible,
+.dash-link-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 32%, transparent);
 }
 

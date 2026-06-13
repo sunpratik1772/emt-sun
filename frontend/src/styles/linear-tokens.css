@@ -39,7 +39,7 @@
     0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
-[data-theme='light'] {
+[data-theme='ripeplanet'] {
   --linear-bg: #fafafa;
   --linear-surface: #ffffff;
   --linear-surface-warm: #f4f4f5;

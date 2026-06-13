@@ -1,0 +1,392 @@
+/**
+ * Shared primitives — token-driven, theme-agnostic styles for:
+ *   • StatusPill      → .status-pill
+ *   • PageTabs        → .page-tabs
+ *   • QuickstartCard  → .qstart
+ *
+ * Every color resolves through CSS tokens declared in globals.css, so the
+ * primitives stay consistent across the light, dark, ripeplanet, turquoise,
+ * and claude themes.
+ */
+
+/* ───────────── StatusPill ───────────── */
+.status-pill {
+  --pill-color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--pill-color) 30%, var(--border-soft));
+  background: color-mix(in srgb, var(--pill-color) 11%, transparent);
+  color: var(--pill-color);
+  font-family: var(--linear-font-mono, ui-monospace, monospace);
+  font-size: 10.5px;
+  font-weight: 540;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  user-select: none;
+  transition: background-color 160ms var(--linear-ease), border-color 160ms var(--linear-ease);
+}
+
+.status-pill--solid {
+  background: var(--pill-color);
+  color: var(--accent-on, #ffffff);
+  border-color: var(--pill-color);
+}
+
+.status-pill__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--pill-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--pill-color) 22%, transparent);
+  flex-shrink: 0;
+}
+
+.status-pill--solid .status-pill__dot {
+  background: currentColor;
+  box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.status-pill__dot--pulse {
+  animation: status-pill-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes status-pill-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.55; transform: scale(0.82); }
+}
+
+.status-pill__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-pill__meta {
+  color: color-mix(in srgb, var(--pill-color) 70%, var(--text-2));
+  font-variant-numeric: tabular-nums;
+  font-weight: 480;
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
+
+/* Tone overrides — let token color flow through pill-color */
+.status-pill--success  { --pill-color: var(--success); }
+.status-pill--danger   { --pill-color: var(--danger); }
+.status-pill--warning  { --pill-color: var(--warning); }
+.status-pill--info     { --pill-color: var(--info, var(--accent)); }
+.status-pill--running  { --pill-color: var(--running, var(--accent)); }
+.status-pill--neutral  { --pill-color: var(--text-2); }
+
+/* ───────────── PageTabs ───────────── */
+.page-tabs {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  margin-bottom: 14px;
+}
+
+.page-tabs__row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.page-tabs__row::-webkit-scrollbar { display: none; }
+
+.page-tabs__btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 140ms var(--linear-ease, ease);
+}
+
+.page-tabs__btn::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: transparent;
+  transition: background-color 160ms var(--linear-ease, ease);
+}
+
+.page-tabs__btn:hover { color: var(--text-1); }
+.page-tabs__btn:focus-visible {
+  outline: none;
+  color: var(--text-0);
+}
+
+.page-tabs__btn--disabled,
+.page-tabs__btn:disabled {
+  cursor: not-allowed;
+  color: var(--text-3);
+  opacity: 0.5;
+}
+.page-tabs__btn--disabled:hover {
+  color: var(--text-3);
+}
+
+.page-tabs__btn--on {
+  color: var(--text-0);
+}
+.page-tabs__btn--on::after {
+  background: var(--text-0);
+}
+
+.page-tabs__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 16px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--bg-3);
+  border: 1px solid var(--border-soft);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  font-size: 10.5px;
+  font-weight: 540;
+}
+
+.page-tabs__btn--on .page-tabs__count {
+  background: color-mix(in srgb, var(--text-0) 10%, transparent);
+  color: var(--text-0);
+  border-color: color-mix(in srgb, var(--text-0) 18%, transparent);
+}
+
+.page-tabs__trailing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 6px;
+}
+
+/* ───────────── QuickstartCard ───────────── */
+.qstart {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.qstart__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.qstart__title {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-0);
+  letter-spacing: -0.01em;
+}
+
+.qstart__sub {
+  margin: 4px 0 0;
+  color: var(--text-2);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.qstart__action { flex-shrink: 0; }
+
+.qstart__tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-2);
+}
+
+.qstart__tab {
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--linear-font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  font-weight: 540;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+
+.qstart__tab:hover { color: var(--text-1); background: color-mix(in srgb, var(--text-0) 5%, transparent); }
+
+.qstart__tab--on {
+  color: var(--text-0);
+  background: var(--bg-1);
+  border-color: var(--border-soft);
+}
+
+.qstart__copy {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  background: var(--bg-1);
+  color: var(--text-1);
+  font-family: var(--linear-font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  font-weight: 540;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+
+.qstart__copy:hover {
+  color: var(--text-0);
+  background: var(--bg-3);
+  border-color: var(--border);
+}
+
+.qstart__code {
+  margin: 0;
+  padding: 14px 16px;
+  background: var(--bg-2);
+  color: var(--text-1);
+  font-family: var(--linear-font-mono, ui-monospace, monospace);
+  font-size: 12px;
+  line-height: 1.65;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.qstart__code code {
+  font-family: inherit;
+  color: inherit;
+  background: transparent;
+}
+
+/* ───────────── KeyboardShortcuts sheet (for `?`) ───────────── */
+.kbd-sheet__overlay {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--bg-0) 65%, rgba(0,0,0,0.45));
+  backdrop-filter: blur(4px);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: kbd-fade 140ms ease;
+}
+
+@keyframes kbd-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.kbd-sheet {
+  width: min(520px, calc(100vw - 48px));
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.kbd-sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.kbd-sheet__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-0);
+  letter-spacing: -0.01em;
+}
+
+.kbd-sheet__close {
+  background: transparent;
+  border: 0;
+  color: var(--text-2);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+.kbd-sheet__close:hover { color: var(--text-0); background: var(--bg-3); }
+
+.kbd-sheet__list { padding: 8px 6px 12px; display: flex; flex-direction: column; }
+
+.kbd-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+.kbd-row:hover { background: var(--bg-3); }
+
+.kbd-row__label {
+  color: var(--text-1);
+  font-size: 12.5px;
+  letter-spacing: -0.005em;
+}
+
+.kbd-row__keys { display: inline-flex; align-items: center; gap: 4px; }
+
+.kbd-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--bg-0);
+  color: var(--text-0);
+  font-family: var(--linear-font-mono, ui-monospace, monospace);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: inset 0 -1px 0 var(--border-soft);
+}

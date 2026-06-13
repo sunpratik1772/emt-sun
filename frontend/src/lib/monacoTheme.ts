@@ -1,13 +1,12 @@
 import type { Monaco } from '@monaco-editor/react'
 import type { Theme } from '../store/themeStore'
 
-export type SherpaMonacoTheme = 'sherpa-dark' | 'sherpa-light' | 'sherpa-turquoise' | 'sherpa-claude'
+export type SherpaMonacoTheme = 'sherpa-dark' | 'sherpa-altermind' | 'sherpa-ripeplanet'
 
 const MONACO_THEME_IDS: Record<Theme, SherpaMonacoTheme> = {
   dark: 'sherpa-dark',
-  light: 'sherpa-light',
-  turquoise: 'sherpa-turquoise',
-  claude: 'sherpa-claude',
+  altermind: 'sherpa-altermind',
+  ripeplanet: 'sherpa-ripeplanet',
 }
 
 export function sherpaMonacoThemeId(theme: Theme): SherpaMonacoTheme {
@@ -23,13 +22,22 @@ const DARK_RULES = [
   { token: 'key', foreground: '61afef' },
 ] as const
 
-const LIGHT_RULES = [
-  { token: 'comment', foreground: '8aa0ad', fontStyle: 'italic' },
-  { token: 'string', foreground: '1f7a4a' },
-  { token: 'number', foreground: 'b45309' },
-  { token: 'keyword', foreground: '92600a' },
-  { token: 'type', foreground: '1d6fb8' },
-  { token: 'key', foreground: '1d6fb8' },
+const RIPEPLANET_RULES = [
+  { token: 'comment', foreground: '7f7f7f', fontStyle: 'italic' },
+  { token: 'string', foreground: '005955' },
+  { token: 'number', foreground: 'a3725c' },
+  { token: 'keyword', foreground: 'b86b66' },
+  { token: 'type', foreground: '00403d' },
+  { token: 'key', foreground: '00403d' },
+] as const
+
+const ALTERMIND_RULES = [
+  { token: 'comment', foreground: '7d8c87', fontStyle: 'italic' },
+  { token: 'string', foreground: 'b7d4a5' },
+  { token: 'number', foreground: 'e6c98c' },
+  { token: 'keyword', foreground: 'e8d9b0' },
+  { token: 'type', foreground: 'a8d4cf' },
+  { token: 'key', foreground: 'a8d4cf' },
 ] as const
 
 interface MonacoPalette {
@@ -46,7 +54,6 @@ interface MonacoPalette {
   scrollbarActive: string
 }
 
-/** Static palettes mirror globals.css tokens — avoids reading CSS before data-theme flips. */
 const PALETTES: Record<Theme, MonacoPalette> = {
   dark: {
     background: '#08090a',
@@ -61,44 +68,31 @@ const PALETTES: Record<Theme, MonacoPalette> = {
     scrollbarHover: 'rgba(255, 255, 255, 0.22)',
     scrollbarActive: 'rgba(255, 255, 255, 0.28)',
   },
-  light: {
+  ripeplanet: {
     background: '#ffffff',
-    foreground: '#0a0a0a',
-    lineNumber: '#737373',
-    lineNumberActive: '#525252',
-    lineHighlight: '#ebebeb',
-    accent: '#2489ab',
-    widgetBackground: '#f5f5f5',
-    widgetBorder: 'rgba(0, 0, 0, 0.12)',
-    scrollbar: 'rgba(0, 0, 0, 0.14)',
-    scrollbarHover: 'rgba(0, 0, 0, 0.24)',
-    scrollbarActive: 'rgba(0, 0, 0, 0.32)',
+    foreground: '#040404',
+    lineNumber: '#7f7f7f',
+    lineNumberActive: '#4c4c4c',
+    lineHighlight: '#f2efeb',
+    accent: '#d3817a',
+    widgetBackground: '#dddad7',
+    widgetBorder: 'rgba(4, 4, 4, 0.10)',
+    scrollbar: 'rgba(4, 4, 4, 0.14)',
+    scrollbarHover: 'rgba(4, 4, 4, 0.24)',
+    scrollbarActive: 'rgba(4, 4, 4, 0.32)',
   },
-  turquoise: {
-    background: '#d5e8e8',
-    foreground: '#172a33',
-    lineNumber: '#6a828c',
-    lineNumberActive: '#526871',
-    lineHighlight: '#cbdcdc',
-    accent: '#2e8a86',
-    widgetBackground: '#c9e1e1',
-    widgetBorder: 'rgba(20, 60, 70, 0.16)',
-    scrollbar: 'rgba(20, 60, 70, 0.14)',
-    scrollbarHover: 'rgba(20, 60, 70, 0.24)',
-    scrollbarActive: 'rgba(20, 60, 70, 0.32)',
-  },
-  claude: {
-    background: '#ebe4d6',
-    foreground: '#2e2319',
-    lineNumber: '#9a8b7a',
-    lineNumberActive: '#7a6b5c',
-    lineHighlight: '#e2d9c9',
-    accent: '#cc6a3d',
-    widgetBackground: '#e2d9c9',
-    widgetBorder: 'rgba(80, 50, 20, 0.14)',
-    scrollbar: 'rgba(80, 50, 20, 0.14)',
-    scrollbarHover: 'rgba(80, 50, 20, 0.24)',
-    scrollbarActive: 'rgba(80, 50, 20, 0.32)',
+  altermind: {
+    background: '#0a1f1c',
+    foreground: '#f5f1e8',
+    lineNumber: '#7d8c87',
+    lineNumberActive: '#a8b5b0',
+    lineHighlight: '#0f2925',
+    accent: '#d4c9a8',
+    widgetBackground: '#0f2925',
+    widgetBorder: 'rgba(245, 241, 232, 0.12)',
+    scrollbar: 'rgba(245, 241, 232, 0.12)',
+    scrollbarHover: 'rgba(245, 241, 232, 0.22)',
+    scrollbarActive: 'rgba(245, 241, 232, 0.28)',
   },
 }
 
@@ -150,7 +144,6 @@ function buildThemeColors(theme: Theme) {
   }
 }
 
-/** Register both Sherpa themes and activate the one matching `theme`. */
 export function applySherpaMonacoTheme(monaco: Monaco, theme: Theme): SherpaMonacoTheme {
   monaco.editor.defineTheme('sherpa-dark', {
     base: 'vs-dark',
@@ -159,25 +152,18 @@ export function applySherpaMonacoTheme(monaco: Monaco, theme: Theme): SherpaMona
     colors: buildThemeColors('dark'),
   })
 
-  monaco.editor.defineTheme('sherpa-light', {
+  monaco.editor.defineTheme('sherpa-ripeplanet', {
     base: 'vs',
     inherit: true,
-    rules: [...LIGHT_RULES],
-    colors: buildThemeColors('light'),
+    rules: [...RIPEPLANET_RULES],
+    colors: buildThemeColors('ripeplanet'),
   })
 
-  monaco.editor.defineTheme('sherpa-turquoise', {
-    base: 'vs',
+  monaco.editor.defineTheme('sherpa-altermind', {
+    base: 'vs-dark',
     inherit: true,
-    rules: [...LIGHT_RULES],
-    colors: buildThemeColors('turquoise'),
-  })
-
-  monaco.editor.defineTheme('sherpa-claude', {
-    base: 'vs',
-    inherit: true,
-    rules: [...LIGHT_RULES],
-    colors: buildThemeColors('claude'),
+    rules: [...ALTERMIND_RULES],
+    colors: buildThemeColors('altermind'),
   })
 
   const id = sherpaMonacoThemeId(theme)

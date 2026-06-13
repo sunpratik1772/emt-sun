@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { Button } from '../ui/Button'
+import StatusPill, { statusToneFromRun } from '../shared/StatusPill'
 import {
   ArcIcon,
   Loader2,
@@ -11,7 +12,7 @@ import {
 
 export function PanelLoading() {
   return (
-    <div className="flex items-center justify-center" style={{ padding: 32, color: 'var(--text-3)' }}>
+    <div className="flex items-center justify-center" data-testid="drawer-panel-loading" style={{ padding: 32, color: 'var(--text-3)' }}>
       <ArcIcon icon={Loader2} size={14} className="animate-spin" />
     </div>
   )
@@ -21,13 +22,14 @@ export function PanelError({ message, onRetry }: { message: string; onRetry?: ()
   return (
     <div
       className="flex flex-col items-center justify-center text-center"
+      data-testid="drawer-panel-error"
       style={{ padding: 32, color: 'var(--text-2)', fontSize: 12 }}
     >
       <ArcIcon icon={AlertTriangle} size={18} style={{ color: 'var(--danger)', marginBottom: 8 }} />
       <div style={{ color: 'var(--text-0)', fontWeight: 500, marginBottom: 4 }}>Could not load</div>
       <div style={{ color: 'var(--text-2)', maxWidth: 280, lineHeight: 1.5 }}>{message}</div>
       {onRetry && (
-        <Button variant="secondary" size="sm" className="font-mono mt-3" onClick={onRetry}>
+        <Button variant="secondary" size="sm" className="font-mono mt-3" data-testid="drawer-panel-error-retry-button" onClick={onRetry}>
           Retry
         </Button>
       )}
@@ -39,6 +41,7 @@ export function PanelEmpty({ icon, children }: { icon: ReactNode; children: Reac
   return (
     <div
       className="flex flex-col items-center justify-center text-center"
+      data-testid="drawer-panel-empty"
       style={{ padding: 40, color: 'var(--text-3)', fontSize: 12 }}
     >
       <div style={{ marginBottom: 6 }}>{icon}</div>
@@ -58,6 +61,7 @@ export function SearchInput({
   icon,
   className = '',
   style,
+  disabled,
 }: {
   value: string
   onChange: (value: string) => void
@@ -65,15 +69,22 @@ export function SearchInput({
   icon: ReactNode
   className?: string
   style?: CSSProperties
+  disabled?: boolean
 }) {
   return (
-    <div className={`studio-search-wrap ${className}`.trim()} style={style}>
+    <div
+      className={`studio-search-wrap ${className}`.trim()}
+      data-testid={className ? `${className}-wrap` : undefined}
+      style={{ ...style, opacity: disabled ? 0.5 : undefined }}
+    >
       <span style={{ display: 'flex', alignItems: 'center', color: 'var(--text-3)', flexShrink: 0 }}>{icon}</span>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label={placeholder}
+        disabled={disabled}
+        data-testid={className ? `${className}-input` : undefined}
       />
     </div>
   )
@@ -218,20 +229,17 @@ export const tdTypeStyle: CSSProperties = { padding: '7px 12px', color: 'var(--t
 export const tdDescStyle: CSSProperties = { padding: '7px 12px', color: 'var(--text-1)', fontSize: 11.5, lineHeight: 1.5 }
 
 export function StatusBadge({ status, label }: { status: string; label?: string }) {
-  const STATUS_MAP: Record<string, [string, string]> = {
-    paused: ['paused', 'Paused'],
-    success: ['ok', 'Succeeded'],
-    error: ['err', 'Failed'],
-    syncing: ['run', 'Syncing'],
-    running: ['run', 'Running'],
+  const STATUS_LABELS: Record<string, string> = {
+    paused: 'Paused',
+    success: 'Succeeded',
+    error: 'Failed',
+    syncing: 'Syncing',
+    running: 'Running',
+    warning: 'Warning',
   }
-  const [tone, text] = STATUS_MAP[status] || ['paused', status]
-  return (
-    <span className={`sbadge sbadge--${tone}`}>
-      <span className="sbadge__dot" />
-      {label || text}
-    </span>
-  )
+  const tone = statusToneFromRun(status)
+  const text = label || STATUS_LABELS[status] || status
+  return <StatusPill tone={tone} label={text} pulse={status === 'running' || status === 'syncing'} />
 }
 
 export function DSection({ label, children }: { label: string; children: ReactNode }) {

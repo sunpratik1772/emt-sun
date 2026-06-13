@@ -1,8 +1,12 @@
 /**
- * Theme (dark/light/turquoise/claude) — Zustand store + hook to mirror onto `<html>`.
+ * Theme system (dark / altermind / ripeplanet).
  *
- * - Default theme is dark.
- * - Changes theme automatically every 2 hours.
+ *  - `dark`       → Vercel + Linear feel. Near-black `#08090a` chrome, crisp white type.
+ *                   This is the default.
+ *  - `altermind`  → Editorial deep-forest-green chrome with warm cream accents.
+ *  - `ripeplanet` → Warm cream `#dddad7` ground with terracotta `#d3817a` accent,
+ *                   deep forest `#005955` secondary, tall condensed Anton display.
+ *                   Subtle topographic line texture overlay.
  */
 import { useLayoutEffect } from 'react'
 import { create } from 'zustand'
@@ -10,12 +14,10 @@ import { create } from 'zustand'
 import { brandLogoForTheme } from '../lib/brandAssets'
 import { dayPeriod } from '../lib/timeGreeting'
 
-export type Theme = 'dark' | 'light' | 'turquoise' | 'claude'
+export type Theme = 'dark' | 'altermind' | 'ripeplanet'
 
 interface ThemeStore {
-  /** Resolved chrome theme applied to the document. */
   theme: Theme
-  /** Local clock bucket for subtle accent shifts (not base dark/light). */
   period: string
   setTheme: (t: Theme) => void
   toggle: () => void
@@ -23,17 +25,19 @@ interface ThemeStore {
 }
 
 const STORAGE_KEY = 'dbsherpa:theme'
+const VALID: readonly Theme[] = ['dark', 'altermind', 'ripeplanet']
 
 function readPreference(): Theme {
   if (typeof window === 'undefined') return 'dark'
   try {
-    const saved = window.localStorage.getItem(STORAGE_KEY)
-    if (saved === 'aurora') return 'turquoise'
-    if (saved === 'dark' || saved === 'light' || saved === 'turquoise' || saved === 'claude') {
-      return saved as Theme
+    const stored = window.localStorage.getItem(STORAGE_KEY) as Theme | null
+    if (stored && VALID.includes(stored)) return stored
+    // Migrate legacy values (light/turquoise/claude) → dark
+    if (stored && !VALID.includes(stored)) {
+      window.localStorage.setItem(STORAGE_KEY, 'dark')
     }
   } catch {
-    // ignore; fall back to dark
+    /* noop */
   }
   return 'dark'
 }
@@ -55,12 +59,10 @@ export const useThemeStore = create<ThemeStore>((set, get) => ({
     const current = get().theme
     const next: Theme =
       current === 'dark'
-        ? 'light'
-        : current === 'light'
-          ? 'turquoise'
-          : current === 'turquoise'
-            ? 'claude'
-            : 'dark'
+        ? 'altermind'
+        : current === 'altermind'
+          ? 'ripeplanet'
+          : 'dark'
     get().setTheme(next)
   },
   refreshPeriod: () => {
@@ -68,12 +70,10 @@ export const useThemeStore = create<ThemeStore>((set, get) => ({
   },
 }))
 
-/** Call once near the root; keeps `<html data-theme>` and `data-period` in sync. */
 export function useApplyTheme(): void {
   const theme = useThemeStore((s) => s.theme)
   const period = useThemeStore((s) => s.period)
   const refreshPeriod = useThemeStore((s) => s.refreshPeriod)
-  const toggle = useThemeStore((s) => s.toggle)
 
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return
@@ -82,26 +82,13 @@ export function useApplyTheme(): void {
     return () => window.clearInterval(id)
   }, [refreshPeriod])
 
-  // Automatically cycle through themes every 2 hours
-  useLayoutEffect(() => {
-    if (typeof window === 'undefined') return
-    const id = window.setInterval(() => {
-      toggle()
-    }, 2 * 60 * 60 * 1000) // 2 hours
-    return () => window.clearInterval(id)
-  }, [toggle])
-
   useLayoutEffect(() => {
     if (typeof document === 'undefined') return
     document.documentElement.setAttribute('data-theme', theme)
     document.documentElement.setAttribute('data-period', period)
     const favicon = document.querySelector<HTMLLinkElement>('link#app-favicon')
-    if (favicon) {
-      favicon.href = brandLogoForTheme(theme)
-    }
+    if (favicon) favicon.href = brandLogoForTheme(theme)
     const appleTouch = document.querySelector<HTMLLinkElement>('link#app-apple-touch-icon')
-    if (appleTouch) {
-      appleTouch.href = brandLogoForTheme(theme)
-    }
+    if (appleTouch) appleTouch.href = brandLogoForTheme(theme)
   }, [theme, period])
 }

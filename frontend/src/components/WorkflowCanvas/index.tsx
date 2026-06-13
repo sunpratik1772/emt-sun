@@ -561,7 +561,7 @@ function WorkflowCanvasInner() {
                 id="workflow-dot-grid"
                 variant={BackgroundVariant.Dots}
                 gap={20}
-                size={theme === 'turquoise' || theme === 'claude' ? 3.2 : 2.6}
+                size={theme === 'altermind' ? 3.2 : 2.6}
                 color="var(--canvas-dots-color)"
               />
             )}

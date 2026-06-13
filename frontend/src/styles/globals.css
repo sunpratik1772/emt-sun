@@ -10,6 +10,7 @@
   --font-mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, monospace;
   --mono: var(--font-mono);
   --font-display-serif: 'Geist Variable', 'Geist', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display-condensed: 'Geist Variable', 'Geist', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --fs-micro: 10.5px;
   --fs-caption: 11.5px;
   --fs-body: 12.5px;
@@ -58,6 +59,7 @@
   --accent-lo: var(--linear-accent-active);
 
   --accent-cyan: #38bdf8;
+  --accent-secondary: #818cf8;
 
   --running: #3eb5db;
   --running-lo: #2d9fc4;
@@ -99,236 +101,789 @@
   --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 4px 20px rgba(0, 0, 0, 0.20);
 }
 
-[data-theme="light"] {
+/* -------------------------------------------------------------------------
+   LIGHT — RipePlanet v3
+   Foundations:  pure white canvas, warm parchment elevation, warm hairlines
+   Brand trio:   coral #DD7B6E (primary)  ·  petrol-green #0F5957 (secondary)
+                 ·  dusty-mauve #A8788A (tertiary)
+   Status:       success reuses brand green, info reuses mauve, warm danger,
+                 mustard warning. Flat surfaces — borders only, no shadows.
+   ------------------------------------------------------------------------- */
+[data-theme="ripeplanet"] {
   color-scheme: light;
 
-  --bg-base: #fafafa;
-  --bg-deep: #ffffff;
+  /* Anton for editorial display only — UI font stays Geist for legibility. */
+  --font-display-condensed: 'Anton', 'Oswald', 'Archivo Narrow', 'Geist Variable', sans-serif;
+  --font-display-serif: 'Geist Variable', 'Geist', system-ui, sans-serif;
 
-  --bg-0: #ffffff;
-  --bg-1: #fafafa;
-  --bg-2: #f4f4f5;
-  --bg-3: #ebebec;
+  /* SURFACE LADDER — pure white canvas + subtly tinted parchment cards.
+     Cards visibly POP off the white page; section headers stay flush white
+     so they don't fuse with the cards beneath them. */
+  --bg-base: #ffffff;
+  --bg-deep: #fafaf7;
+
+  --bg-0: #ffffff;          /* page canvas - PURE WHITE */
+  --bg-1: #faf7f0;          /* card / panel — warm cream, pops on white */
+  --bg-2: #f2ede2;          /* hover / chip / segment-track */
+  --bg-3: #e8dfcd;          /* depressed surface */
   --bg-node: #ffffff;
-  --bg-node-elev: #ffffff;
+  --bg-node-elev: #faf7f0;
 
-  --panel-glass-bg: #ffffff;
+  --panel-glass-bg: #faf7f0;
 
-  --border: rgba(0, 0, 0, 0.14);
-  --border-strong: rgba(0, 0, 0, 0.18);
-  --border-soft: rgba(0, 0, 0, 0.09);
-  --border-solid: var(--linear-border);
+  /* BORDERS — warm beige hairlines */
+  --border: #e0d6c0;
+  --border-strong: #c8b896;
+  --border-soft: #ece4d2;
+  --border-solid: #c8b896;
 
-  --text-0: var(--linear-fg);
-  --text-1: var(--linear-fg-2);
-  --text-2: var(--linear-muted);
-  --text-3: var(--linear-meta);
+  /* INK — near-pure black + warm browns */
+  --text-0: #0a0a0a;
+  --text-1: #2c2620;
+  --text-2: #6b5d4a;
+  --text-3: #9c8e76;
 
-  --accent: var(--linear-accent);
-  --accent-on: var(--linear-accent-on);
-  --accent-soft: color-mix(in srgb, var(--linear-accent) 14%, transparent);
-  --accent-hi: var(--linear-accent-hover);
-  --accent-lo: var(--linear-accent-active);
-  --accent-cyan: #2489ab;
+  /* BRAND TRIO */
+  --accent: #dd7b6e;            /* coral — primary CTAs, links, active */
+  --accent-on: #ffffff;
+  --accent-soft: color-mix(in srgb, #dd7b6e 14%, transparent);
+  --accent-hi: #e69991;
+  --accent-lo: #b85f56;
+  --accent-warm: #dd7b6e;
+  --accent-cyan: #0f5957;       /* petrol — secondary brand */
+  --accent-secondary: #0f5957;
+  --accent-mauve: #a8788a;      /* mauve — tertiary, info chips */
+  --accent-mauve-lo: #8a5e6e;
 
-  --running: #2489ab;
-  --running-lo: #1d728f;
-  --success: var(--linear-success);
-  --success-lo: #166534;
-  --danger: var(--linear-danger);
-  --danger-lo: #b91c1c;
-  --info: #2563eb;
-  --warning: var(--linear-warn);
+  /* STATUS — reuse brand colors so palette feels native */
+  --running: #dd7b6e;
+  --running-lo: #b85f56;
+  --success: #0f5957;
+  --success-lo: #1a7a76;
+  --danger:  #b85850;
+  --danger-lo: #d17b72;
+  --info:    #a8788a;           /* mauve — calm, not Bootstrap-blue */
+  --info-lo: #8a5e6e;
+  --warning: #c99536;
+  --heat:    #dd7b6e;
 
-  --port-dataframe: #d97706;
-  --port-object: #0284c7;
-  --port-scalar: #16a34a;
-  --port-string-list: #4f46e5;
-  --port-workflow: #be185d;
+  /* PORT colors — earthy palette mapping */
+  --port-dataframe: #c99536;
+  --port-object:    #0f5957;
+  --port-scalar:    #a8788a;
+  --port-string-list: #5a564e;
+  --port-workflow:  #dd7b6e;
 
-  --minimap-mask: rgba(255, 255, 255, 0.92);
-  --scrollbar-thumb: rgba(0, 0, 0, 0.14);
-  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.24);
-  --scrollbar-thumb-active: rgba(0, 0, 0, 0.32);
-  --canvas-dots-color: rgba(0, 0, 0, 0.15);
+  --minimap-mask: rgba(255, 255, 255, 0.94);
+  --scrollbar-thumb: rgba(10, 10, 10, 0.14);
+  --scrollbar-thumb-hover: rgba(10, 10, 10, 0.26);
+  --scrollbar-thumb-active: rgba(10, 10, 10, 0.36);
+  --canvas-dots-color: rgba(10, 10, 10, 0.07);
+  --dots-color: rgba(10, 10, 10, 0.04);
 
-  --canvas-bg: #f4f4f5;
-  --canvas-edge-stroke: #404040;
+  --canvas-bg: #ffffff;
+  --canvas-edge-stroke: #6b5d4a;
   --chrome-elevated: #ffffff;
-  --segment-track: #f0f0f2;
+  --segment-track: #f2ede2;
   --segment-active-bg: #0a0a0a;
   --segment-active-fg: #ffffff;
 
   --grain-blend: multiply;
   --grain-opacity: 0;
-  --dots-color: rgba(0, 0, 0, 0.05);
 
-  --glass-bg: color-mix(in srgb, #ffffff 78%, transparent);
-  --glass-blur: 14px;
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+  /* Pure white backdrop */
+  --backdrop-wash: #ffffff;
+
+  --glass-bg: #ffffff;
+  --glass-blur: 0px;
+
+  /* FLAT surfaces — overlay shadow only for modals/popovers. */
+  --shadow-card: none;
+  --shadow-overlay:
+    0 0 0 1px var(--border),
+    0 16px 40px -16px rgba(10, 10, 10, 0.10);
 }
 
-/* Turquoise — pale mineral teal, matte (from Studio-frontend .turquoise) */
-[data-theme='turquoise'] {
-  color-scheme: light;
+/* Topographic line wallpaper — kept VERY quiet so it reads as paper texture,
+   not noise. Disable on detail screens via .studio-backdrop--clean. */
+[data-theme="ripeplanet"] .studio-backdrop::before {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200' viewBox='0 0 1200 1200'><g fill='none' stroke='%23201c14' stroke-opacity='0.022' stroke-width='1'><path d='M0 160 Q300 80 600 160 T 1200 160'/><path d='M0 240 Q300 160 600 240 T 1200 240'/><path d='M0 320 Q300 240 600 320 T 1200 320'/><path d='M0 400 Q300 320 600 400 T 1200 400'/><path d='M0 480 Q300 400 600 480 T 1200 480'/><path d='M0 560 Q300 480 600 560 T 1200 560'/><path d='M0 640 Q300 560 600 640 T 1200 640'/><path d='M0 720 Q300 640 600 720 T 1200 720'/><path d='M0 800 Q300 720 600 800 T 1200 800'/><path d='M0 880 Q300 800 600 880 T 1200 880'/><path d='M0 960 Q300 880 600 960 T 1200 960'/><path d='M0 1040 Q300 960 600 1040 T 1200 1040'/></g></svg>");
+  background-repeat: repeat;
+  background-size: 1200px 1200px;
+  opacity: 1;
+  mix-blend-mode: multiply;
+}
 
-  --bg-base: #cbdcdc;
-  --bg-deep: #d5e8e8;
+[data-theme="ripeplanet"] .studio-backdrop--clean::before {
+  display: none;
+}
 
-  --bg-0: #d5e8e8;
-  --bg-1: #c9e1e1;
-  --bg-2: #bdd6d6;
-  --bg-3: #adc5c5;
-  --bg-node: #d5e8e8;
-  --bg-node-elev: #d5e8e8;
+/* Editorial condensed treatment — Anton ONLY for huge titles. UI keeps Geist. */
+[data-theme="ripeplanet"] .display-condensed,
+[data-theme="ripeplanet"] .screen__title.screen__title--condensed,
+[data-theme="ripeplanet"] .wf-drawer__title {
+  font-family: var(--font-display-condensed);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  line-height: 0.92;
+}
 
-  --panel-glass-bg: #d5e8e8;
+/* Dashboard welcome — keep Geist (NOT Anton). Linear-style. */
+[data-theme="ripeplanet"] .dash-welcome__title,
+[data-theme="altermind"]  .dash-welcome__title {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  text-transform: none;
+  line-height: 1.12;
+  color: var(--text-0);
+}
+[data-theme="ripeplanet"] .dash-welcome__eyebrow,
+[data-theme="altermind"]  .dash-welcome__eyebrow {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 540;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+[data-theme="ripeplanet"] .dash-welcome__sub,
+[data-theme="altermind"]  .dash-welcome__sub {
+  color: var(--text-2);
+}
 
-  --text-0: #0a1f1c;
-  --text-1: #1a3036;
-  --text-2: #3f5860;
-  --text-3: #587079;
+/* Terracotta primary CTAs */
+[data-theme="ripeplanet"] .agent__send,
+[data-theme="ripeplanet"] .dash-btn--primary {
+  background: var(--accent);
+  color: var(--accent-on);
+  border-color: transparent;
+}
+[data-theme="ripeplanet"] .agent__send:hover,
+[data-theme="ripeplanet"] .dash-btn--primary:hover {
+  background: var(--accent-lo);
+}
+[data-theme="ripeplanet"] .agent__send:disabled {
+  background: var(--bg-3);
+  color: var(--text-3);
+}
 
-  --border: #adc5c5;
-  --border-strong: #8ab2b2;
-  --border-soft: rgba(20, 60, 70, 0.22);
-  --border-solid: #adc5c5;
+/* =========================================================================
+   FLAT-SURFACE POLISH — applies to BOTH light (ripeplanet) and altermind.
+   Borders are the only elevation tool. Shadows reserved for floating overlays
+   (modals, dropdowns, popovers, drawers). This keeps base theme colours
+   intact while killing every muddy drop-shadow.
+   ========================================================================= */
+[data-theme="ripeplanet"] .dash-panel,
+[data-theme="ripeplanet"] .dash-quickstart,
+[data-theme="ripeplanet"] .qstart,
+[data-theme="ripeplanet"] .wf-card,
+[data-theme="ripeplanet"] .runs-table,
+[data-theme="ripeplanet"] .dash-stat,
+[data-theme="ripeplanet"] .dash-card,
+[data-theme="ripeplanet"] .insight-card,
+[data-theme="ripeplanet"] .activity-card,
+[data-theme="ripeplanet"] .health-card,
+[data-theme="ripeplanet"] .empty-state,
+[data-theme="ripeplanet"] .mng-row,
+[data-theme="ripeplanet"] .mng-sum,
+[data-theme="ripeplanet"] .runs-row,
+[data-theme="ripeplanet"] .stat-card,
+[data-theme="ripeplanet"] .sherpa-prompt,
+[data-theme="ripeplanet"] .agent__bubble,
+[data-theme="ripeplanet"] .panel,
+[data-theme="ripeplanet"] .panel-glass,
+[data-theme="ripeplanet"] .lift,
+[data-theme="ripeplanet"] .raise,
+[data-theme="ripeplanet"] .button,
+[data-theme="ripeplanet"] .btn,
+[data-theme="ripeplanet"] .toast,
+[data-theme="ripeplanet"] .tip,
+[data-theme="ripeplanet"] .tooltip,
+[data-theme="ripeplanet"] .badge,
+[data-theme="ripeplanet"] .pill,
+[data-theme="ripeplanet"] .chip,
+[data-theme="ripeplanet"] .skill-card,
+[data-theme="ripeplanet"] .node-card,
+[data-theme="ripeplanet"] .template-card,
+[data-theme="ripeplanet"] .dash-stat-card,
+[data-theme="ripeplanet"] .ds-tile,
+[data-theme="ripeplanet"] .mng-summary > *,
+[data-theme="ripeplanet"] .ov__head,
+[data-theme="ripeplanet"] .ov__foot,
+[data-theme="altermind"]  .dash-panel,
+[data-theme="altermind"]  .dash-quickstart,
+[data-theme="altermind"]  .qstart,
+[data-theme="altermind"]  .wf-card,
+[data-theme="altermind"]  .runs-table,
+[data-theme="altermind"]  .dash-stat,
+[data-theme="altermind"]  .dash-card,
+[data-theme="altermind"]  .insight-card,
+[data-theme="altermind"]  .activity-card,
+[data-theme="altermind"]  .health-card,
+[data-theme="altermind"]  .empty-state,
+[data-theme="altermind"]  .mng-row,
+[data-theme="altermind"]  .mng-sum,
+[data-theme="altermind"]  .runs-row,
+[data-theme="altermind"]  .stat-card,
+[data-theme="altermind"]  .sherpa-prompt,
+[data-theme="altermind"]  .panel,
+[data-theme="altermind"]  .panel-glass,
+[data-theme="altermind"]  .lift,
+[data-theme="altermind"]  .raise,
+[data-theme="altermind"]  .skill-card,
+[data-theme="altermind"]  .node-card,
+[data-theme="altermind"]  .template-card {
+  box-shadow: none !important;
+}
 
-  --accent: #1f7a76;
-  --accent-on: #ffffff;
-  --accent-hi: #2fa39e;
-  --accent-lo: #195e5b;
-  --accent-soft: color-mix(in srgb, #1f7a76 16%, transparent);
-  --accent-warm: #1f7a76;
-  --accent-cyan: #1f7a76;
+/* Overlays — keep ONE clean shadow for true floating layers */
+[data-theme="ripeplanet"] .modal__shell,
+[data-theme="ripeplanet"] .studio-overlay__panel,
+[data-theme="ripeplanet"] .cmdk__shell,
+[data-theme="ripeplanet"] .kbd-sheet,
+[data-theme="ripeplanet"] .dropdown,
+[data-theme="ripeplanet"] .popover,
+[data-theme="altermind"]  .modal__shell,
+[data-theme="altermind"]  .studio-overlay__panel,
+[data-theme="altermind"]  .cmdk__shell,
+[data-theme="altermind"]  .kbd-sheet,
+[data-theme="altermind"]  .dropdown,
+[data-theme="altermind"]  .popover {
+  box-shadow: var(--shadow-overlay);
+}
 
-  --running: #1f7a76;
-  --running-lo: #195e5b;
-  --success: #269e6b;
-  --success-lo: #1f7f57;
-  --danger: #d1495b;
-  --danger-lo: #b91c1c;
-  --warning: #b45309;
-  --info: #2e8a86;
-  --heat: #3fa6a0;
+/* Light theme: also kill the muddy `.dash` shadow variable globally so any
+   component reading `var(--dash-shadow)` gets `none` instead of a leftover. */
+[data-theme="ripeplanet"] {
+  --dash-shadow: none;
+}
 
-  --port-dataframe: #d97706;
-  --port-object: #0284c7;
-  --port-scalar: #16a34a;
-  --port-string-list: #4f46e5;
-  --port-workflow: #be185d;
+/* Stat / summary cards: pull them onto the new white→parchment ladder
+   instead of the old translucent `--glass-bg` (which blurred whatever was
+   behind it). */
+[data-theme="ripeplanet"] .mng-sum,
+[data-theme="ripeplanet"] .stat-card,
+[data-theme="ripeplanet"] .dash-stat-card,
+[data-theme="ripeplanet"] .dash-stat,
+[data-theme="ripeplanet"] .dash-card,
+[data-theme="ripeplanet"] .dash-panel,
+[data-theme="ripeplanet"] .dash-quickstart,
+[data-theme="ripeplanet"] .qstart,
+[data-theme="ripeplanet"] .ds-tile,
+[data-theme="ripeplanet"] .skill-card,
+[data-theme="ripeplanet"] .node-card,
+[data-theme="ripeplanet"] .template-card,
+[data-theme="ripeplanet"] .wf-card,
+[data-theme="ripeplanet"] .runs-table,
+[data-theme="ripeplanet"] .insight-card,
+[data-theme="ripeplanet"] .activity-card,
+[data-theme="ripeplanet"] .health-card,
+[data-theme="ripeplanet"] .mng-row,
+[data-theme="ripeplanet"] .runs-row,
+[data-theme="ripeplanet"] .sherpa-prompt,
+[data-theme="ripeplanet"] .sherpa-bar,
+[data-theme="ripeplanet"] .sherpa-prompt-bar,
+[data-theme="ripeplanet"] .dash-sherpa,
+[data-theme="ripeplanet"] .suggested-prompt,
+[data-theme="ripeplanet"] .suggested-card,
+[data-theme="ripeplanet"] .agent__bubble,
+[data-theme="ripeplanet"] .agent__input,
+[data-theme="ripeplanet"] .panel,
+[data-theme="ripeplanet"] .panel-glass {
+  background: var(--bg-1) !important;        /* white floats on parchment */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
 
-  --minimap-mask: rgba(213, 232, 232, 0.92);
-  --scrollbar-thumb: rgba(20, 60, 70, 0.14);
-  --scrollbar-thumb-hover: rgba(20, 60, 70, 0.24);
-  --scrollbar-thumb-active: rgba(20, 60, 70, 0.32);
+/* Row-like elements inside a card shouldn't get a redundant border — just
+   white background. */
+[data-theme="ripeplanet"] .mng-row,
+[data-theme="ripeplanet"] .runs-row {
+  border-top: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 1px solid var(--border-soft) !important;
+  background: transparent !important;
+}
+[data-theme="ripeplanet"] .runs-table {
+  padding: 0 !important;
+}
+[data-theme="ripeplanet"] .mng-list,
+[data-theme="ripeplanet"] .runs-table {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
 
-  --canvas-bg: #ffffff;
-  --canvas-edge-stroke: #4a6a72;
-  --chrome-elevated: #d5e8e8;
-  --segment-track: #bdd6d6;
-  --segment-active-bg: #172a33;
-  --segment-active-fg: #d5e8e8;
+/* Empty-state / error placeholder boxes — use white card style */
+[data-theme="ripeplanet"] .empty-state,
+[data-theme="ripeplanet"] .panel-empty,
+[data-theme="ripeplanet"] .placeholder-card,
+[data-theme="ripeplanet"] .ov-empty {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+}
 
-  --grain-blend: multiply;
+/* Tooltips & toasts on light theme: ink-dark pill, no glow */
+[data-theme="ripeplanet"] .tooltip,
+[data-theme="ripeplanet"] .tip,
+[data-theme="ripeplanet"] [role="tooltip"] {
+  background: var(--text-0);
+  color: var(--bg-0);
+  border: 0;
+}
+
+/* Studio overlay foot bar in light: white panel, hairline border-top only */
+[data-theme="ripeplanet"] .ov__foot {
+  background: var(--bg-1);
+  border-top: 1px solid var(--border);
+}
+
+/* =========================================================================
+   EQUAL-HUE DISTRIBUTION — applies to BOTH ripeplanet (light) and altermind
+   (dark). Each theme has a 4-colour brand quartet:
+     ripeplanet: white (canvas) · cream (cards) · coral (--accent) · petrol-green (--accent-secondary)
+     altermind:  forest (canvas) · cream (--surface-cream) · coral (--accent) · sage (--accent-secondary)
+   Every page should carry all 4 hues with roughly equal density.
+   ========================================================================= */
+
+/* 1. Section eyebrows ("WHO WE ARE" / "REUSABLE BUILDING BLOCKS" /
+      "CONNECTED DATA" / "RUNNING ON AUTOPILOT" …) inherit the secondary
+      brand colour (petrol green in light, sage in dark). */
+[data-theme="ripeplanet"] .ov__eyebrow,
+[data-theme="ripeplanet"] .screen__eyebrow,
+[data-theme="ripeplanet"] .section__eyebrow,
+[data-theme="ripeplanet"] .nlib-sec__label,
+[data-theme="ripeplanet"] .dash-welcome__eyebrow,
+[data-theme="altermind"]  .ov__eyebrow,
+[data-theme="altermind"]  .screen__eyebrow,
+[data-theme="altermind"]  .section__eyebrow,
+[data-theme="altermind"]  .nlib-sec__label,
+[data-theme="altermind"]  .dash-welcome__eyebrow {
+  color: var(--accent-secondary);
+  font-weight: 600;
+}
+
+/* 2. Stat-card primary numbers default to the secondary brand. */
+[data-theme="ripeplanet"] .mng-sum__v:not([style*="color"]),
+[data-theme="ripeplanet"] .rh-stat__v:not([style*="color"]),
+[data-theme="altermind"]  .mng-sum__v:not([style*="color"]),
+[data-theme="altermind"]  .rh-stat__v:not([style*="color"]) {
+  color: var(--accent-secondary);
+}
+
+/* 3. Active LeftNav item picks up the secondary brand colour. */
+[data-theme="ripeplanet"] .leftnav__item--active,
+[data-theme="ripeplanet"] [data-active="true"].leftnav__item,
+[data-theme="altermind"]  .leftnav__item--active,
+[data-theme="altermind"]  [data-active="true"].leftnav__item {
+  color: var(--accent-secondary);
+}
+[data-theme="ripeplanet"] .leftnav__item--active::before,
+[data-theme="ripeplanet"] [data-active="true"].leftnav__item::before,
+[data-theme="altermind"]  .leftnav__item--active::before,
+[data-theme="altermind"]  [data-active="true"].leftnav__item::before {
+  background: var(--accent-secondary) !important;
+}
+[data-theme="ripeplanet"] .leftnav__item--active svg,
+[data-theme="ripeplanet"] [data-active="true"].leftnav__item svg,
+[data-theme="altermind"]  .leftnav__item--active svg,
+[data-theme="altermind"]  [data-active="true"].leftnav__item svg {
+  color: var(--accent-secondary);
+}
+
+/* 4. List-page card icons in muted slots get the secondary brand hue — a
+      permanent column of green/sage running down every list page. */
+[data-theme="ripeplanet"] .skill-card__icon,
+[data-theme="ripeplanet"] .nlib-card__icon,
+[data-theme="ripeplanet"] .ds-tile__icon,
+[data-theme="ripeplanet"] .template-card__icon,
+[data-theme="altermind"]  .skill-card__icon,
+[data-theme="altermind"]  .nlib-card__icon,
+[data-theme="altermind"]  .ds-tile__icon,
+[data-theme="altermind"]  .template-card__icon {
+  color: var(--accent-secondary);
+  background: color-mix(in srgb, var(--accent-secondary) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent-secondary) 26%, var(--border));
+}
+
+/* 5. Connected / Succeeded / Verified pills — bolder secondary brand. */
+[data-theme="ripeplanet"] .status-pill--success,
+[data-theme="ripeplanet"] .pill--connected,
+[data-theme="ripeplanet"] .badge--success,
+[data-theme="altermind"]  .status-pill--success,
+[data-theme="altermind"]  .pill--connected,
+[data-theme="altermind"]  .badge--success {
+  --pill-color: var(--accent-secondary);
+  background: color-mix(in srgb, var(--accent-secondary) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent-secondary) 32%, var(--border));
+  color: var(--accent-secondary);
+  font-weight: 600;
+}
+
+/* 6. Sherpa suggested-prompt icons rotate green/coral/mauve every 3 cards
+      so the prompt grid carries all four brand colours simultaneously. */
+[data-theme="ripeplanet"] .suggested-prompt:nth-child(3n+1) .suggested-prompt__icon,
+[data-theme="ripeplanet"] .dash-prompt-bar__suggestion:nth-child(3n+1) svg,
+[data-theme="altermind"]  .suggested-prompt:nth-child(3n+1) .suggested-prompt__icon,
+[data-theme="altermind"]  .dash-prompt-bar__suggestion:nth-child(3n+1) svg {
+  color: var(--accent-secondary);
+}
+[data-theme="ripeplanet"] .suggested-prompt:nth-child(3n+2) .suggested-prompt__icon,
+[data-theme="ripeplanet"] .dash-prompt-bar__suggestion:nth-child(3n+2) svg,
+[data-theme="altermind"]  .suggested-prompt:nth-child(3n+2) .suggested-prompt__icon,
+[data-theme="altermind"]  .dash-prompt-bar__suggestion:nth-child(3n+2) svg {
+  color: var(--accent);
+}
+[data-theme="ripeplanet"] .suggested-prompt:nth-child(3n+3) .suggested-prompt__icon,
+[data-theme="ripeplanet"] .dash-prompt-bar__suggestion:nth-child(3n+3) svg,
+[data-theme="altermind"]  .suggested-prompt:nth-child(3n+3) .suggested-prompt__icon,
+[data-theme="altermind"]  .dash-prompt-bar__suggestion:nth-child(3n+3) svg {
+  color: var(--accent-mauve);
+}
+
+/* 7. Cream "block" panels — the Altermind signature pattern where a warm
+      cream block sits on the deep forest page. Apply via the helper class
+      `.surface-cream` to any panel that should get this treatment. The
+      same class on ripeplanet inverts (deep forest panel on white). */
+[data-theme="altermind"] .surface-cream {
+  background: var(--surface-cream);
+  color: var(--surface-cream-ink);
+  border-color: var(--surface-cream);
+}
+[data-theme="altermind"] .surface-cream .ov__title,
+[data-theme="altermind"] .surface-cream .ov__sub,
+[data-theme="altermind"] .surface-cream p,
+[data-theme="altermind"] .surface-cream h1,
+[data-theme="altermind"] .surface-cream h2,
+[data-theme="altermind"] .surface-cream h3 {
+  color: var(--surface-cream-ink);
+}
+
+/* 8. Primary CTAs in altermind use coral (carry-over from brand) */
+[data-theme="altermind"] .agent__send,
+[data-theme="altermind"] .dash-btn--primary {
+  background: var(--accent);
+  color: var(--accent-on);
+  border-color: transparent;
+}
+[data-theme="altermind"] .agent__send:hover,
+[data-theme="altermind"] .dash-btn--primary:hover {
+  background: var(--accent-lo);
+  color: #ffffff;
+}
+[data-theme="altermind"] .agent__send:disabled {
+  background: var(--bg-3);
+  color: var(--text-3);
+}
+
+/* 9. Decorative brand mark — overlapping coral + sage half-circles for
+      empty states. Already defined as `.brandmark`; here we just make sure
+      the auto-injected empty-state marker uses BOTH theme's secondary colour
+      pairs (coral + green-or-sage). */
+[data-theme="altermind"] .ov-empty::before,
+[data-theme="altermind"] .empty-state::before {
+  background:
+    radial-gradient(circle at 25% 50%, var(--accent) 0 42px, transparent 42px),
+    radial-gradient(circle at 75% 50%, var(--accent-secondary) 0 42px, transparent 42px) !important;
+}
+
+/* =========================================================================
+   ALTERMIND CREAM-BLOCK PANELS — the Ripeplanet signature applied to
+   high-impact surfaces. Cream parchment "postcard" floating on the deep
+   forest page. Used on:
+     • Sherpa prompt bar (.dash-sherpa) — the hero conversation surface
+     • Dashboard QuickstartCard (.qstart) — the API-snippet panel
+   Inside these blocks every child element switches to deep-forest ink so
+   they read as a coherent printed card.
+   ========================================================================= */
+[data-theme="altermind"] .dash-sherpa,
+[data-theme="altermind"] .qstart {
+  background: var(--surface-cream);
+  border-color: color-mix(in srgb, var(--surface-cream-ink) 18%, transparent);
+  color: var(--surface-cream-ink);
+}
+[data-theme="altermind"] .dash-sherpa .dash-sherpa__input,
+[data-theme="altermind"] .dash-sherpa .dash-sherpa__input::placeholder {
+  background: transparent;
+  color: var(--surface-cream-ink);
+}
+[data-theme="altermind"] .dash-sherpa .dash-sherpa__input::placeholder {
+  color: color-mix(in srgb, var(--surface-cream-ink) 55%, transparent);
+}
+[data-theme="altermind"] .dash-sherpa .dash-sherpa__icon,
+[data-theme="altermind"] .dash-sherpa .dash-sherpa__icon svg {
+  color: var(--accent);
+}
+[data-theme="altermind"] .qstart .qstart__title,
+[data-theme="altermind"] .qstart .qstart__sub,
+[data-theme="altermind"] .qstart code {
+  color: var(--surface-cream-ink);
+}
+[data-theme="altermind"] .qstart .qstart__tabs {
+  background: color-mix(in srgb, var(--surface-cream-ink) 6%, var(--surface-cream));
+  border-bottom-color: color-mix(in srgb, var(--surface-cream-ink) 12%, transparent);
+}
+[data-theme="altermind"] .qstart .qstart__tab {
+  color: color-mix(in srgb, var(--surface-cream-ink) 65%, transparent);
+}
+[data-theme="altermind"] .qstart .qstart__tab--on {
+  background: var(--surface-cream);
+  color: var(--surface-cream-ink);
+  border-color: color-mix(in srgb, var(--surface-cream-ink) 18%, transparent);
+}
+[data-theme="altermind"] .qstart .qstart__copy {
+  background: var(--surface-cream);
+  color: var(--surface-cream-ink);
+  border-color: color-mix(in srgb, var(--surface-cream-ink) 18%, transparent);
+}
+[data-theme="altermind"] .qstart .qstart__code {
+  background: color-mix(in srgb, var(--surface-cream-ink) 4%, var(--surface-cream));
+  color: var(--surface-cream-ink);
+}
+
+/* Suggested-prompt cards inside the cream Sherpa block — give them a deeper
+   cream tint so they nest inside without looking flat. */
+[data-theme="altermind"] .dash-sherpa ~ * .suggested-prompt,
+[data-theme="altermind"] .dash-prompt-bar__suggestion {
+  background: color-mix(in srgb, var(--surface-cream-ink) 4%, var(--surface-cream));
+  border-color: color-mix(in srgb, var(--surface-cream-ink) 14%, transparent);
+  color: var(--surface-cream-ink);
+}
+
+/* =========================================================================
+   EQUAL-HUE on TEMPLATES + NODE LIBRARY + WORKFLOW CANVAS
+   The Workflow Drawer (Templates), Node Library tiles, and canvas node
+   headers all carry the secondary brand colour so the four-hue rhythm
+   continues into the deeper screens of the app.
+   ========================================================================= */
+
+/* Templates: `.wf-card` (workflow / template list cards) icon and category
+   chips pick up the secondary brand. */
+[data-theme="ripeplanet"] .wf-card__icon,
+[data-theme="ripeplanet"] .wf-card__chip,
+[data-theme="ripeplanet"] .tpl-card__icon,
+[data-theme="altermind"]  .wf-card__icon,
+[data-theme="altermind"]  .wf-card__chip,
+[data-theme="altermind"]  .tpl-card__icon {
+  color: var(--accent-secondary);
+  background: color-mix(in srgb, var(--accent-secondary) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent-secondary) 26%, var(--border));
+}
+
+[data-theme="ripeplanet"] .wf-card__title,
+[data-theme="altermind"]  .wf-card__title {
+  color: var(--text-0);
+}
+
+/* Node Library: section divider stripes + category icons use secondary brand */
+[data-theme="ripeplanet"] .nlib-sec__label,
+[data-theme="altermind"]  .nlib-sec__label {
+  color: var(--accent-secondary);
+}
+[data-theme="ripeplanet"] .nlib-sec__rule,
+[data-theme="ripeplanet"] .nlib-sec__divider,
+[data-theme="altermind"]  .nlib-sec__rule,
+[data-theme="altermind"]  .nlib-sec__divider {
+  background: color-mix(in srgb, var(--accent-secondary) 40%, var(--border));
+}
+
+/* Workflow canvas: node headers and port handles inherit the brand quartet
+   so the canvas matches the rest of the app's hue distribution. */
+[data-theme="ripeplanet"] .react-flow__node .node-header,
+[data-theme="altermind"]  .react-flow__node .node-header {
+  border-bottom-color: color-mix(in srgb, var(--accent-secondary) 30%, var(--border));
+}
+[data-theme="ripeplanet"] .react-flow__node.selected,
+[data-theme="altermind"]  .react-flow__node.selected {
+  outline: 1px solid var(--accent);
+}
+[data-theme="ripeplanet"] .react-flow__edge-path,
+[data-theme="altermind"]  .react-flow__edge-path {
+  stroke: color-mix(in srgb, var(--accent-secondary) 60%, var(--border-strong));
+}
+[data-theme="ripeplanet"] .react-flow__edge.selected .react-flow__edge-path,
+[data-theme="altermind"]  .react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--accent);
+}
+
+/* 7. Decorative brand mark — overlapping coral + petrol-green half-circles,
+      exactly like the Ripeplanet hero. Use anywhere via the `.brandmark`
+      class. Auto-applied to the empty-state on Run History / Automations
+      so visited pages always carry both brand colours, even when there's
+      no data yet. */
+.brandmark {
+  position: relative;
+  display: inline-block;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+}
+.brandmark::before,
+.brandmark::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 48px;
+  height: 96px;
+}
+.brandmark::before {
+  left: 0;
+  background: var(--accent);
+  border-radius: 96px 0 0 96px;
+}
+.brandmark::after {
+  right: 0;
+  background: var(--accent-secondary);
+  border-radius: 0 96px 96px 0;
+}
+
+/* Empty-state — show the brandmark so the page is never a flat blank */
+[data-theme="ripeplanet"] .ov-empty,
+[data-theme="ripeplanet"] .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 48px 24px;
+}
+[data-theme="ripeplanet"] .ov-empty::before,
+[data-theme="ripeplanet"] .empty-state::before {
+  content: '';
+  width: 84px;
+  height: 84px;
+  background:
+    radial-gradient(circle at 25% 50%, var(--accent) 0 42px, transparent 42px),
+    radial-gradient(circle at 75% 50%, var(--accent-secondary) 0 42px, transparent 42px);
+  opacity: 0.92;
+  display: block;
+}
+
+/* Turquoise + Claude themes were removed in favour of `altermind` (Phase 3). */
+
+/* -------------------------------------------------------------------------
+   Altermind — editorial deep-forest-green chrome, warm cream accents.
+   Inspired by altermind.com. Crisp ivory text on dark teal-green base.
+   ------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------
+   ALTERMIND — Dark v3
+   Foundations:  deep-forest canvas + warm-cream highlight blocks
+   Brand quartet:  forest #0e2a25 (primary surface)
+                   cream  #e8e5dd (secondary surface — cream cards/blocks)
+                   coral  #dd7b6e (tertiary — CTAs, running)
+                   sage   #9dc1b5 (quaternary — active, links, hover)
+   All four hues appear with EQUAL visual weight across every page.
+   ------------------------------------------------------------------------- */
+[data-theme='altermind'] {
+  color-scheme: dark;
+
+  --font-display-serif: 'Ronzino', 'Geist Variable', 'Geist', serif;
+
+  /* SURFACE LADDER — deep forest dominant, cream sub-surfaces for blocks */
+  --bg-base: #0e2a25;
+  --bg-deep: #081f1b;
+
+  --bg-0: #0e2a25;          /* page canvas — deep forest */
+  --bg-1: #112f29;          /* card — 1 step lighter than page */
+  --bg-2: #16382f;          /* hover / chip / segment-track */
+  --bg-3: #1d4338;          /* depressed surface */
+  --bg-node: #112f29;
+  --bg-node-elev: #16382f;
+
+  /* Cream secondary surface — used by panels that want to feel like a
+     printed cream-paper card on dark forest (the "Altermind block" pattern
+     from the reference). Accessed via `var(--surface-cream)`. */
+  --surface-cream: #e8e5dd;
+  --surface-cream-ink: #0f2924;
+
+  --panel-glass-bg: #112f29;
+
+  /* BORDERS — cream tinted hairlines, no blue/grey */
+  --border: rgba(232, 229, 221, 0.12);
+  --border-strong: rgba(232, 229, 221, 0.22);
+  --border-soft: rgba(232, 229, 221, 0.06);
+  --border-solid: rgba(232, 229, 221, 0.12);
+
+  /* INK — warm cream on dark forest */
+  --text-0: #f5f1e8;        /* primary cream ink */
+  --text-1: #e8e2d0;
+  --text-2: #b8c9c3;        /* sage-tinted muted */
+  --text-3: #7d8c87;
+
+  /* BRAND QUARTET */
+  --accent: #dd7b6e;            /* coral — CTAs, running, send buttons */
+  --accent-on: #0e2a25;
+  --accent-soft: color-mix(in srgb, #dd7b6e 18%, transparent);
+  --accent-hi: #e69991;
+  --accent-lo: #b85f56;
+  --accent-warm: #dd7b6e;
+  --accent-cyan: #9dc1b5;       /* sage mint — secondary brand */
+  --accent-secondary: #9dc1b5;
+  --accent-mauve: #c2a3b0;      /* dusty mauve — tertiary */
+  --accent-mauve-lo: #a08490;
+
+  /* STATUS — reuse brand colours so palette feels native */
+  --running: #dd7b6e;
+  --running-lo: #b85f56;
+  --success: #9dc1b5;           /* sage */
+  --success-lo: #6e9b8c;
+  --danger:  #e88a8a;
+  --danger-lo: #c46868;
+  --info:    #c2a3b0;           /* mauve */
+  --info-lo:  #a08490;
+  --warning: #e6c98c;
+  --heat:    #dd7b6e;
+
+  /* PORTS — earthy palette mapping */
+  --port-dataframe: #e6c98c;
+  --port-object:    #9dc1b5;
+  --port-scalar:    #c2a3b0;
+  --port-string-list: #b8c9c3;
+  --port-workflow:  #dd7b6e;
+
+  --minimap-mask: rgba(14, 42, 37, 0.92);
+  --scrollbar-thumb: rgba(232, 229, 221, 0.14);
+  --scrollbar-thumb-hover: rgba(232, 229, 221, 0.26);
+  --scrollbar-thumb-active: rgba(232, 229, 221, 0.36);
+  --canvas-dots-color: rgba(232, 229, 221, 0.08);
+  --dots-color: rgba(232, 229, 221, 0.05);
+
+  --canvas-bg: #0e2a25;
+  --canvas-edge-stroke: #b8c9c3;
+  --chrome-elevated: #112f29;
+  --segment-track: #16382f;
+  --segment-active-bg: #e8e5dd;
+  --segment-active-fg: #0f2924;
+
+  --grain-blend: overlay;
   --grain-opacity: 0;
-  --dots-color: rgba(20, 60, 70, 0.10);
-  --canvas-dots-color: rgba(20, 60, 70, 0.16);
 
+  /* Deep forest backdrop with a single soft coral spotlight on top */
   --backdrop-wash:
-    radial-gradient(60% 60% at 50% 0%, rgba(63, 166, 160, 0.10) 0%, rgba(63, 166, 160, 0) 100%),
-    #cbdcdc;
+    radial-gradient(60% 60% at 50% 0%, rgba(221, 123, 110, 0.06) 0%, rgba(221, 123, 110, 0) 100%),
+    #0e2a25;
 
-  --glass-bg: color-mix(in srgb, #d5e8e8 82%, transparent);
-  --glass-blur: 14px;
-  --shadow-card:
-    0 1px 0 rgba(20, 60, 70, 0.03),
-    0 8px 24px -12px rgba(20, 60, 70, 0.18);
+  --glass-bg: #112f29;
+  --glass-blur: 0px;
+
+  /* FLAT surfaces — overlay shadow only for true floating layers */
+  --shadow-card: none;
+  --shadow-overlay:
+    0 0 0 1px rgba(232, 229, 221, 0.12),
+    0 16px 40px -16px rgba(0, 0, 0, 0.55);
 }
 
-/* Claude — warm cream + amber, paper feel (from Studio-frontend .claude) */
-[data-theme='claude'] {
-  color-scheme: light;
-
-  --bg-base: #e6dbcc;
-  --bg-deep: #ebe4d6;
-
-  --bg-0: #ebe4d6;
-  --bg-1: #e2d9c9;
-  --bg-2: #dacfba;
-  --bg-3: #cfc1ab;
-  --bg-node: #ebe4d6;
-  --bg-node-elev: #ebe4d6;
-
-  --panel-glass-bg: #ebe4d6;
-
-  --text-0: #1a120a;
-  --text-1: #332618;
-  --text-2: #5a4a3a;
-  --text-3: #7a6b5a;
-
-  --border: #cfc1ab;
-  --border-strong: #b3a486;
-  --border-soft: rgba(80, 50, 20, 0.20);
-  --border-solid: #cfc1ab;
-
-  --accent: #b85a30;
-  --accent-on: #ebe4d6;
-  --accent-hi: #cc6a3d;
-  --accent-lo: #9e4a22;
-  --accent-soft: color-mix(in srgb, #b85a30 16%, transparent);
-  --accent-warm: #b85a30;
-  --accent-cyan: #b85a30;
-
-  --running: #b85a30;
-  --running-lo: #9e4a22;
-  --success: #1f8a5b;
-  --success-lo: #166534;
-  --danger: #d1495b;
-  --danger-lo: #b91c1c;
-  --warning: #b45309;
-  --info: #cc6a3d;
-  --heat: #d97757;
-
-  --port-dataframe: #d97706;
-  --port-object: #0284c7;
-  --port-scalar: #16a34a;
-  --port-string-list: #4f46e5;
-  --port-workflow: #be185d;
-
-  --minimap-mask: rgba(235, 228, 214, 0.92);
-  --scrollbar-thumb: rgba(80, 50, 20, 0.14);
-  --scrollbar-thumb-hover: rgba(80, 50, 20, 0.24);
-  --scrollbar-thumb-active: rgba(80, 50, 20, 0.32);
-
-  --canvas-bg: #ffffff;
-  --canvas-edge-stroke: #6b5a4a;
-  --chrome-elevated: #ebe4d6;
-  --segment-track: #dacfba;
-  --segment-active-bg: #2e2319;
-  --segment-active-fg: #ebe4d6;
-
-  --grain-blend: multiply;
-  --grain-opacity: 0;
-  --dots-color: rgba(80, 50, 20, 0.08);
-  --canvas-dots-color: rgba(90, 80, 70, 0.18);
-
-  --backdrop-wash:
-    radial-gradient(60% 60% at 50% 0%, rgba(217, 119, 87, 0.10) 0%, rgba(217, 119, 87, 0) 100%),
-    #e6dbcc;
-
-  --glass-bg: color-mix(in srgb, #ebe4d6 82%, transparent);
-  --glass-blur: 14px;
-  --shadow-card:
-    0 1px 0 rgba(80, 50, 20, 0.03),
-    0 8px 24px -12px rgba(80, 50, 20, 0.18);
-}
-
-/* Morning: neutral black/white chrome only (no time-of-day accent tint). */
+/* Morning: neutral chrome only (no time-of-day accent tint). */
 [data-period='morning'][data-theme='dark'] .studio-backdrop__wash,
-[data-period='morning'][data-theme='light'] .studio-backdrop__wash,
-[data-period='morning'][data-theme='turquoise'] .studio-backdrop__wash,
-[data-period='morning'][data-theme='claude'] .studio-backdrop__wash {
+[data-period='morning'][data-theme='ripeplanet'] .studio-backdrop__wash,
+[data-period='morning'][data-theme='altermind'] .studio-backdrop__wash {
   background: var(--bg-base);
 }
 
@@ -336,30 +891,28 @@
   background: linear-gradient(180deg, #08090a 0%, #000000 100%);
 }
 
-/* Afternoon / evening: subtle accent warmth while base stays dark or light. */
+/* Afternoon / evening: subtle accent warmth while base stays themed. */
 [data-period='afternoon'][data-theme='dark'] {
   --accent: #45c4e8;
   --accent-hi: #6dd4f0;
   --accent-lo: #2d9fc4;
 }
 
-[data-period='afternoon'][data-theme='light'] {
-  --accent: #0284c7;
-  --accent-hi: #0ea5e9;
-  --accent-lo: #0369a1;
+/* Light theme: keep coral accent ALL day. No time-of-day color flip. */
+[data-period='afternoon'][data-theme='ripeplanet'],
+[data-period='evening'][data-theme='ripeplanet'] {
+  --accent: #dd7b6e;
+  --accent-hi: #e69991;
+  --accent-lo: #b85f56;
   --accent-on: #ffffff;
 }
 
-[data-period='afternoon'][data-theme='turquoise'] {
-  --accent: #3aa29e;
-  --accent-hi: #4db8b4;
-  --accent-lo: #24706d;
-}
-
-[data-period='afternoon'][data-theme='claude'] {
-  --accent: #d97757;
-  --accent-hi: #e8956f;
-  --accent-lo: #b85a32;
+[data-period='afternoon'][data-theme='altermind'],
+[data-period='evening'][data-theme='altermind'] {
+  --accent: #dd7b6e;
+  --accent-hi: #e69991;
+  --accent-lo: #b85f56;
+  --accent-on: #0e2a25;
 }
 
 [data-period='evening'][data-theme='dark'] {
@@ -369,24 +922,14 @@
   --accent-on: #ffffff;
 }
 
-[data-period='evening'][data-theme='light'] {
-  --accent: #7c3aed;
-  --accent-hi: #8b5cf6;
-  --accent-lo: #6d28d9;
+[data-period='evening'][data-theme='ripeplanet'] {
+  --accent: #dd7b6e;
+  --accent-hi: #e69991;
+  --accent-lo: #b85f56;
   --accent-on: #ffffff;
 }
 
-[data-period='evening'][data-theme='turquoise'] {
-  --accent: #2d7a9a;
-  --accent-hi: #3a94b8;
-  --accent-lo: #1f6478;
-}
-
-[data-period='evening'][data-theme='claude'] {
-  --accent: #a85a42;
-  --accent-hi: #c46e52;
-  --accent-lo: #8a4630;
-}
+/* Altermind evening covered above */
 
 [data-period='afternoon'][data-theme='dark'] .studio-backdrop__wash {
   background: linear-gradient(180deg, #08090a 0%, #050608 100%);
@@ -396,28 +939,20 @@
   background: linear-gradient(180deg, #0a0812 0%, #000000 100%);
 }
 
-[data-period='afternoon'][data-theme='light'] .studio-backdrop__wash {
-  background: linear-gradient(180deg, #fafafa 0%, #f4f8fc 100%);
+[data-period='evening'][data-theme='ripeplanet'] .studio-backdrop__wash {
+  background: var(--bg-0);
 }
 
-[data-period='evening'][data-theme='light'] .studio-backdrop__wash {
-  background: linear-gradient(180deg, #fafafa 0%, #f6f4fc 100%);
+[data-period='afternoon'][data-theme='ripeplanet'] .studio-backdrop__wash {
+  background: var(--bg-0);
 }
 
-[data-period='afternoon'][data-theme='turquoise'] .studio-backdrop__wash {
-  background: linear-gradient(180deg, #cbdcdc 0%, #c1d5d8 100%);
+[data-period='afternoon'][data-theme='altermind'] .studio-backdrop__wash {
+  background: linear-gradient(180deg, #0a1f1c 0%, #081a17 100%);
 }
 
-[data-period='evening'][data-theme='turquoise'] .studio-backdrop__wash {
-  background: linear-gradient(180deg, #cbdcdc 0%, #c4d7da 100%);
-}
-
-[data-period='afternoon'][data-theme='claude'] .studio-backdrop__wash {
-  background: linear-gradient(180deg, #e6dbcc 0%, #e2d9c9 100%);
-}
-
-[data-period='evening'][data-theme='claude'] .studio-backdrop__wash {
-  background: linear-gradient(180deg, #e6dbcc 0%, #dfd3c0 100%);
+[data-period='evening'][data-theme='altermind'] .studio-backdrop__wash {
+  background: linear-gradient(180deg, #0a1f1c 0%, #061412 100%);
 }
 
 /* -------------------------------------------------------------------------
@@ -443,12 +978,11 @@
   background: linear-gradient(180deg, #08090a 0%, #000000 100%);
 }
 
-[data-theme="light"] .studio-backdrop__wash {
+[data-theme="ripeplanet"] .studio-backdrop__wash {
   background: var(--bg-0);
 }
 
-[data-theme="turquoise"] .studio-backdrop__wash,
-[data-theme="claude"] .studio-backdrop__wash {
+[data-theme="altermind"] .studio-backdrop__wash {
   background: var(--backdrop-wash);
 }
 
@@ -475,13 +1009,12 @@
   opacity: 0.45;
 }
 
-[data-theme="light"] .studio-backdrop::after {
+[data-theme="ripeplanet"] .studio-backdrop::after {
   opacity: 0.3;
 }
 
-[data-theme="turquoise"] .studio-backdrop::after,
-[data-theme="claude"] .studio-backdrop::after {
-  opacity: 0.35;
+[data-theme="altermind"] .studio-backdrop::after {
+  opacity: 0.4;
 }
 
 @keyframes studio-drift-1 {
@@ -508,7 +1041,7 @@
   border-color: var(--border-soft);
 }
 
-[data-theme="light"] .panel-glass {
+[data-theme="ripeplanet"] .panel-glass {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   background: var(--chrome-elevated);
@@ -518,24 +1051,14 @@
     0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 
-[data-theme="turquoise"] .panel-glass {
+[data-theme="altermind"] .panel-glass {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   background: var(--chrome-elevated);
   border-color: var(--border-soft);
   box-shadow:
-    0 1px 0 rgba(20, 60, 70, 0.03),
-    0 0 0 1px rgba(20, 60, 70, 0.06);
-}
-
-[data-theme="claude"] .panel-glass {
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  background: var(--chrome-elevated);
-  border-color: var(--border-soft);
-  box-shadow:
-    0 1px 0 rgba(80, 50, 20, 0.03),
-    0 0 0 1px rgba(80, 50, 20, 0.06);
+    0 1px 0 rgba(245, 241, 232, 0.03) inset,
+    0 0 0 1px rgba(245, 241, 232, 0.06);
 }
 
 /* Segmented controls (canvas/code, view/edit) — active pill inverts with theme */
@@ -769,7 +1292,7 @@ pre {
   background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%);
   animation: scan-sweep 1.4s linear infinite;
 }
-[data-theme="light"] .scan-sweep::after {
+[data-theme="ripeplanet"] .scan-sweep::after {
   background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%);
 }
 
@@ -992,7 +1515,7 @@ button:focus-visible, [role="button"]:focus-visible {
   -webkit-backdrop-filter: blur(12px) saturate(120%);
 }
 
-[data-theme="light"] .run-output-modal-backdrop {
+[data-theme="ripeplanet"] .run-output-modal-backdrop {
   background: color-mix(in srgb, var(--bg-base) 52%, transparent);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
@@ -1017,7 +1540,7 @@ button:focus-visible, [role="button"]:focus-visible {
     0 28px 80px -24px rgba(0, 0, 0, 0.72);
 }
 
-[data-theme="light"] .run-output-modal-panel {
+[data-theme="ripeplanet"] .run-output-modal-panel {
   background: color-mix(in srgb, #ffffff 76%, transparent);
   backdrop-filter: blur(22px) saturate(150%);
   -webkit-backdrop-filter: blur(22px) saturate(150%);
@@ -1154,8 +1677,8 @@ button:focus-visible, [role="button"]:focus-visible {
   box-shadow: var(--linear-focus-ring);
 }
 
-[data-theme='light'] .studio-input,
-[data-theme='light'] .studio-select {
+[data-theme='ripeplanet'] .studio-input,
+[data-theme='ripeplanet'] .studio-select {
   background: var(--bg-0);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
@@ -1582,7 +2105,7 @@ button {
   border-color: var(--border-strong);
   transform: translateY(-1px);
 }
-[data-theme="light"] .surface-card {
+[data-theme="ripeplanet"] .surface-card {
   box-shadow:
     0 1px 0 0 rgba(255, 255, 255, 0.5) inset,
     0 6px 18px -10px rgba(0, 0, 0, 0.12);
@@ -2022,199 +2545,184 @@ kbd {
   cursor: default;
 }
 
-/* Turquoise + Claude — dark navy rail (Studio-frontend ref layout) */
-[data-theme='turquoise'] .studio-left-nav,
-[data-theme='claude'] .studio-left-nav {
-  background: #101827;
-  border-right-color: rgba(255, 255, 255, 0.08) !important;
+/* Altermind — keep left nav matching the editorial dark-green chrome.
+   The rail blends with the theme rather than inverting like the previous
+   turquoise/claude themes did. */
+[data-theme='altermind'] .studio-left-nav {
+  background: #081a17;
+  border-right-color: rgba(245, 241, 232, 0.08) !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
 
-  --text-0: #ffffff;
-  --text-1: #e4e4e7;
-  --text-2: rgba(255, 255, 255, 0.65);
-  --text-3: rgba(255, 255, 255, 0.40);
-  --bg-0: rgba(255, 255, 255, 0.06);
-  --bg-2: rgba(255, 255, 255, 0.10);
-  --bg-3: #1f2937;
-  --border: rgba(255, 255, 255, 0.10);
-  --border-soft: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.18);
-  --panel-glass-bg: #111827;
+  --text-0: #f5f1e8;
+  --text-1: #e3dccd;
+  --text-2: rgba(245, 241, 232, 0.65);
+  --text-3: rgba(245, 241, 232, 0.42);
+  --bg-0: rgba(245, 241, 232, 0.04);
+  --bg-2: rgba(245, 241, 232, 0.08);
+  --bg-3: #143028;
+  --border: rgba(245, 241, 232, 0.10);
+  --border-soft: rgba(245, 241, 232, 0.06);
+  --border-strong: rgba(245, 241, 232, 0.18);
+  --panel-glass-bg: #081a17;
 }
 
-[data-theme='claude'] .studio-left-nav .rail__btn {
-  background: #e2d9c9;
-  color: #2e2319;
-  border-color: transparent;
-  font-weight: 500;
-  box-shadow: none;
-}
-[data-theme='turquoise'] .studio-left-nav .rail__btn {
-  background: #c9e1e1;
-  color: #172a33;
+[data-theme='altermind'] .studio-left-nav .rail__btn {
+  background: transparent;
+  color: #e3dccd;
   border-color: transparent;
   font-weight: 500;
   box-shadow: none;
 }
 
-[data-theme='claude'] .studio-left-nav .rail__btn:hover,
-[data-theme='claude'] .studio-left-nav .rail__btn.rail__btn--active {
-  background: #ebe4d6;
-  color: #2e2319;
-}
-[data-theme='turquoise'] .studio-left-nav .rail__btn:hover,
-[data-theme='turquoise'] .studio-left-nav .rail__btn.rail__btn--active {
-  background: #d5e8e8;
-  color: #172a33;
+[data-theme='altermind'] .studio-left-nav .rail__btn:hover,
+[data-theme='altermind'] .studio-left-nav .rail__btn.rail__btn--active {
+  background: rgba(245, 241, 232, 0.08);
+  color: #f5f1e8;
 }
 
-[data-theme='turquoise'] .studio-left-nav .theme-pop,
-[data-theme='claude'] .studio-left-nav .theme-pop {
-  background: #111827;
-  border-color: rgba(255, 255, 255, 0.14);
+[data-theme='altermind'] .studio-left-nav .theme-pop {
+  background: #0c2421;
+  border-color: rgba(245, 241, 232, 0.14);
 }
 
-[data-theme='claude'] .pal,
-[data-theme='claude'] .studio-node-panel {
-  background: #e2d9c9 !important;
-  --chrome-elevated: #e2d9c9;
+[data-theme='altermind'] .pal,
+[data-theme='altermind'] .studio-node-panel {
+  background: #0f2925 !important;
+  --chrome-elevated: #0f2925;
 }
 
-[data-theme='claude'] .workflow-canvas {
-  --canvas-bg: #ffffff;
-  --canvas-dots-color: rgba(90, 80, 70, 0.18);
-  --bg-node: #ebe4d6;
-  --bg-node-elev: #ebe4d6;
-  background: #ffffff;
+[data-theme='altermind'] .workflow-canvas {
+  --canvas-bg: #0a1f1c;
+  --canvas-dots-color: rgba(245, 241, 232, 0.10);
+  --bg-node: #0f2925;
+  --bg-node-elev: #143028;
+  background: #0a1f1c;
 }
 
-/* Claude — Sherpa / agent panel (reference image 2) */
-[data-theme='claude'] .agent,
-[data-theme='claude'] .sherpa-side-panel {
-  --chrome-elevated: #ebe4d6;
-  background: #ebe4d6 !important;
+/* Altermind — Sherpa / agent panel */
+[data-theme='altermind'] .agent,
+[data-theme='altermind'] .sherpa-side-panel {
+  --chrome-elevated: #0c2421;
+  background: #0c2421 !important;
 }
 
-[data-theme='claude'] .agent__head {
-  background: #ebe4d6;
-  border-bottom-color: rgba(0, 0, 0, 0.08);
+[data-theme='altermind'] .agent__head {
+  background: #0c2421;
+  border-bottom-color: rgba(245, 241, 232, 0.08);
 }
 
-[data-theme='claude'] .agent__msgs {
-  background: #ebe4d6;
+[data-theme='altermind'] .agent__msgs {
+  background: #0c2421;
 }
 
-[data-theme='light'] .msg-user {
+[data-theme='ripeplanet'] .msg-user {
   background: #f4f4f5;
   color: #0a0a0a;
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-[data-theme='light'] .msg-user code {
+[data-theme='ripeplanet'] .msg-user code {
   color: #0a0a0a;
   background: color-mix(in srgb, #000000 8%, transparent);
   border-color: color-mix(in srgb, #000000 12%, transparent);
 }
 
-[data-theme='light'] .agent__ta {
+[data-theme='ripeplanet'] .agent__ta {
   background: #ffffff !important;
   border-color: rgba(0, 0, 0, 0.12);
 }
 
-[data-theme='light'] .agent__send {
+[data-theme='ripeplanet'] .agent__send {
   background: #000000 !important;
   color: #ffffff !important;
 }
 
-[data-theme='light'] .agent__send:disabled {
+[data-theme='ripeplanet'] .agent__send:disabled {
   background: #f4f4f5 !important;
   color: #a1a1aa !important;
 }
 
-[data-theme='light'] .think {
+[data-theme='ripeplanet'] .think {
   background: #f4f4f5;
   color: #0a0a0a;
   border: 1px solid rgba(0, 0, 0, 0.07);
   transition: background 150ms, color 150ms;
 }
 
-[data-theme='light'] .think.think--streaming {
-  background: #09090b !important;
+[data-theme='ripeplanet'] .think.think--streaming {
+  background: #475569 !important;
   color: #ffffff !important;
   border: none !important;
 }
 
-[data-theme='light'] .think.think--streaming,
-[data-theme='light'] .think.think--streaming * {
+[data-theme='ripeplanet'] .think.think--streaming,
+[data-theme='ripeplanet'] .think.think--streaming * {
   color: #ffffff !important;
 }
 
-[data-theme='light'] .think.think--streaming svg {
+[data-theme='ripeplanet'] .think.think--streaming svg {
   color: #ffffff !important;
 }
 
-[data-theme='light'] .think.think--streaming .think__step-detail,
-[data-theme='light'] .think.think--streaming .think__step-detail * {
-  color: rgba(255, 255, 255, 0.7) !important;
+[data-theme='ripeplanet'] .think.think--streaming .think__step-detail,
+[data-theme='ripeplanet'] .think.think--streaming .think__step-detail * {
+  color: rgba(255, 255, 255, 0.8) !important;
 }
 
-[data-theme='light'] .think.think--streaming .think__bullet {
-  background: rgba(255, 255, 255, 0.15) !important;
+[data-theme='ripeplanet'] .think.think--streaming .think__bullet {
+  background: rgba(255, 255, 255, 0.2) !important;
   color: #ffffff !important;
 }
 
-[data-theme='claude'] .msg-user {
-  background: #2d7ea6;
-  color: #d4ebf7;
+[data-theme='ripeplanet'] .think.think--streaming code {
+  background: rgba(0, 0, 0, 0.3) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
-[data-theme='claude'] .msg-user code {
-  color: #d4ebf7;
-  background: color-mix(in srgb, #ffffff 14%, transparent);
-  border-color: color-mix(in srgb, #ffffff 20%, transparent);
+[data-theme='altermind'] .msg-user {
+  background: #d4c9a8;
+  color: #0a1f1c;
+  border: 1px solid rgba(212, 201, 168, 0.4);
 }
 
-[data-theme='turquoise'] .msg-user {
-  background: #24706d;
-  color: #ffffff;
+[data-theme='altermind'] .msg-user code {
+  color: #0a1f1c;
+  background: color-mix(in srgb, #0a1f1c 14%, transparent);
+  border-color: color-mix(in srgb, #0a1f1c 22%, transparent);
 }
 
-[data-theme='turquoise'] .msg-user code {
-  color: #ffffff;
-  background: color-mix(in srgb, #ffffff 16%, transparent);
-  border-color: color-mix(in srgb, #ffffff 22%, transparent);
+[data-theme='altermind'] .msg-asst__avatar,
+[data-theme='altermind'] .agent__avatar {
+  background: color-mix(in srgb, #d4c9a8 18%, transparent);
+  color: #d4c9a8;
 }
 
-[data-theme='claude'] .msg-asst__avatar,
-[data-theme='claude'] .agent__avatar {
-  background: color-mix(in srgb, #2d7ea6 14%, transparent);
-  color: #2d7ea6;
+[data-theme='altermind'] .agent__input {
+  background: #0f2925;
+  border-top-color: rgba(245, 241, 232, 0.08);
 }
 
-[data-theme='claude'] .agent__input {
-  background: #ffffff;
-  border-top-color: rgba(0, 0, 0, 0.08);
+[data-theme='altermind'] .agent__ta {
+  background: #143028;
+  color: #f5f1e8;
+  border-color: rgba(245, 241, 232, 0.12);
 }
 
-[data-theme='claude'] .agent__ta {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.12);
+[data-theme='altermind'] .agent__ta:focus {
+  border-color: color-mix(in srgb, #d4c9a8 55%, transparent);
 }
 
-[data-theme='claude'] .agent__ta:focus {
-  border-color: color-mix(in srgb, #2d7ea6 45%, transparent);
+[data-theme='altermind'] .agent__send {
+  background: #d4c9a8;
+  color: #0a1f1c;
 }
 
-[data-theme='claude'] .agent__send {
-  background: #2e2319;
-  color: #ffffff;
-}
-
-[data-theme='claude'] .agent__send:disabled {
-  background: #dacfba;
-  color: #9a8b7a;
+[data-theme='altermind'] .agent__send:disabled {
+  background: #143028;
+  color: #7d8c87;
 }
 
 
@@ -2241,15 +2749,15 @@ kbd {
 [data-theme='dark'] .drawer {
   background: linear-gradient(180deg, #08090a 0%, #000000 100%) !important;
 }
-[data-theme='light'] .drawer {
+[data-theme='ripeplanet'] .drawer {
   background: var(--bg-0) !important;
 }
-[data-theme='turquoise'] .drawer {
-  background: #f2f7f7 !important;
+[data-theme='altermind'] .drawer {
+  background: linear-gradient(180deg, #0a1f1c 0%, #061412 100%) !important;
 }
 
-[data-theme='claude'] .drawer.wf-drawer {
-  background: #e2d9c9 !important;
+[data-theme='altermind'] .drawer.wf-drawer {
+  background: #0f2925 !important;
 }
 
 /* node library */
@@ -2564,11 +3072,10 @@ kbd {
 [data-theme='dark'] .studio-detail-drawer {
   background: linear-gradient(180deg, #08090a 0%, #000000 100%) !important;
 }
-[data-theme='light'] .studio-detail-drawer {
+[data-theme='ripeplanet'] .studio-detail-drawer {
   background: var(--bg-0) !important;
 }
-[data-theme='turquoise'] .studio-detail-drawer,
-[data-theme='claude'] .studio-detail-drawer {
+[data-theme='altermind'] .studio-detail-drawer {
   background: var(--bg-0) !important;
 }
 
@@ -2677,9 +3184,7 @@ kbd {
   background: var(--bg-1);
   padding: 11px 13px;
 }
-[data-theme='light'] .dcell,
-[data-theme='turquoise'] .dcell,
-[data-theme='claude'] .dcell {
+[data-theme='ripeplanet'] .dcell {
   background: #fff;
 }
 .dcell__k {

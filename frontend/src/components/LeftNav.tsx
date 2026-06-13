@@ -32,10 +32,9 @@ import {
   Code2,
   Zap,
   Workflow,
-  Sun,
   Moon,
-  Droplets,
   Palette,
+  Sprout,
   type LucideIcon,
 } from '../icons/arc'
 import { useWorkflowStore } from '../store/workflowStore'
@@ -309,6 +308,7 @@ export default function LeftNav() {
         <NavRow item={settingsItem} showLabels={showLabels} state={navState} />
         <Link
           to="/docs"
+          data-testid="left-nav-docs-link"
           className="flex items-center"
           style={{
             gap: 10,
@@ -388,6 +388,7 @@ export default function LeftNav() {
         ) : (
           <button
             type="button"
+            data-testid="left-nav-sidebar-mode-toggle"
             onClick={() =>
               setMode((m) => (m === 'collapsed' ? 'expanded' : m === 'expanded' ? 'hover' : 'collapsed'))
             }
@@ -457,6 +458,7 @@ function NavRow({
       type="button"
       onClick={item.onClick}
       disabled={item.disabled}
+      data-testid={`left-nav-${item.id}-button`}
       aria-current={active ? 'page' : undefined}
       title={item.disabled ? `${item.label} (coming soon)` : item.label}
       className="flex items-center w-full"
@@ -993,9 +995,8 @@ function ThemeToggle({ showLabels }: { showLabels: boolean }) {
 
   const opts = [
     { id: 'dark' as const, icon: Moon, label: 'Dark' },
-    { id: 'light' as const, icon: Sun, label: 'Light' },
-    { id: 'turquoise' as const, icon: Droplets, label: 'Turquoise' },
-    { id: 'claude' as const, icon: Palette, label: 'Claude' },
+    { id: 'altermind' as const, icon: Palette, label: 'Altermind' },
+    { id: 'ripeplanet' as const, icon: Sprout, label: 'Ripeplanet' },
   ]
 
   const current = opts.find((o) => o.id === theme) || opts[0]
@@ -1014,6 +1015,7 @@ function ThemeToggle({ showLabels }: { showLabels: boolean }) {
       <button
         type="button"
         className="rail__btn"
+        data-testid="left-nav-theme-toggle-button"
         title={`Current theme: ${current.label}. Click to switch theme.`}
         aria-label={`Current theme: ${current.label}. Click to switch theme.`}
         onClick={toggle}
