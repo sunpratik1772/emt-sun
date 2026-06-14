@@ -116,20 +116,19 @@
   --font-display-condensed: 'Anton', 'Oswald', 'Archivo Narrow', 'Geist Variable', sans-serif;
   --font-display-serif: 'Geist Variable', 'Geist', system-ui, sans-serif;
 
-  /* SURFACE LADDER — pure white canvas + subtly tinted parchment cards.
-     Cards visibly POP off the white page; section headers stay flush white
-     so they don't fuse with the cards beneath them. */
-  --bg-base: #ffffff;
-  --bg-deep: #fafaf7;
+  /* SURFACE LADDER — off-white parchment canvas + pure white cards.
+     Cards visibly POP off the parchment page. */
+  --bg-base: #faf7f0;
+  --bg-deep: #f2ede2;
 
-  --bg-0: #ffffff;          /* page canvas - PURE WHITE */
-  --bg-1: #faf7f0;          /* card / panel — warm cream, pops on white */
+  --bg-0: #faf7f0;          /* page canvas - warm off-white/cream */
+  --bg-1: #ffffff;          /* card / panel — pure white, pops on cream */
   --bg-2: #f2ede2;          /* hover / chip / segment-track */
   --bg-3: #e8dfcd;          /* depressed surface */
   --bg-node: #ffffff;
   --bg-node-elev: #faf7f0;
 
-  --panel-glass-bg: #faf7f0;
+  --panel-glass-bg: #ffffff;
 
   /* BORDERS — warm beige hairlines */
   --border: #e0d6c0;
@@ -181,7 +180,7 @@
   --canvas-dots-color: rgba(10, 10, 10, 0.07);
   --dots-color: rgba(10, 10, 10, 0.04);
 
-  --canvas-bg: #ffffff;
+  --canvas-bg: #faf7f0;
   --canvas-edge-stroke: #6b5d4a;
   --chrome-elevated: #ffffff;
   --segment-track: #f2ede2;
@@ -191,8 +190,8 @@
   --grain-blend: multiply;
   --grain-opacity: 0;
 
-  /* Pure white backdrop */
-  --backdrop-wash: #ffffff;
+  /* Off-white backdrop */
+  --backdrop-wash: #faf7f0;
 
   --glass-bg: #ffffff;
   --glass-blur: 0px;
@@ -428,6 +427,90 @@
 [data-theme="ripeplanet"] .ov-empty {
   background: var(--bg-1);
   border: 1px solid var(--border);
+}
+
+/* altermind cream-card theme overrides - all panels, modals, drawers and cards
+   resolve to cream backgrounds with dark green text and borders. */
+[data-theme="altermind"] .mng-sum,
+[data-theme="altermind"] .stat-card,
+[data-theme="altermind"] .dash-stat-card,
+[data-theme="altermind"] .dash-stat,
+[data-theme="altermind"] .dash-card,
+[data-theme="altermind"] .dash-panel,
+[data-theme="altermind"] .dash-quickstart,
+[data-theme="altermind"] .qstart,
+[data-theme="altermind"] .ds-tile,
+[data-theme="altermind"] .skill-card,
+[data-theme="altermind"] .node-card,
+[data-theme="altermind"] .template-card,
+[data-theme="altermind"] .wf-card,
+[data-theme="altermind"] .runs-table,
+[data-theme="altermind"] .insight-card,
+[data-theme="altermind"] .activity-card,
+[data-theme="altermind"] .health-card,
+[data-theme="altermind"] .mng-row,
+[data-theme="altermind"] .runs-row,
+[data-theme="altermind"] .sherpa-prompt,
+[data-theme="altermind"] .sherpa-bar,
+[data-theme="altermind"] .sherpa-prompt-bar,
+[data-theme="altermind"] .dash-sherpa,
+[data-theme="altermind"] .suggested-prompt,
+[data-theme="altermind"] .suggested-card,
+[data-theme="altermind"] .agent__bubble,
+[data-theme="altermind"] .agent__input,
+[data-theme="altermind"] .panel,
+[data-theme="altermind"] .panel-glass,
+[data-theme="altermind"] .modal__shell,
+[data-theme="altermind"] .studio-overlay__panel,
+[data-theme="altermind"] .cmdk__shell,
+[data-theme="altermind"] .kbd-sheet,
+[data-theme="altermind"] .dropdown,
+[data-theme="altermind"] .popover,
+[data-theme="altermind"] .empty-state,
+[data-theme="altermind"] .panel-empty,
+[data-theme="altermind"] .placeholder-card,
+[data-theme="altermind"] .ov-empty {
+  --bg-1: var(--surface-cream);
+  --bg-2: #faf7f0;
+  --bg-3: #dcd9d1;
+  --text-0: #0f2924;
+  --text-1: #1a3c35;
+  --text-2: #4f6760;
+  --text-3: #7d8c87;
+  --border: rgba(15, 41, 36, 0.12);
+  --border-soft: rgba(15, 41, 36, 0.06);
+  --border-strong: rgba(15, 41, 36, 0.22);
+  --chrome-elevated: var(--surface-cream);
+  --panel-glass-bg: var(--surface-cream);
+
+  background: var(--surface-cream) !important;
+  color: var(--surface-cream-ink) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(15, 41, 36, 0.12) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="altermind"] .mng-row,
+[data-theme="altermind"] .runs-row {
+  border-top: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 1px solid rgba(15, 41, 36, 0.06) !important;
+  background: transparent !important;
+}
+
+[data-theme="altermind"] .mng-list,
+[data-theme="altermind"] .runs-table {
+  background: var(--surface-cream);
+  border: 1px solid rgba(15, 41, 36, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+[data-theme="altermind"] .ov__foot {
+  background: var(--surface-cream);
+  border-top: 1px solid rgba(15, 41, 36, 0.12);
 }
 
 /* Tooltips & toasts on light theme: ink-dark pill, no glow */
