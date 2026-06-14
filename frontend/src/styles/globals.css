@@ -116,25 +116,26 @@
   --font-display-condensed: 'Anton', 'Oswald', 'Archivo Narrow', 'Geist Variable', sans-serif;
   --font-display-serif: 'Geist Variable', 'Geist', system-ui, sans-serif;
 
-  /* SURFACE LADDER — off-white parchment canvas + pure white cards.
-     Cards visibly POP off the parchment page. */
-  --bg-base: #faf7f0;
-  --bg-deep: #f2ede2;
+  /* SURFACE LADDER — pure white canvas + subtly tinted parchment cards.
+     Cards visibly POP off the white page; section headers stay flush white
+     so they don't fuse with the cards beneath them. */
+  --bg-base: #ffffff;
+  --bg-deep: #fafaf7;
 
-  --bg-0: #faf7f0;          /* page canvas - warm off-white/cream */
-  --bg-1: #ffffff;          /* card / panel — pure white, pops on cream */
-  --bg-2: #f2ede2;          /* hover / chip / segment-track */
-  --bg-3: #e8dfcd;          /* depressed surface */
+  --bg-0: #ffffff;          /* page canvas - PURE WHITE */
+  --bg-1: #f4f0e6;          /* card / panel — warm cream, pops on white */
+  --bg-2: #e6e0d2;          /* hover / chip / segment-track */
+  --bg-3: #dcd3be;          /* depressed surface */
   --bg-node: #ffffff;
-  --bg-node-elev: #faf7f0;
+  --bg-node-elev: #f4f0e6;
 
-  --panel-glass-bg: #ffffff;
+  --panel-glass-bg: #f4f0e6;
 
   /* BORDERS — warm beige hairlines */
-  --border: #e0d6c0;
-  --border-strong: #c8b896;
-  --border-soft: #ece4d2;
-  --border-solid: #c8b896;
+  --border: #d2c7ac;
+  --border-strong: #c2b392;
+  --border-soft: #ebe0cc;
+  --border-solid: #c2b392;
 
   /* INK — near-pure black + warm browns */
   --text-0: #0a0a0a;
@@ -143,35 +144,35 @@
   --text-3: #9c8e76;
 
   /* BRAND TRIO */
-  --accent: #dd7b6e;            /* coral — primary CTAs, links, active */
+  --accent: #db7365;            /* coral — primary CTAs, links, active */
   --accent-on: #ffffff;
-  --accent-soft: color-mix(in srgb, #dd7b6e 14%, transparent);
+  --accent-soft: color-mix(in srgb, #db7365 14%, transparent);
   --accent-hi: #e69991;
-  --accent-lo: #b85f56;
-  --accent-warm: #dd7b6e;
-  --accent-cyan: #0f5957;       /* petrol — secondary brand */
-  --accent-secondary: #0f5957;
+  --accent-lo: #b3564a;
+  --accent-warm: #db7365;
+  --accent-cyan: #004840;       /* petrol — secondary brand */
+  --accent-secondary: #004840;
   --accent-mauve: #a8788a;      /* mauve — tertiary, info chips */
   --accent-mauve-lo: #8a5e6e;
 
   /* STATUS — reuse brand colors so palette feels native */
-  --running: #dd7b6e;
-  --running-lo: #b85f56;
-  --success: #0f5957;
-  --success-lo: #1a7a76;
+  --running: #db7365;
+  --running-lo: #b3564a;
+  --success: #004840;
+  --success-lo: #0f5957;
   --danger:  #b85850;
   --danger-lo: #d17b72;
   --info:    #a8788a;           /* mauve — calm, not Bootstrap-blue */
   --info-lo: #8a5e6e;
   --warning: #c99536;
-  --heat:    #dd7b6e;
+  --heat:    #db7365;
 
   /* PORT colors — earthy palette mapping */
   --port-dataframe: #c99536;
-  --port-object:    #0f5957;
+  --port-object:    #004840;
   --port-scalar:    #a8788a;
   --port-string-list: #5a564e;
-  --port-workflow:  #dd7b6e;
+  --port-workflow:  #db7365;
 
   --minimap-mask: rgba(255, 255, 255, 0.94);
   --scrollbar-thumb: rgba(10, 10, 10, 0.14);
@@ -180,18 +181,18 @@
   --canvas-dots-color: rgba(10, 10, 10, 0.07);
   --dots-color: rgba(10, 10, 10, 0.04);
 
-  --canvas-bg: #faf7f0;
+  --canvas-bg: #ffffff;
   --canvas-edge-stroke: #6b5d4a;
   --chrome-elevated: #ffffff;
-  --segment-track: #f2ede2;
+  --segment-track: #e6e0d2;
   --segment-active-bg: #0a0a0a;
   --segment-active-fg: #ffffff;
 
   --grain-blend: multiply;
   --grain-opacity: 0;
 
-  /* Off-white backdrop */
-  --backdrop-wash: #faf7f0;
+  /* Pure white backdrop */
+  --backdrop-wash: #ffffff;
 
   --glass-bg: #ffffff;
   --glass-blur: 0px;
@@ -206,7 +207,7 @@
 /* Topographic line wallpaper — kept VERY quiet so it reads as paper texture,
    not noise. Disable on detail screens via .studio-backdrop--clean. */
 [data-theme="ripeplanet"] .studio-backdrop::before {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200' viewBox='0 0 1200 1200'><g fill='none' stroke='%23201c14' stroke-opacity='0.022' stroke-width='1'><path d='M0 160 Q300 80 600 160 T 1200 160'/><path d='M0 240 Q300 160 600 240 T 1200 240'/><path d='M0 320 Q300 240 600 320 T 1200 320'/><path d='M0 400 Q300 320 600 400 T 1200 400'/><path d='M0 480 Q300 400 600 480 T 1200 480'/><path d='M0 560 Q300 480 600 560 T 1200 560'/><path d='M0 640 Q300 560 600 640 T 1200 640'/><path d='M0 720 Q300 640 600 720 T 1200 720'/><path d='M0 800 Q300 720 600 800 T 1200 800'/><path d='M0 880 Q300 800 600 880 T 1200 880'/><path d='M0 960 Q300 880 600 960 T 1200 960'/><path d='M0 1040 Q300 960 600 1040 T 1200 1040'/></g></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='1200' viewBox='0 0 1200 1200'><g fill='none' stroke='%23201c14' stroke-opacity='0.045' stroke-width='1'><path d='M0 160 Q300 80 600 160 T 1200 160'/><path d='M0 240 Q300 160 600 240 T 1200 240'/><path d='M0 320 Q300 240 600 320 T 1200 320'/><path d='M0 400 Q300 320 600 400 T 1200 400'/><path d='M0 480 Q300 400 600 480 T 1200 480'/><path d='M0 560 Q300 480 600 560 T 1200 560'/><path d='M0 640 Q300 560 600 640 T 1200 640'/><path d='M0 720 Q300 640 600 720 T 1200 720'/><path d='M0 800 Q300 720 600 800 T 1200 800'/><path d='M0 880 Q300 800 600 880 T 1200 880'/><path d='M0 960 Q300 880 600 960 T 1200 960'/><path d='M0 1040 Q300 960 600 1040 T 1200 1040'/></g></svg>");
   background-repeat: repeat;
   background-size: 1200px 1200px;
   opacity: 1;
@@ -427,90 +428,6 @@
 [data-theme="ripeplanet"] .ov-empty {
   background: var(--bg-1);
   border: 1px solid var(--border);
-}
-
-/* altermind cream-card theme overrides - all panels, modals, drawers and cards
-   resolve to cream backgrounds with dark green text and borders. */
-[data-theme="altermind"] .mng-sum,
-[data-theme="altermind"] .stat-card,
-[data-theme="altermind"] .dash-stat-card,
-[data-theme="altermind"] .dash-stat,
-[data-theme="altermind"] .dash-card,
-[data-theme="altermind"] .dash-panel,
-[data-theme="altermind"] .dash-quickstart,
-[data-theme="altermind"] .qstart,
-[data-theme="altermind"] .ds-tile,
-[data-theme="altermind"] .skill-card,
-[data-theme="altermind"] .node-card,
-[data-theme="altermind"] .template-card,
-[data-theme="altermind"] .wf-card,
-[data-theme="altermind"] .runs-table,
-[data-theme="altermind"] .insight-card,
-[data-theme="altermind"] .activity-card,
-[data-theme="altermind"] .health-card,
-[data-theme="altermind"] .mng-row,
-[data-theme="altermind"] .runs-row,
-[data-theme="altermind"] .sherpa-prompt,
-[data-theme="altermind"] .sherpa-bar,
-[data-theme="altermind"] .sherpa-prompt-bar,
-[data-theme="altermind"] .dash-sherpa,
-[data-theme="altermind"] .suggested-prompt,
-[data-theme="altermind"] .suggested-card,
-[data-theme="altermind"] .agent__bubble,
-[data-theme="altermind"] .agent__input,
-[data-theme="altermind"] .panel,
-[data-theme="altermind"] .panel-glass,
-[data-theme="altermind"] .modal__shell,
-[data-theme="altermind"] .studio-overlay__panel,
-[data-theme="altermind"] .cmdk__shell,
-[data-theme="altermind"] .kbd-sheet,
-[data-theme="altermind"] .dropdown,
-[data-theme="altermind"] .popover,
-[data-theme="altermind"] .empty-state,
-[data-theme="altermind"] .panel-empty,
-[data-theme="altermind"] .placeholder-card,
-[data-theme="altermind"] .ov-empty {
-  --bg-1: var(--surface-cream);
-  --bg-2: #faf7f0;
-  --bg-3: #dcd9d1;
-  --text-0: #0f2924;
-  --text-1: #1a3c35;
-  --text-2: #4f6760;
-  --text-3: #7d8c87;
-  --border: rgba(15, 41, 36, 0.12);
-  --border-soft: rgba(15, 41, 36, 0.06);
-  --border-strong: rgba(15, 41, 36, 0.22);
-  --chrome-elevated: var(--surface-cream);
-  --panel-glass-bg: var(--surface-cream);
-
-  background: var(--surface-cream) !important;
-  color: var(--surface-cream-ink) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: 1px solid rgba(15, 41, 36, 0.12) !important;
-  box-shadow: none !important;
-}
-
-[data-theme="altermind"] .mng-row,
-[data-theme="altermind"] .runs-row {
-  border-top: 0 !important;
-  border-left: 0 !important;
-  border-right: 0 !important;
-  border-bottom: 1px solid rgba(15, 41, 36, 0.06) !important;
-  background: transparent !important;
-}
-
-[data-theme="altermind"] .mng-list,
-[data-theme="altermind"] .runs-table {
-  background: var(--surface-cream);
-  border: 1px solid rgba(15, 41, 36, 0.12);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-[data-theme="altermind"] .ov__foot {
-  background: var(--surface-cream);
-  border-top: 1px solid rgba(15, 41, 36, 0.12);
 }
 
 /* Tooltips & toasts on light theme: ink-dark pill, no glow */
@@ -870,15 +787,15 @@
   --font-display-serif: 'Ronzino', 'Geist Variable', 'Geist', serif;
 
   /* SURFACE LADDER — deep forest dominant, cream sub-surfaces for blocks */
-  --bg-base: #0e2a25;
-  --bg-deep: #081f1b;
+  --bg-base: #0a231f;
+  --bg-deep: #061a17;
 
-  --bg-0: #0e2a25;          /* page canvas — deep forest */
-  --bg-1: #112f29;          /* card — 1 step lighter than page */
-  --bg-2: #16382f;          /* hover / chip / segment-track */
-  --bg-3: #1d4338;          /* depressed surface */
-  --bg-node: #112f29;
-  --bg-node-elev: #16382f;
+  --bg-0: #0a231f;          /* page canvas — deep forest */
+  --bg-1: #123c34;          /* card — 1 step lighter than page */
+  --bg-2: #184e43;          /* hover / chip / segment-track */
+  --bg-3: #206053;          /* depressed surface */
+  --bg-node: #123c34;
+  --bg-node-elev: #184e43;
 
   /* Cream secondary surface — used by panels that want to feel like a
      printed cream-paper card on dark forest (the "Altermind block" pattern
@@ -886,7 +803,7 @@
   --surface-cream: #e8e5dd;
   --surface-cream-ink: #0f2924;
 
-  --panel-glass-bg: #112f29;
+  --panel-glass-bg: #123c34;
 
   /* BORDERS — cream tinted hairlines, no blue/grey */
   --border: rgba(232, 229, 221, 0.12);
@@ -895,41 +812,41 @@
   --border-solid: rgba(232, 229, 221, 0.12);
 
   /* INK — warm cream on dark forest */
-  --text-0: #f5f1e8;        /* primary cream ink */
+  --text-0: #fcfaf4;        /* primary cream ink */
   --text-1: #e8e2d0;
   --text-2: #b8c9c3;        /* sage-tinted muted */
   --text-3: #7d8c87;
 
   /* BRAND QUARTET */
-  --accent: #dd7b6e;            /* coral — CTAs, running, send buttons */
+  --accent: #db7365;            /* coral — CTAs, running, send buttons */
   --accent-on: #0e2a25;
-  --accent-soft: color-mix(in srgb, #dd7b6e 18%, transparent);
+  --accent-soft: color-mix(in srgb, #db7365 18%, transparent);
   --accent-hi: #e69991;
-  --accent-lo: #b85f56;
-  --accent-warm: #dd7b6e;
-  --accent-cyan: #9dc1b5;       /* sage mint — secondary brand */
-  --accent-secondary: #9dc1b5;
+  --accent-lo: #b3564a;
+  --accent-warm: #db7365;
+  --accent-cyan: #a2cbbb;       /* sage mint — secondary brand */
+  --accent-secondary: #a2cbbb;
   --accent-mauve: #c2a3b0;      /* dusty mauve — tertiary */
   --accent-mauve-lo: #a08490;
 
   /* STATUS — reuse brand colours so palette feels native */
-  --running: #dd7b6e;
-  --running-lo: #b85f56;
-  --success: #9dc1b5;           /* sage */
-  --success-lo: #6e9b8c;
+  --running: #db7365;
+  --running-lo: #b3564a;
+  --success: #a2cbbb;           /* sage */
+  --success-lo: #719c8d;
   --danger:  #e88a8a;
   --danger-lo: #c46868;
   --info:    #c2a3b0;           /* mauve */
   --info-lo:  #a08490;
   --warning: #e6c98c;
-  --heat:    #dd7b6e;
+  --heat:    #db7365;
 
   /* PORTS — earthy palette mapping */
   --port-dataframe: #e6c98c;
-  --port-object:    #9dc1b5;
+  --port-object:    #a2cbbb;
   --port-scalar:    #c2a3b0;
   --port-string-list: #b8c9c3;
-  --port-workflow:  #dd7b6e;
+  --port-workflow:  #db7365;
 
   --minimap-mask: rgba(14, 42, 37, 0.92);
   --scrollbar-thumb: rgba(232, 229, 221, 0.14);
@@ -938,10 +855,10 @@
   --canvas-dots-color: rgba(232, 229, 221, 0.08);
   --dots-color: rgba(232, 229, 221, 0.05);
 
-  --canvas-bg: #0e2a25;
+  --canvas-bg: #0a231f;
   --canvas-edge-stroke: #b8c9c3;
-  --chrome-elevated: #112f29;
-  --segment-track: #16382f;
+  --chrome-elevated: #123c34;
+  --segment-track: #184e43;
   --segment-active-bg: #e8e5dd;
   --segment-active-fg: #0f2924;
 
